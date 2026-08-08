@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-progress --prefer-dist
+      - name: PHP-CS-Fixer
+        run: composer ci:php:cs
+      - name: PHPStan
+        run: composer ci:php:stan
+
+  unit-tests:
+    name: Unit (PHP ${{ matrix.php }} / TYPO3 ${{ matrix.typo3 }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+        typo3: ['^13.4', '^14.0']
+        exclude:
+          # TYPO3 v14 setzt eine hoehere PHP-Mindestversion voraus – vor dem
+          # ersten Release gegen die tatsaechliche Anforderung verifizieren.
+          - php: '8.2'
+            typo3: '^14.0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+      - run: composer require --dev typo3/cms-core:${{ matrix.typo3 }} --no-progress --prefer-dist -W
+      - run: composer ci:tests:unit
+
+  functional-tests:
+    name: Functional (PHP ${{ matrix.php }} / TYPO3 ${{ matrix.typo3 }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3']
+        typo3: ['^13.4', '^14.0']
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli, pdo_mysql, gd, exif
+          coverage: none
+          tools: composer:v2
+      - run: composer require --dev typo3/cms-core:${{ matrix.typo3 }} --no-progress --prefer-dist -W
+      - name: Functional Tests
+        env:
+          typo3DatabaseDriver: pdo_mysql
+          typo3DatabaseHost: 127.0.0.1
+          typo3DatabasePort: 3306
+          typo3DatabaseUsername: root
+          typo3DatabasePassword: root
+          typo3DatabaseName: functional
+        run: composer ci:tests:functional
+
+  accessibility:
+    name: Accessibility Gate (axe-core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright + axe
+        run: |
+          npm ci || npm install
+          npx playwright install --with-deps chromium
+      - name: Run accessibility tests
+        run: npx playwright test Tests/Acceptance

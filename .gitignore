@@ -1,0 +1,15 @@
+/.Build/
+/vendor/
+/composer.lock
+/node_modules/
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+/var/
+/Tests/Acceptance/_output/
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Interne Geschaeftsunterlagen, nicht Teil der oeffentlichen Extension
+/Documentation/Intern/

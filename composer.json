@@ -1,0 +1,81 @@
+{
+    "name": "netthinks/nt-aimark",
+    "type": "typo3-cms-extension",
+    "description": "KI-Transparenz für TYPO3: Erfassung, Kennzeichnung und Nachweis KI-generierter Inhalte nach Art. 50 der EU-KI-Verordnung (VO (EU) 2024/1689).",
+    "keywords": [
+        "TYPO3",
+        "AI Act",
+        "KI-Verordnung",
+        "Transparenz",
+        "Kennzeichnung",
+        "C2PA",
+        "Content Credentials",
+        "Compliance",
+        "Barrierefreiheit"
+    ],
+    "homepage": "https://www.netthinks.com/leistungen/ki-kennzeichnung-typo3/",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Dietmar Engler",
+            "email": "info@netthinks.com",
+            "homepage": "https://www.netthinks.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/netthinks/nt_aimark/issues",
+        "source": "https://github.com/netthinks/nt_aimark"
+    },
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "typo3/cms-core": "^13.4 || ^14.0",
+        "typo3/cms-backend": "^13.4 || ^14.0",
+        "typo3/cms-frontend": "^13.4 || ^14.0",
+        "typo3/cms-fluid": "^13.4 || ^14.0",
+        "typo3/cms-extbase": "^13.4 || ^14.0",
+        "symfony/process": "^6.4 || ^7.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^11.0",
+        "typo3/testing-framework": "^8.2 || ^9.0"
+    },
+    "suggest": {
+        "netthinks/nt-ai": "Automatische Übernahme der Provenienzdaten bei KI-generierten Medien und Texten",
+        "netthinks/nt-lingua": "Automatische Kennzeichnung KI-übersetzter und in Einfache Sprache transformierter Inhalte"
+    },
+    "autoload": {
+        "psr-4": {
+            "NetThinks\\NtAimark\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NetThinks\\NtAimark\\Tests\\": "Tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "nt_aimark",
+            "web-dir": ".Build/public"
+        }
+    },
+    "scripts": {
+        "ci:php:cs": "php-cs-fixer fix --config Build/php-cs-fixer.php --dry-run --diff",
+        "ci:php:stan": "phpstan analyse -c Build/phpstan.neon",
+        "ci:tests:unit": "phpunit -c Build/UnitTests.xml",
+        "ci:tests:functional": "phpunit -c Build/FunctionalTests.xml",
+        "fix:php:cs": "php-cs-fixer fix --config Build/php-cs-fixer.php"
+    }
+}
