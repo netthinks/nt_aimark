@@ -1,0 +1,8 @@
+# cat=detection; type=string; label=Pfad zu c2patool: Leer lassen, wenn das Werkzeug im PATH liegt. Fehlt es, verwendet die Extension nur XMP und EXIF und vermerkt den C2PA-Zustand als "nicht prüfbar".
+c2patoolPath = c2patool
+
+# cat=detection; type=int+; label=Zeitlimit für c2patool (Sekunden): Wird das Limit überschritten, gilt der C2PA-Zustand als "nicht prüfbar". Der Upload läuft weiter.
+c2patoolTimeout = 15
+
+# cat=detection; type=string; label=Zusätzliche EXIF-Signaturen: Kommagetrennt als Suchbegriff=Anbieter, z. B. "mein-tool=Meine GmbH". Ergänzt die mitgelieferte Liste.
+additionalExifSignatures =

@@ -40,11 +40,24 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   2.1 AA, dazu Prüfungen auf Tastaturbedienbarkeit, eindeutige
   `aria-controls`-Ziele und ausbleibenden Layout-Shift.
 
+- **Automatische Erkennung** beim Upload und beim Ersetzen einer Datei, in
+  drei Stufen: signiertes C2PA-Manifest, IPTC `DigitalSourceType` aus XMP,
+  zuletzt eine Signaturliste über EXIF-Felder. Das Ergebnis ist immer nur ein
+  **Vorschlag**; ein von einem Menschen bestätigter Status wird nie
+  überschrieben. Liegt das Erzeugungsdatum vor dem Stichtag, wird zusätzlich
+  `pre_cutoff` als Ausnahmegrund vorgeschlagen.
+- **Protokollierung** der automatischen Erkennung in `tx_ntaimark_audit`
+  (`source = auto_detect`), mit denormalisiertem Benutzernamen.
+- **Extension-Einstellungen** für Pfad und Zeitlimit von `c2patool` sowie für
+  zusätzliche EXIF-Signaturen.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
   Repository und müssen manuell ergänzt werden.
-- Automatische Erkennung, Metadaten-Erhalt über die Bildverarbeitung,
-  Backend-Modul und CLI-Befehle sind noch nicht enthalten.
+- Metadaten-Erhalt über die Bildverarbeitung, Backend-Modul und CLI-Befehle
+  sind noch nicht enthalten.
+- Ohne `c2patool` entfällt die C2PA-Stufe der Erkennung; XMP und EXIF greifen
+  weiterhin.
 - TYPO3 14.3 verwarnt `ext_emconf.php`. Die Datei bleibt bestehen, solange
   TYPO3 13.4 unterstützt wird.

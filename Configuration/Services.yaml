@@ -10,12 +10,24 @@ services:
       - '../Classes/Domain/Model/*'
       - '../Classes/Domain/Enum/*'
       - '../Classes/Domain/AiActCutoff.php'
+      - '../Classes/Domain/DigitalSourceType.php'
       - '../Classes/Event/*'
       - '../Classes/Exception/*'
 
   NetThinks\NtAimark\Service\BadgeContrastService:
     arguments:
       $cache: '@cache.ntaimark'
+
+  # Server-level settings, not site settings — the path to the external tool
+  # describes the machine, so it comes from the extension configuration.
+  NetThinks\NtAimark\Service\C2paService:
+    factory: ['@NetThinks\NtAimark\Service\ServiceFactory', 'createC2paService']
+
+  NetThinks\NtAimark\Service\ExifSignatureService:
+    factory: ['@NetThinks\NtAimark\Service\ServiceFactory', 'createExifSignatureService']
+
+  NetThinks\NtAimark\Service\ServiceFactory:
+    public: true
 
   cache.ntaimark:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
