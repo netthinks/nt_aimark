@@ -19,6 +19,26 @@ composer ci:tests:unit
 composer ci:tests:functional
 ```
 
+Barrierefreiheitstests (Playwright + axe-core, WCAG 2.1 AA):
+
+```bash
+npm ci
+npx playwright install chromium
+npx playwright test
+```
+
+Sie laufen gegen eine statische Fixture unter
+`Tests/Acceptance/fixtures/labelled-page.html` und brauchen deshalb weder
+Datenbank noch TYPO3-Boot. Damit das etwas beweist, prüft der funktionale
+Test `MarkupFixtureTest`, dass die Fixture noch genau das Markup enthält,
+das `LabelRenderService` erzeugt — wer das Fluid-Template ändert, bekommt
+dort einen Fehlschlag, bis die Fixture nachgezogen ist.
+
+Die Fixture wird über einen kleinen Node-Server ausgeliefert
+(`Tests/Acceptance/server.mjs`), nicht über `file://`: Browser laden
+ES-Module nicht von `file://`, die Seite käme ohne ihr JavaScript hoch und
+die Tastaturtests würden aus dem falschen Grund bestehen.
+
 Funktionale Tests brauchen eine Datenbank:
 
 ```bash

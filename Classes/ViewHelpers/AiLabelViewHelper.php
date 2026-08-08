@@ -8,6 +8,7 @@ use NetThinks\NtAimark\Domain\Repository\DeclarationRepository;
 use NetThinks\NtAimark\Service\AiMarkSettingsFactory;
 use NetThinks\NtAimark\Service\DisclosureRuleService;
 use NetThinks\NtAimark\Service\LabelRenderService;
+use TYPO3\CMS\Core\Resource\FileInterface;
 
 /**
  * Renders the disclosure badge for a file, or nothing when the rules say the
@@ -38,7 +39,8 @@ final class AiLabelViewHelper extends AbstractLabelViewHelper
 
     public function render(): string
     {
-        $result = $this->decide($this->arguments['file']);
+        $file = $this->arguments['file'];
+        $result = $this->decide($file);
 
         if ($result === null) {
             return '';
@@ -53,6 +55,7 @@ final class AiLabelViewHelper extends AbstractLabelViewHelper
             (string) $this->arguments['position'],
             (string) $this->arguments['size'],
             (bool) $this->arguments['showDetails'],
+            $file instanceof FileInterface ? $file : null,
         );
     }
 }

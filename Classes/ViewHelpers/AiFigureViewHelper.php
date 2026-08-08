@@ -8,6 +8,7 @@ use NetThinks\NtAimark\Domain\Repository\DeclarationRepository;
 use NetThinks\NtAimark\Service\AiMarkSettingsFactory;
 use NetThinks\NtAimark\Service\DisclosureRuleService;
 use NetThinks\NtAimark\Service\LabelRenderService;
+use TYPO3\CMS\Core\Resource\FileInterface;
 
 /**
  * Wraps image markup in a figure carrying the disclosure badge.
@@ -44,7 +45,8 @@ final class AiFigureViewHelper extends AbstractLabelViewHelper
     public function render(): string
     {
         $content = (string) $this->renderChildren();
-        $result = $this->decide($this->arguments['file']);
+        $file = $this->arguments['file'];
+        $result = $this->decide($file);
 
         if ($result === null) {
             return $content;
@@ -59,6 +61,7 @@ final class AiFigureViewHelper extends AbstractLabelViewHelper
             (string) $this->arguments['position'],
             (string) $this->arguments['size'],
             (bool) $this->arguments['showDetails'],
+            $file instanceof FileInterface ? $file : null,
         );
 
         if ($badge === '') {

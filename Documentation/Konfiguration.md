@@ -83,6 +83,29 @@ keine Stilfrage:
 - Die Kennzeichnung verschiebt das Bild nicht.
 - Der Kontrast des Symbols hängt nicht vom Bild darunter ab.
 
+## Kontrast der Kennzeichnung
+
+Die Extension misst den Bildbereich hinter dem Symbol und entscheidet daraus,
+wie das Badge gezeichnet wird:
+
+| Fall | Ergebnis | CSS-Klasse |
+|---|---|---|
+| Bereich messbar, gewählte Symbolfarbe erreicht dort ≥ 4,5:1 an **jedem** Messpunkt | Symbol ohne Plakette, schwarz oder weiß je nach Untergrund | `nt-aimark__badge--plain` |
+| Bereich unruhig, Bild nicht lesbar, GD nicht verfügbar, Bild zu groß | Symbol auf deckender Plakette | `nt-aimark__badge--plate` |
+
+Der Kontrast hängt damit nie vom Zufall ab: Die Plakette ist die Zusage, das
+Weglassen die Ausnahme. Jeder Fehlerpfad führt zurück zur Plakette.
+
+Gemessen wird das Viertel des Bildes, in dem das Symbol tatsächlich sitzt —
+`badgePosition` steuert also mit, welcher Bereich betrachtet wird. Das
+Ergebnis liegt im Cache `ntaimark`, verschlüsselt über den Inhalts-Hash der
+Datei; ein ausgetauschtes Bild wird neu gemessen.
+
+> Eine Eigenheit der Kontrastmathematik: Gegen eine **einfarbige** Fläche
+> erreicht immer mindestens eine der beiden Symbolfarben 4,5:1, weil
+> 4,5 × 4,5 kleiner als der maximale Kontrastumfang 21 ist. Die Plakette
+> braucht es deshalb nur für unruhige Bereiche und für nicht messbare Bilder.
+
 ## Eigenes CSS
 
 Die mitgelieferte Datei `EXT:nt_aimark/Resources/Public/Css/aimark.css` ist

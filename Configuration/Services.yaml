@@ -12,3 +12,12 @@ services:
       - '../Classes/Domain/AiActCutoff.php'
       - '../Classes/Event/*'
       - '../Classes/Exception/*'
+
+  NetThinks\NtAimark\Service\BadgeContrastService:
+    arguments:
+      $cache: '@cache.ntaimark'
+
+  cache.ntaimark:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['ntaimark']

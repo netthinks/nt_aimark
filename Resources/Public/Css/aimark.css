@@ -29,12 +29,36 @@
   gap: 0.35em;
   padding: 0.3em 0.5em;
   border-radius: 0.25em;
-  background: #ffffff;
-  color: #111111;
-  border: 1px solid rgba(0, 0, 0, 0.35);
   font-size: 0.8125rem;
   line-height: 1.2;
   text-decoration: none;
+}
+
+/*
+ * Default: opaque plate. Contrast then no longer depends on the image, which
+ * is the guarantee the extension makes when the picture cannot be measured.
+ */
+.nt-aimark__badge--plate {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+/*
+ * The plate only comes off when the area behind the badge was measured and
+ * the chosen icon colour clears 4.5:1 against every sample taken there.
+ */
+.nt-aimark__badge--plain {
+  background: transparent;
+  border: 0;
+}
+
+.nt-aimark__badge--icon-dark {
+  color: #000000;
+}
+
+.nt-aimark__badge--icon-white {
+  color: #ffffff;
 }
 
 .nt-aimark__badge--top-left {

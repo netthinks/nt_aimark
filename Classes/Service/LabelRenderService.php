@@ -7,9 +7,11 @@ namespace NetThinks\NtAimark\Service;
 use NetThinks\NtAimark\Domain\Enum\AiStatus;
 use NetThinks\NtAimark\Domain\Enum\IconVariant;
 use NetThinks\NtAimark\Domain\Model\AiDeclaration;
+use NetThinks\NtAimark\Domain\Model\BadgeContrast;
 use NetThinks\NtAimark\Domain\Model\LabelDecision;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
@@ -33,6 +35,7 @@ final class LabelRenderService
         private readonly IconResolverService $iconResolver,
         private readonly ViewFactoryInterface $viewFactory,
         private readonly AssetCollector $assetCollector,
+        private readonly BadgeContrastService $badgeContrastService,
     ) {}
 
     public function renderBadge(
@@ -42,10 +45,13 @@ final class LabelRenderService
         string $position = 'bottom-right',
         string $size = 'medium',
         bool $showDetails = true,
+        ?FileInterface $file = null,
     ): string {
         if (!$decision->shouldLabel) {
             return '';
         }
+
+        $position = $this->sanitiseModifier($position, 'bottom-right');
 
         $this->assetCollector->addStyleSheet(
             'ntAimark',
@@ -63,7 +69,19 @@ final class LabelRenderService
             );
         }
 
-        $icon = $this->iconResolver->inlineSvg($decision->iconVariant);
+        $contrast = $file !== null
+            ? $this->badgeContrastService->resolve($file, $position)
+            : BadgeContrast::guaranteed();
+
+        $icon = $this->iconResolver->inlineSvg($decision->iconVariant, white: $contrast->useWhiteIcon);
+
+        // The white variant may simply not have been downloaded. Rather than
+        // dropping to a text label, use the black one — but then the plate has
+        // to come back, otherwise it would sit dark on dark.
+        if ($icon === null && $contrast->useWhiteIcon) {
+            $icon = $this->iconResolver->inlineSvg($decision->iconVariant);
+            $contrast = BadgeContrast::guaranteed();
+        }
 
         $view = $this->viewFactory->create(new ViewFactoryData(
             templateRootPaths: ['EXT:nt_aimark/Resources/Private/Templates/'],
@@ -79,8 +97,10 @@ final class LabelRenderService
             'fallbackTextKey' => $this->fallbackTextKey($decision->iconVariant),
             'ariaLabelKey' => $this->ariaLabelKey($declaration->status, $decision->iconVariant),
             'labelText' => $decision->labelText,
-            'position' => $this->sanitiseModifier($position, 'bottom-right'),
+            'position' => $position,
             'size' => $this->sanitiseModifier($size, 'medium'),
+            'contrast' => $contrast->cssModifier(),
+            'iconColour' => $contrast->useWhiteIcon ? 'white' : 'dark',
             'status' => $declaration->status->name,
             'variant' => $decision->iconVariant->value,
             'detailId' => 'aimark-detail-' . $declaration->recordUid . '-' . ++$this->instanceCounter,
