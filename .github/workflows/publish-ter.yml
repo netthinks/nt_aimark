@@ -1,0 +1,90 @@
+name: Publish to TER
+
+# Runs when a release tag is pushed. Publishing is deliberately not part of the
+# regular CI: a tag is the explicit signal that a version is meant to go out.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish, e.g. 1.0.0'
+        required: true
+
+env:
+  EXTENSION_KEY: nt_aimark
+
+jobs:
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-progress --prefer-dist
+      - run: composer ci:php:cs
+      - run: composer ci:php:stan
+      - run: composer ci:tests:unit
+
+  publish:
+    name: Publish
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, xml, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          echo "number=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Publishing ${EXTENSION_KEY} ${VERSION}"
+
+      # The version lives in ext_emconf.php as well as in the tag. A mismatch
+      # would publish an archive that reports a different version than the one
+      # it was tagged as, so it stops the release instead.
+      - name: Verify ext_emconf.php matches the tag
+        run: |
+          EMCONF_VERSION=$(php -r "\$_EXTKEY='${EXTENSION_KEY}'; include 'ext_emconf.php'; echo \$EM_CONF['${EXTENSION_KEY}']['version'];")
+          if [ "${EMCONF_VERSION}" != "${{ steps.version.outputs.number }}" ]; then
+            echo "::error::ext_emconf.php says ${EMCONF_VERSION}, tag says ${{ steps.version.outputs.number }}."
+            exit 1
+          fi
+
+      - name: Verify CHANGELOG mentions the version
+        run: |
+          if [ -f CHANGELOG.md ] && ! grep -q "\[${{ steps.version.outputs.number }}\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for ${{ steps.version.outputs.number }}."
+            exit 1
+          fi
+
+      - name: Install tailor
+        run: composer global require typo3/tailor --prefer-dist --no-progress
+
+      - name: Publish to TER
+        env:
+          TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+        run: |
+          if [ -z "${TYPO3_API_TOKEN}" ]; then
+            echo "::error::Secret TYPO3_API_TOKEN is not set."
+            exit 1
+          fi
+          php ~/.composer/vendor/bin/tailor ter:publish \
+            --comment "Released from ${GITHUB_REF_NAME}" \
+            "${{ steps.version.outputs.number }}"

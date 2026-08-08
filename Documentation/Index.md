@@ -1,12 +1,28 @@
-# Dokumentation nt_aimark
+# AI Mark – KI-Kennzeichnung für TYPO3
 
-| Datei | Inhalt |
+Dokumentation zur Extension `nt_aimark`. Sie unterstützt Redaktionen dabei,
+den KI-Anteil an Medien und Texten zu erfassen, ihn im Frontend barrierefrei
+zu kennzeichnen und die getroffenen Entscheidungen nachvollziehbar zu
+dokumentieren — passend zu den Transparenzpflichten aus Art. 50 der
+Verordnung (EU) 2024/1689.
+
+> **Kein Rechtsrat.** Diese Extension ist ein technisches Hilfsmittel. Ob ein
+> konkreter Inhalt zu kennzeichnen ist, bleibt eine Einzelfallentscheidung des
+> Betreibers.
+
+## Inhalt
+
+| Dokument | Inhalt |
 |---|---|
-| `Konzept.md` | Fachliches und wirtschaftliches Gesamtkonzept |
-| `Installation.md` | Installation und Site-Set-Einbindung *(folgt)* |
-| `Configuration.md` | Site Settings und Extension-Konfiguration *(folgt)* |
-| `Editors.md` | Redaktionsleitfaden *(folgt)* |
-| `Metadata.md` | Befund zum Metadaten-Erhalt bei der Bildverarbeitung *(folgt)* |
-| `Integration.md` | Event-Schnittstelle für nt_ai und nt_lingua *(folgt)* |
+| [Installation](Installation.md) | Einrichtung, EU-Icons, Site Set |
+| [Konfiguration](Konfiguration.md) | Einstellungen des Site Sets, Templates überschreiben |
+| [Redaktionsleitfaden](Redaktionsleitfaden.md) | Wie Redakteure den Reiter „KI-Transparenz" ausfüllen |
+| [Regelwerk](Regelwerk.md) | Wann die Extension kennzeichnet und warum |
+| [Entwicklung](Entwicklung.md) | Tests, Codequalität, Release |
+| [Konzept](Konzept.md) | Fach- und Geschäftskonzept |
 
-Die Build-Anweisung für die Entwicklung liegt im Wurzelverzeichnis unter `CLAUDE.md`.
+## Stand
+
+`0.1.0`, Entwicklungsstand (`alpha`). Der Funktionsumfang wächst entlang der
+Umsetzungsreihenfolge in [`CLAUDE.md`](../CLAUDE.md); der aktuelle Stand steht
+im [Changelog](../CHANGELOG.md).
