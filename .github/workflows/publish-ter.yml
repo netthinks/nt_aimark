@@ -12,6 +12,10 @@ on:
         description: 'Version to publish, e.g. 1.0.0'
         required: true
 
+# The token is only needed by the publishing step, which sets it explicitly.
+permissions:
+  contents: read
+
 env:
   EXTENSION_KEY: nt_aimark
 
@@ -45,13 +49,22 @@ jobs:
           coverage: none
           tools: composer:v2
 
+      # Workflow inputs reach the shell through the environment, never through
+      # ${{ }} interpolation into the script body, and are checked against the
+      # expected shape before anything else uses them.
       - name: Determine version
         id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            VERSION="${{ github.event.inputs.version }}"
+          if [ -n "${INPUT_VERSION}" ]; then
+            VERSION="${INPUT_VERSION}"
           else
             VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          if ! printf '%s' "${VERSION}" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::'${VERSION}' is not a valid version number."
+            exit 1
           fi
           echo "number=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "Publishing ${EXTENSION_KEY} ${VERSION}"
@@ -60,17 +73,21 @@ jobs:
       # would publish an archive that reports a different version than the one
       # it was tagged as, so it stops the release instead.
       - name: Verify ext_emconf.php matches the tag
+        env:
+          VERSION: ${{ steps.version.outputs.number }}
         run: |
-          EMCONF_VERSION=$(php -r "\$_EXTKEY='${EXTENSION_KEY}'; include 'ext_emconf.php'; echo \$EM_CONF['${EXTENSION_KEY}']['version'];")
-          if [ "${EMCONF_VERSION}" != "${{ steps.version.outputs.number }}" ]; then
-            echo "::error::ext_emconf.php says ${EMCONF_VERSION}, tag says ${{ steps.version.outputs.number }}."
+          EMCONF_VERSION=$(php -r '$_EXTKEY = getenv("EXTENSION_KEY"); include "ext_emconf.php"; echo $EM_CONF[$_EXTKEY]["version"];')
+          if [ "${EMCONF_VERSION}" != "${VERSION}" ]; then
+            echo "::error::ext_emconf.php says ${EMCONF_VERSION}, release says ${VERSION}."
             exit 1
           fi
 
       - name: Verify CHANGELOG mentions the version
+        env:
+          VERSION: ${{ steps.version.outputs.number }}
         run: |
-          if [ -f CHANGELOG.md ] && ! grep -q "\[${{ steps.version.outputs.number }}\]" CHANGELOG.md; then
-            echo "::error::CHANGELOG.md has no entry for ${{ steps.version.outputs.number }}."
+          if [ -f CHANGELOG.md ] && ! grep -qF "[${VERSION}]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for ${VERSION}."
             exit 1
           fi
 
@@ -80,6 +97,7 @@ jobs:
       - name: Publish to TER
         env:
           TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+          VERSION: ${{ steps.version.outputs.number }}
         run: |
           if [ -z "${TYPO3_API_TOKEN}" ]; then
             echo "::error::Secret TYPO3_API_TOKEN is not set."
@@ -87,4 +105,4 @@ jobs:
           fi
           php ~/.composer/vendor/bin/tailor ter:publish \
             --comment "Released from ${GITHUB_REF_NAME}" \
-            "${{ steps.version.outputs.number }}"
+            "${VERSION}"

@@ -6,7 +6,9 @@ namespace NetThinks\NtAimark\Tests\Unit\Service;
 
 use NetThinks\NtAimark\Domain\Enum\IconVariant;
 use NetThinks\NtAimark\Service\IconResolverService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Resource\Security\SvgSanitizer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 final class IconResolverServiceTest extends UnitTestCase
@@ -35,7 +37,7 @@ final class IconResolverServiceTest extends UnitTestCase
 
     private function subject(): IconResolverService
     {
-        return new IconResolverService($this->iconDirectory);
+        return new IconResolverService($this->iconDirectory, new SvgSanitizer());
     }
 
     private function writeIcon(string $fileName, string $contents): void
@@ -123,6 +125,63 @@ final class IconResolverServiceTest extends UnitTestCase
         $this->writeIcon('ai-basic-black.svg', 'not an svg at all');
 
         self::assertNull($this->subject()->inlineSvg(IconVariant::Basic));
+    }
+
+    /**
+     * The icon markup is embedded into the page unescaped, and the files arrive
+     * by manual download rather than through TYPO3's upload checks. A tampered
+     * file must not turn into script execution.
+     *
+     * @return array<string, array{string, string}>
+     */
+    public static function hostileSvgPayloads(): array
+    {
+        return [
+            'script element' => [
+                '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><path d="M0 0h1v1H0z"/></svg>',
+                'alert(1)',
+            ],
+            'event handler' => [
+                '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"><path d="M0 0h1v1H0z"/></svg>',
+                'onload',
+            ],
+            'javascript link' => [
+                '<svg xmlns="http://www.w3.org/2000/svg"><a href="javascript:alert(1)"><path d="M0 0h1v1H0z"/></a></svg>',
+                'javascript:',
+            ],
+            'foreign object with markup' => [
+                '<svg xmlns="http://www.w3.org/2000/svg"><foreignObject><iframe src="https://evil.example/"></iframe></foreignObject><path d="M0 0h1v1H0z"/></svg>',
+                '<iframe',
+            ],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('hostileSvgPayloads')]
+    public function activeContentIsStrippedFromTheIcon(string $payload, string $mustNotAppear): void
+    {
+        $this->writeIcon('ai-basic-black.svg', $payload);
+
+        $svg = $this->subject()->inlineSvg(IconVariant::Basic);
+
+        self::assertIsString($svg);
+        self::assertStringNotContainsStringIgnoringCase($mustNotAppear, $svg);
+        // The artwork itself has to survive the sanitising.
+        self::assertStringContainsString('<path', $svg);
+    }
+
+    /**
+     * If sanitising leaves nothing usable, the text label is the right outcome
+     * — not a broken fragment in the page.
+     */
+    #[Test]
+    public function anIconThatDoesNotSurviveSanitisingFallsBackToNull(): void
+    {
+        $this->writeIcon('ai-basic-black.svg', '<svg><!-- nothing but a comment --></svg>garbage <svg');
+
+        $svg = $this->subject()->inlineSvg(IconVariant::Basic);
+
+        self::assertTrue($svg === null || str_contains($svg, '<svg'));
     }
 
     #[Test]

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NetThinks\NtAimark\Service;
 
 use NetThinks\NtAimark\Domain\Enum\IconVariant;
+use TYPO3\CMS\Core\Resource\Security\SvgSanitizer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -29,6 +30,7 @@ final class IconResolverService
      */
     public function __construct(
         private readonly string $iconDirectory = self::ICON_DIRECTORY,
+        private readonly ?SvgSanitizer $svgSanitizer = null,
     ) {}
 
     /**
@@ -85,16 +87,28 @@ final class IconResolverService
             return null;
         }
 
-        return $this->prepareForInlineUse($svg);
+        $prepared = $this->prepareForInlineUse($svg);
+
+        // Sanitising can empty the file out entirely. Falling back to the text
+        // label is the right outcome then, not emitting a broken fragment.
+        return str_contains($prepared, '<svg') ? $prepared : null;
     }
 
     /**
      * Strips what must not appear inside an HTML document and hides the graphic
      * from assistive technology — the surrounding badge carries the text
      * alternative, so announcing the icon again would duplicate it.
+     *
+     * The markup is embedded into the page unescaped, which makes this file the
+     * one place where a tampered download would become script execution. The
+     * icons arrive by manual download rather than through TYPO3's upload
+     * checks, so they are sanitised here before anything else happens to them.
      */
     private function prepareForInlineUse(string $svg): string
     {
+        $sanitizer = $this->svgSanitizer ?? GeneralUtility::makeInstance(SvgSanitizer::class);
+        $svg = $sanitizer->sanitizeContent($svg);
+
         $svg = (string) preg_replace('/<\?xml.*?\?>/s', '', $svg);
         $svg = (string) preg_replace('/<!DOCTYPE.*?>/s', '', $svg);
         $svg = (string) preg_replace('/<!--.*?-->/s', '', $svg);
