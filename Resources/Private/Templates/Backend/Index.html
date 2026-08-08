@@ -1,0 +1,195 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<f:variable name="ll">LLL:EXT:nt_aimark/Resources/Private/Language/locallang_mod.xlf:</f:variable>
+
+<div class="nt-aimark-module">
+
+    <div class="callout callout-info" role="note">
+        <div class="callout-body"><f:translate key="{ll}disclaimer" /></div>
+    </div>
+
+    <h2><f:translate key="{ll}overview.heading" /></h2>
+
+    <f:if condition="{summaries}">
+        <f:then>
+            <div class="table-fit">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th><f:translate key="{ll}overview.storage" /></th>
+                            <th class="text-end"><f:translate key="{ll}overview.total" /></th>
+                            <th class="text-end"><f:translate key="{ll}overview.reviewed" /></th>
+                            <th class="text-end"><f:translate key="{ll}overview.open" /></th>
+                            <th class="text-end"><f:translate key="{ll}overview.brokenC2pa" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <f:for each="{summaries}" as="summary">
+                            <tr>
+                                <td>{summary.storageName}</td>
+                                <td class="text-end">{summary.total}</td>
+                                <td class="text-end">{summary.reviewed} ({summary.reviewedPercent} %)</td>
+                                <td class="text-end">
+                                    <f:if condition="{summary.open} > 0">
+                                        <f:then><strong>{summary.open}</strong></f:then>
+                                        <f:else>0</f:else>
+                                    </f:if>
+                                </td>
+                                <td class="text-end">
+                                    <f:if condition="{summary.brokenC2pa} > 0">
+                                        <f:then><strong>{summary.brokenC2pa}</strong></f:then>
+                                        <f:else>0</f:else>
+                                    </f:if>
+                                </td>
+                            </tr>
+                        </f:for>
+                    </tbody>
+                </table>
+            </div>
+        </f:then>
+        <f:else>
+            <p><f:translate key="{ll}overview.empty" /></p>
+        </f:else>
+    </f:if>
+
+    <h2><f:translate key="{ll}status.heading" /></h2>
+    <ul class="list-unstyled">
+        <f:for each="{findings}" as="finding">
+            <li>
+                <f:if condition="{finding.severity} == 'ok'">
+                    <f:then>
+                        <span class="badge bg-success"><f:translate key="{ll}status.ok" /></span>
+                    </f:then>
+                    <f:else>
+                        <span class="badge bg-warning">!</span>
+                    </f:else>
+                </f:if>
+                <strong><f:translate key="{finding.titleKey}" /></strong>
+                <f:if condition="{finding.detailKey}">
+                    — <f:translate key="{finding.detailKey}" />
+                    <f:if condition="{finding.detail}"><code>{finding.detail}</code></f:if>
+                </f:if>
+            </li>
+        </f:for>
+    </ul>
+
+    <h2><f:translate key="{ll}list.heading" /></h2>
+
+    <form method="get" class="mb-3">
+        <f:render section="Filter" arguments="{_all}" />
+    </form>
+
+    <p><f:translate key="{ll}list.count" arguments="{0: total}" /></p>
+
+    <f:if condition="{assets}">
+        <f:then>
+            <form method="post" action="{bulkUri}">
+                <div class="table-fit">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" data-nt-aimark-select-all
+                                           aria-label="{f:translate(key: '{ll}bulk.selectAll')}"></th>
+                                <th><f:translate key="{ll}list.file" /></th>
+                                <th><f:translate key="{ll}list.status" /></th>
+                                <th><f:translate key="{ll}list.system" /></th>
+                                <th><f:translate key="{ll}list.createdAt" /></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <f:for each="{assets}" as="asset">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="uids[]" value="{asset.uid}"
+                                               aria-label="{asset.name}">
+                                    </td>
+                                    <td>
+                                        <span title="{asset.identifier}">{asset.name}</span>
+                                    </td>
+                                    <td>
+                                        <f:translate key="{asset.statusLabelKey}" />
+                                        <f:if condition="{asset.needsReview}">
+                                            <span class="badge bg-warning">!</span>
+                                        </f:if>
+                                    </td>
+                                    <td>{asset.tx_ntaimark_system}</td>
+                                    <td>
+                                        <f:if condition="{asset.tx_ntaimark_created_at} > 0">
+                                            <f:format.date format="d.m.Y">@{asset.tx_ntaimark_created_at}</f:format.date>
+                                        </f:if>
+                                    </td>
+                                    <td>
+                                        <a href="{asset.editUri}" class="btn btn-sm btn-default">
+                                            <f:translate key="{ll}list.edit" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </f:for>
+                        </tbody>
+                    </table>
+                </div>
+
+                <fieldset class="mt-3">
+                    <legend class="h5"><f:translate key="{ll}bulk.heading" /></legend>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <label class="visually-hidden" for="nt-aimark-bulk-status">
+                            <f:translate key="{ll}bulk.heading" />
+                        </label>
+                        <select name="status" id="nt-aimark-bulk-status" class="form-select w-auto">
+                            <f:for each="{statusItems}" as="item">
+                                <option value="{item.value}"><f:translate key="{item.labelKey}" /></option>
+                            </f:for>
+                        </select>
+                        <button type="submit" class="btn btn-primary">
+                            <f:translate key="{ll}bulk.apply" />
+                        </button>
+                    </div>
+                </fieldset>
+            </form>
+        </f:then>
+        <f:else>
+            <p><f:translate key="{ll}list.empty" /></p>
+        </f:else>
+    </f:if>
+
+</div>
+
+<f:section name="Filter">
+    <div class="d-flex gap-3 flex-wrap align-items-end">
+        <div>
+            <label class="form-label" for="nt-aimark-filter-status">
+                <f:translate key="{ll}filter.status" />
+            </label>
+            <select name="status[]" id="nt-aimark-filter-status" class="form-select" multiple size="6">
+                <f:for each="{statusItems}" as="item">
+                    <f:if condition="{item.selected}">
+                        <f:then>
+                            <option value="{item.value}" selected="selected"><f:translate key="{item.labelKey}" /></option>
+                        </f:then>
+                        <f:else>
+                            <option value="{item.value}"><f:translate key="{item.labelKey}" /></option>
+                        </f:else>
+                    </f:if>
+                </f:for>
+            </select>
+        </div>
+        <div>
+            <label class="form-label" for="nt-aimark-filter-after">
+                <f:translate key="{ll}filter.createdAfter" />
+            </label>
+            <input type="date" name="createdAfter" id="nt-aimark-filter-after" class="form-control">
+        </div>
+        <div>
+            <label class="form-label" for="nt-aimark-filter-before">
+                <f:translate key="{ll}filter.createdBefore" />
+            </label>
+            <input type="date" name="createdBefore" id="nt-aimark-filter-before" class="form-control">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-default"><f:translate key="{ll}filter.apply" /></button>
+        </div>
+    </div>
+</f:section>
+
+</html>

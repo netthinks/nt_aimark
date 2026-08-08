@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2026-08-08T12:00:00Z" product-name="nt_aimark">
+		<header/>
+		<body>
+			<trans-unit id="mlang_tabs_tab" resname="mlang_tabs_tab">
+				<source>AI transparency</source>
+				<target>KI-Transparenz</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel" resname="mlang_labels_tablabel">
+				<source>Review and document AI involvement in media</source>
+				<target>KI-Anteil an Medien prüfen und dokumentieren</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr" resname="mlang_labels_tabdescr">
+				<source>Shows how far the review has come, lists what is still open, and lets you settle several assets at once.</source>
+				<target>Zeigt, wie weit die Prüfung ist, listet auf, was offen ist, und erlaubt es, mehrere Dateien auf einmal zu erledigen.</target>
+			</trans-unit>
+
+			<trans-unit id="disclaimer" resname="disclaimer">
+				<source>This module supports you in implementing the transparency obligations. It does not constitute legal advice: whether and how a specific piece of content has to be labelled remains a decision for the operator in each individual case.</source>
+				<target>Dieses Modul unterstützt Sie bei der Umsetzung der Transparenzpflichten. Es stellt keine Rechtsberatung dar: Ob und wie ein konkreter Inhalt zu kennzeichnen ist, bleibt eine Einzelfallentscheidung des Betreibers.</target>
+			</trans-unit>
+
+			<trans-unit id="overview.heading" resname="overview.heading">
+				<source>Overview</source>
+				<target>Übersicht</target>
+			</trans-unit>
+			<trans-unit id="overview.storage" resname="overview.storage">
+				<source>Storage</source>
+				<target>Speicher</target>
+			</trans-unit>
+			<trans-unit id="overview.total" resname="overview.total">
+				<source>Files</source>
+				<target>Dateien</target>
+			</trans-unit>
+			<trans-unit id="overview.reviewed" resname="overview.reviewed">
+				<source>Reviewed</source>
+				<target>Geprüft</target>
+			</trans-unit>
+			<trans-unit id="overview.open" resname="overview.open">
+				<source>Open</source>
+				<target>Offen</target>
+			</trans-unit>
+			<trans-unit id="overview.brokenC2pa" resname="overview.brokenC2pa">
+				<source>Broken signature</source>
+				<target>Gebrochene Signatur</target>
+			</trans-unit>
+			<trans-unit id="overview.empty" resname="overview.empty">
+				<source>No files found.</source>
+				<target>Keine Dateien gefunden.</target>
+			</trans-unit>
+
+			<trans-unit id="list.heading" resname="list.heading">
+				<source>Work list</source>
+				<target>Arbeitsliste</target>
+			</trans-unit>
+			<trans-unit id="list.file" resname="list.file">
+				<source>File</source>
+				<target>Datei</target>
+			</trans-unit>
+			<trans-unit id="list.status" resname="list.status">
+				<source>AI involvement</source>
+				<target>KI-Anteil</target>
+			</trans-unit>
+			<trans-unit id="list.system" resname="list.system">
+				<source>AI system</source>
+				<target>KI-System</target>
+			</trans-unit>
+			<trans-unit id="list.createdAt" resname="list.createdAt">
+				<source>Created on</source>
+				<target>Erzeugt am</target>
+			</trans-unit>
+			<trans-unit id="list.edit" resname="list.edit">
+				<source>Edit metadata</source>
+				<target>Metadaten bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="list.empty" resname="list.empty">
+				<source>Nothing matches this filter.</source>
+				<target>Zu diesem Filter gibt es nichts.</target>
+			</trans-unit>
+			<trans-unit id="list.count" resname="list.count">
+				<source>%d files</source>
+				<target>%d Dateien</target>
+			</trans-unit>
+
+			<trans-unit id="filter.heading" resname="filter.heading">
+				<source>Filter</source>
+				<target>Filter</target>
+			</trans-unit>
+			<trans-unit id="filter.status" resname="filter.status">
+				<source>AI involvement</source>
+				<target>KI-Anteil</target>
+			</trans-unit>
+			<trans-unit id="filter.storage" resname="filter.storage">
+				<source>Storage</source>
+				<target>Speicher</target>
+			</trans-unit>
+			<trans-unit id="filter.createdAfter" resname="filter.createdAfter">
+				<source>Created from</source>
+				<target>Erzeugt ab</target>
+			</trans-unit>
+			<trans-unit id="filter.createdBefore" resname="filter.createdBefore">
+				<source>Created until</source>
+				<target>Erzeugt bis</target>
+			</trans-unit>
+			<trans-unit id="filter.apply" resname="filter.apply">
+				<source>Apply</source>
+				<target>Anwenden</target>
+			</trans-unit>
+			<trans-unit id="filter.reset" resname="filter.reset">
+				<source>Reset</source>
+				<target>Zurücksetzen</target>
+			</trans-unit>
+
+			<trans-unit id="bulk.heading" resname="bulk.heading">
+				<source>Set status for the selected files</source>
+				<target>Status für die ausgewählten Dateien setzen</target>
+			</trans-unit>
+			<trans-unit id="bulk.apply" resname="bulk.apply">
+				<source>Apply to selection</source>
+				<target>Auf Auswahl anwenden</target>
+			</trans-unit>
+			<trans-unit id="bulk.selectAll" resname="bulk.selectAll">
+				<source>Select all</source>
+				<target>Alle auswählen</target>
+			</trans-unit>
+			<trans-unit id="bulk.done" resname="bulk.done">
+				<source>%d files updated. Every change was recorded.</source>
+				<target>%d Dateien aktualisiert. Jede Änderung wurde protokolliert.</target>
+			</trans-unit>
+			<trans-unit id="bulk.nothing" resname="bulk.nothing">
+				<source>Nothing selected, or no status chosen.</source>
+				<target>Nichts ausgewählt oder kein Status gewählt.</target>
+			</trans-unit>
+
+			<trans-unit id="status.heading" resname="status.heading">
+				<source>System status</source>
+				<target>Systemstatus</target>
+			</trans-unit>
+			<trans-unit id="status.icons" resname="status.icons">
+				<source>Official EU icons</source>
+				<target>Offizielle EU-Symbole</target>
+			</trans-unit>
+			<trans-unit id="status.icons.detail" resname="status.icons.detail">
+				<source>Missing, so labels are rendered as text. Add the files under Resources/Public/Icons/Eu/.</source>
+				<target>Fehlen, deshalb wird als Text gekennzeichnet. Dateien unter Resources/Public/Icons/Eu/ ablegen.</target>
+			</trans-unit>
+			<trans-unit id="status.c2patool" resname="status.c2patool">
+				<source>c2patool</source>
+				<target>c2patool</target>
+			</trans-unit>
+			<trans-unit id="status.c2patool.detail" resname="status.c2patool.detail">
+				<source>Not available, so Content Credentials are not evaluated. Detection falls back to XMP and EXIF.</source>
+				<target>Nicht verfügbar, deshalb werden Content Credentials nicht ausgewertet. Die Erkennung stützt sich auf XMP und EXIF.</target>
+			</trans-unit>
+			<trans-unit id="status.metadata" resname="status.metadata">
+				<source>Metadata in processed images</source>
+				<target>Metadaten in verarbeiteten Bildern</target>
+			</trans-unit>
+			<trans-unit id="status.metadata.detail" resname="status.metadata.detail">
+				<source>TYPO3 strips profiles when scaling and the restore is switched off, so XMP does not survive scaling.</source>
+				<target>TYPO3 entfernt beim Skalieren die Profile und das Zurückschreiben ist abgeschaltet — XMP überlebt die Skalierung damit nicht.</target>
+			</trans-unit>
+			<trans-unit id="status.exif" resname="status.exif">
+				<source>PHP extension exif</source>
+				<target>PHP-Erweiterung exif</target>
+			</trans-unit>
+			<trans-unit id="status.exif.detail" resname="status.exif.detail">
+				<source>Not installed, so the EXIF signature stage is skipped.</source>
+				<target>Nicht installiert, deshalb entfällt die EXIF-Signaturstufe.</target>
+			</trans-unit>
+			<trans-unit id="status.ok" resname="status.ok">
+				<source>OK</source>
+				<target>In Ordnung</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

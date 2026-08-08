@@ -65,11 +65,20 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   ohne Namen hebt die Pflicht nicht auf. Ausgabe über `nt:textNotice` als Satz
   statt als Symbol.
 
+- **Backend-Modul „KI-Transparenz"**: Übersicht je Speicher (geprüft, offen,
+  gebrochene Signaturen), filterbare Arbeitsliste mit Direktsprung in die
+  Metadatenbearbeitung, Massenbearbeitung mit einem Protokolleintrag je Datei,
+  Systemstatus und der Hinweis, dass das Modul keine Rechtsberatung ersetzt.
+- **SystemStatusCheck**: meldet fehlende EU-Symbole, fehlendes `c2patool`,
+  eine Bildverarbeitung, die Metadaten zerstört, und eine fehlende
+  PHP-Erweiterung `exif` — alles Fälle, in denen die Extension bewusst leise
+  degradiert und der Betreiber es trotzdem wissen sollte.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
   Repository und müssen manuell ergänzt werden.
-- Backend-Modul und CLI-Befehle sind noch nicht enthalten.
+- CLI-Befehle sind noch nicht enthalten.
 - Der Metadaten-Erhalt deckt nur JPEG ab; PNG und WebP verlieren ihr
   XMP-Paket bei der Verarbeitung.
 - Content Credentials überleben die Bildverarbeitung grundsätzlich nicht.
