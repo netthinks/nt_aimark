@@ -80,6 +80,16 @@ Sind `nt_ai` oder `nt_lingua` installiert, übernimmt `nt_aimark` die Provenienz
 
 ---
 
+## Dokumentation
+
+| | |
+|---|---|
+| Vollständige Doku (MkDocs, zweisprachig) | [`docs/`](docs/) — `mkdocs serve` |
+| TYPO3-Dokumentation | [`Documentation/`](Documentation/) |
+
+Beide Fassungen werden parallel gepflegt: `Documentation/` folgt der
+TYPO3-Konvention, `docs/` baut die Website unter docs.netthinks.com.
+
 ## Mitwirken
 
 Fehlerberichte und Feature-Wünsche gern als [Issue](https://github.com/netthinks/nt_aimark/issues). Pull Requests bitte gegen `develop`, mit grüner CI (PHPStan Level 8, PHP-CS-Fixer, Unit- und Acceptance-Tests).

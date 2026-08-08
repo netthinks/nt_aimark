@@ -2,6 +2,7 @@
 /vendor/
 /composer.lock
 /node_modules/
+/site/
 /.php-cs-fixer.cache
 /.phpunit.result.cache
 /var/

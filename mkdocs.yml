@@ -1,0 +1,102 @@
+site_name: nt-aimark
+site_description: AI transparency for TYPO3 — record, label and document AI-generated content under Art. 50 of the EU AI Act
+site_url: https://docs.netthinks.com/nt-aimark/
+docs_dir: docs
+site_dir: site
+copyright: Copyright &copy; 2026 NET.THINKS
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Editorial Guide: user-guide.md
+  - Rules: rules.md
+  - Metadata: metadata.md
+  - Integration: integration.md
+  - Developer Guide: developer.md
+  - Changelog: changelog.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ['.']
+  - tables
+  - attr_list
+  - md_in_html
+  - def_list
+  - toc:
+      permalink: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+  - glightbox
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          name: English
+          build: true
+          default: true
+        - locale: de
+          name: Deutsch
+          build: true
+          nav_translations:
+            Home: Startseite
+            Installation: Installation
+            Configuration: Konfiguration
+            Editorial Guide: Redaktionsleitfaden
+            Rules: Regelwerk
+            Metadata: Metadaten
+            Integration: Integration
+            Developer Guide: Entwicklerhandbuch
+            Changelog: Changelog

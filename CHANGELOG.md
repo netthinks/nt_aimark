@@ -95,6 +95,10 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   geschrieben hat; ein gemeldeter **Alt-Text ändert den Status des Bildes
   nicht**, weil er nichts darüber aussagt, wie das Bild entstanden ist.
 
+- **Dokumentation**: `Documentation/` nach TYPO3-Konvention und parallel dazu
+  eine zweisprachige MkDocs-Site unter `docs/` (Material-Theme, i18n), nach
+  demselben Muster wie nt_ai und nt_lingua.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
