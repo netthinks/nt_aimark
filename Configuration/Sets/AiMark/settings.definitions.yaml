@@ -1,0 +1,35 @@
+settings:
+  ntAimark.labelUnknownOrigin:
+    label: 'Assets mit unbekannter Herkunft kennzeichnen'
+    description: >-
+      Standardmäßig aus. „Herkunft unbekannt" ist eine andere Aussage als
+      „KI war beteiligt" — ein Label würde die zweite behaupten.
+    type: bool
+    default: false
+
+  ntAimark.showDetails:
+    label: 'Aufklappbare Detailebene anzeigen'
+    description: >-
+      Blendet unter dem Symbol eine Schaltfläche ein, die Angaben zum
+      eingesetzten System und zum Erzeugungsdatum aufklappt.
+    type: bool
+    default: true
+
+  ntAimark.badgePosition:
+    label: 'Position des Symbols im Bild'
+    type: string
+    enum:
+      top-left: 'Oben links'
+      top-right: 'Oben rechts'
+      bottom-left: 'Unten links'
+      bottom-right: 'Unten rechts'
+    default: 'bottom-right'
+
+  ntAimark.badgeSize:
+    label: 'Größe des Symbols'
+    type: string
+    enum:
+      small: 'Klein'
+      medium: 'Mittel'
+      large: 'Groß'
+    default: 'medium'

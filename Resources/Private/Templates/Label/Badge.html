@@ -1,0 +1,40 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<f:spaceless>
+    <span class="nt-aimark__badge nt-aimark__badge--{position} nt-aimark__badge--{size} nt-aimark__badge--{variant}"
+          data-ai-variant="{variant}">
+        <f:if condition="{icon}">
+            <f:then>
+                <span class="nt-aimark__badge-icon" role="img" aria-label="{f:translate(key: ariaLabelKey)}">{icon -> f:format.raw()}</span>
+            </f:then>
+            <f:else>
+                <span class="nt-aimark__badge-fallback"><f:translate key="{fallbackTextKey}" /></span>
+            </f:else>
+        </f:if>
+        <f:if condition="{labelText}">
+            <span class="nt-aimark__badge-text">{labelText}</span>
+        </f:if>
+    </span>
+
+    <f:if condition="{showDetails}">
+        <button type="button"
+                class="nt-aimark__toggle"
+                aria-expanded="false"
+                aria-controls="{detailId}"><f:translate key="LLL:EXT:nt_aimark/Resources/Private/Language/locallang.xlf:detail.toggle" /></button>
+        <div id="{detailId}" class="nt-aimark__detail" hidden="hidden">
+            <dl class="nt-aimark__detail-list">
+                <f:for each="{detailRows}" as="row">
+                    <dt><f:translate key="{row.labelKey}" /></dt>
+                    <dd>
+                        <f:if condition="{row.type} == 'date'">
+                            <f:then><f:format.date format="d.m.Y">@{row.value}</f:format.date></f:then>
+                            <f:else>{row.value}</f:else>
+                        </f:if>
+                    </dd>
+                </f:for>
+            </dl>
+        </div>
+    </f:if>
+</f:spaceless>
+
+</html>

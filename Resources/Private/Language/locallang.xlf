@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="messages" date="2026-08-08T12:00:00Z" product-name="nt_aimark">
+		<header/>
+		<body>
+			<trans-unit id="badge.aria.basic" resname="badge.aria.basic">
+				<source>Image created with the involvement of artificial intelligence</source>
+			</trans-unit>
+			<trans-unit id="badge.aria.generated" resname="badge.aria.generated">
+				<source>Image generated with artificial intelligence</source>
+			</trans-unit>
+			<trans-unit id="badge.aria.modified" resname="badge.aria.modified">
+				<source>Image modified with artificial intelligence</source>
+			</trans-unit>
+
+			<trans-unit id="badge.text.basic" resname="badge.text.basic">
+				<source>AI</source>
+			</trans-unit>
+			<trans-unit id="badge.text.generated" resname="badge.text.generated">
+				<source>AI generated</source>
+			</trans-unit>
+			<trans-unit id="badge.text.modified" resname="badge.text.modified">
+				<source>AI modified</source>
+			</trans-unit>
+
+			<trans-unit id="detail.toggle" resname="detail.toggle">
+				<source>Details on AI use</source>
+			</trans-unit>
+			<trans-unit id="detail.system" resname="detail.system">
+				<source>Created with</source>
+			</trans-unit>
+			<trans-unit id="detail.createdAt" resname="detail.createdAt">
+				<source>Created on</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

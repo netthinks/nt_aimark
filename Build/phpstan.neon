@@ -1,3 +1,7 @@
+includes:
+    # Teaches PHPStan how PHPUnit assertions narrow types.
+    - ../.Build/vendor/phpstan/phpstan-phpunit/extension.neon
+
 parameters:
     level: 8
     paths:

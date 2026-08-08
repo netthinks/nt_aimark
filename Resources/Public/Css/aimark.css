@@ -1,0 +1,148 @@
+/*
+ * AI disclosure label.
+ *
+ * Two constraints drive this file:
+ * - The badge must never move the image (no layout shift), hence absolute
+ *   positioning inside a figure that establishes the containing block.
+ * - Contrast must hold over any image, hence the opaque plate behind the icon
+ *   rather than relying on the picture underneath.
+ */
+
+.nt-aimark {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin: 0;
+}
+
+.nt-aimark img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.nt-aimark__badge {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.3em 0.5em;
+  border-radius: 0.25em;
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.nt-aimark__badge--top-left {
+  top: 0.5rem;
+  left: 0.5rem;
+}
+
+.nt-aimark__badge--top-right {
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.nt-aimark__badge--bottom-left {
+  bottom: 0.5rem;
+  left: 0.5rem;
+}
+
+.nt-aimark__badge--bottom-right {
+  bottom: 0.5rem;
+  right: 0.5rem;
+}
+
+.nt-aimark__badge--small {
+  font-size: 0.75rem;
+}
+
+.nt-aimark__badge--large {
+  font-size: 0.9375rem;
+}
+
+.nt-aimark__badge-icon {
+  display: inline-flex;
+}
+
+.nt-aimark__icon {
+  display: block;
+  width: auto;
+  height: 1.5em;
+  /* The EU icons ship as single-colour artwork; this keeps them on the plate colour. */
+  fill: currentColor;
+}
+
+.nt-aimark__badge--small .nt-aimark__icon {
+  height: 1.25em;
+}
+
+.nt-aimark__badge--large .nt-aimark__icon {
+  height: 1.75em;
+}
+
+/* Shown when the official icon files have not been downloaded. */
+.nt-aimark__badge-fallback,
+.nt-aimark__badge-text {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nt-aimark__toggle {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 0.25em;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.nt-aimark__toggle:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+.nt-aimark__detail {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+}
+
+.nt-aimark__detail[hidden] {
+  display: none;
+}
+
+.nt-aimark__detail-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.75rem;
+  margin: 0;
+}
+
+.nt-aimark__detail-list dt {
+  font-weight: 600;
+}
+
+.nt-aimark__detail-list dd {
+  margin: 0;
+}
+
+@media (prefers-contrast: more) {
+  .nt-aimark__badge {
+    border-width: 2px;
+    border-color: #000000;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nt-aimark__detail {
+    transition: opacity 120ms ease-in-out;
+  }
+}
