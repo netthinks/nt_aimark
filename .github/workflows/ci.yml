@@ -31,11 +31,8 @@ jobs:
       matrix:
         php: ['8.2', '8.3', '8.4']
         typo3: ['^13.4', '^14.0']
-        exclude:
-          # TYPO3 v14 setzt eine hoehere PHP-Mindestversion voraus – vor dem
-          # ersten Release gegen die tatsaechliche Anforderung verifizieren.
-          - php: '8.2'
-            typo3: '^14.0'
+        # Keine Ausnahme: typo3/cms-core v14.3.5 verlangt php ^8.2, genau wie
+        # v13.4. Die Matrix laeuft damit vollstaendig.
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2

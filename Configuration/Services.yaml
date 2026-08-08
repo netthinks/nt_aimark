@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  NetThinks\NtAimark\:
+    resource: '../Classes/*'
+    exclude:
+      - '../Classes/Domain/Model/*'
+      - '../Classes/Domain/Enum/*'
+      - '../Classes/Domain/AiActCutoff.php'
+      - '../Classes/Event/*'
+      - '../Classes/Exception/*'

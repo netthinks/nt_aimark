@@ -59,6 +59,8 @@
         }
     },
     "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin",
         "sort-packages": true,
         "allow-plugins": {
             "typo3/class-alias-loader": true,
