@@ -93,8 +93,9 @@ final readonly class ProvenanceExtractorService
             return false;
         }
 
-        $metaData->add($changes)->save();
-
+        // Logged first: the generic listener compares against the trail, so
+        // recording here keeps it from logging the same change again as a
+        // plain manual update.
         $this->auditService->logChanges(
             'sys_file_metadata',
             (int) ($before['uid'] ?? 0),
@@ -103,6 +104,8 @@ final readonly class ProvenanceExtractorService
             $before,
             $changes,
         );
+
+        $metaData->add($changes)->save();
 
         return true;
     }

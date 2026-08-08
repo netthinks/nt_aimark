@@ -103,6 +103,28 @@ ist interne Nachweisführung und erscheint **nicht** im Frontend.
 
 ---
 
+## Was protokolliert wird
+
+Jede Änderung an den Transparenzfeldern landet in `tx_ntaimark_audit`, mit
+altem Wert, neuem Wert, Zeitpunkt, Benutzername und Quelle:
+
+| Quelle | Wann |
+|---|---|
+| `manual` | Bearbeitung im Formular, Massenbearbeitung im Backend-Modul |
+| `auto_detect` | Automatische Erkennung beim Upload oder Ersetzen |
+| `cli` | `aimark:verify` |
+
+Erfasst werden zwei Wege: ein PSR-14-Listener für Schreibvorgänge über die
+FAL-API (etwa wenn eine andere Extension Metadaten setzt) und ein
+DataHandler-Hook für die Bearbeitung im Formular. Beide sind nötig — TYPO3 v14
+liefert für Datensatzänderungen im DataHandler kein PSR-14-Event, und das
+FAL-Event feuert bei einer Formularbearbeitung nicht.
+
+Der vorherige Wert stammt aus dem Protokoll selbst. Das hat einen praktischen
+Nebeneffekt: Ein Vorgang, den die Extension bereits mit Kontext erfasst hat
+(etwa `bulk_review`), erscheint dem allgemeinen Weg als unverändert und wird
+kein zweites Mal — und nicht mit weniger Aussage — geschrieben.
+
 ## Testabdeckung
 
 Die Reihenfolge ist durch eine ausgeschriebene Matrix über alle Kombinationen

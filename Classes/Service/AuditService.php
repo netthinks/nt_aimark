@@ -101,6 +101,47 @@ final readonly class AuditService
         }
     }
 
+    /**
+     * The last value this trail recorded for each of the given fields.
+     *
+     * The audit table doubles as the change detector: a write this extension
+     * logged explicitly is already in here, so comparing against it keeps the
+     * generic listener from logging the same change a second time.
+     *
+     * @param list<string> $fields
+     *
+     * @return array<string, string>
+     */
+    public function lastKnownValues(string $tableName, int $recordUid, array $fields): array
+    {
+        if ($fields === [] || $recordUid <= 0) {
+            return [];
+        }
+
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
+
+        $rows = $queryBuilder
+            ->select('field_name', 'new_value')
+            ->from(self::TABLE)
+            ->where(
+                $queryBuilder->expr()->eq('table_name', $queryBuilder->createNamedParameter($tableName)),
+                $queryBuilder->expr()->eq('record_uid', $queryBuilder->createNamedParameter($recordUid, Connection::PARAM_INT)),
+                $queryBuilder->expr()->in('field_name', $queryBuilder->createNamedParameter($fields, Connection::PARAM_STR_ARRAY)),
+            )
+            // Ascending, so the last row per field wins when collected below.
+            ->orderBy('uid', 'ASC')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $values = [];
+
+        foreach ($rows as $row) {
+            $values[(string) $row['field_name']] = (string) $row['new_value'];
+        }
+
+        return $values;
+    }
+
     private function cap(string|int|null $value): string
     {
         return mb_strcut((string) $value, 0, self::VALUE_LIMIT);

@@ -137,12 +137,10 @@ final readonly class TransparencyModuleController
                 continue;
             }
 
-            $file->getMetaData()->add([
-                'tx_ntaimark_status' => $status->value,
-                'tx_ntaimark_reviewer' => $userId,
-                'tx_ntaimark_reviewed_at' => time(),
-            ])->save();
-
+            // Logged before the write, deliberately: the generic listener
+            // compares against the trail, so an entry that is already there
+            // keeps it from recording the same change a second time with less
+            // context ("update" instead of "bulk_review").
             $this->auditService->log(
                 'sys_file_metadata',
                 $uid,
@@ -152,6 +150,12 @@ final readonly class TransparencyModuleController
                 $previous,
                 $status->value,
             );
+
+            $file->getMetaData()->add([
+                'tx_ntaimark_status' => $status->value,
+                'tx_ntaimark_reviewer' => $userId,
+                'tx_ntaimark_reviewed_at' => time(),
+            ])->save();
 
             $changed++;
         }

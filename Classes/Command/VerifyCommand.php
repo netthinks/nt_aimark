@@ -88,8 +88,8 @@ final class VerifyCommand extends Command
                 continue;
             }
 
-            $file->getMetaData()->add(['tx_ntaimark_c2pa_state' => $current->value])->save();
-
+            // Logged before the write for the same reason as elsewhere: the
+            // trail is what stops the generic listener from logging twice.
             $this->auditService->log(
                 'sys_file_metadata',
                 (int) $row['uid'],
@@ -99,6 +99,8 @@ final class VerifyCommand extends Command
                 $previous->value,
                 $current->value,
             );
+
+            $file->getMetaData()->add(['tx_ntaimark_c2pa_state' => $current->value])->save();
         }
 
         if ($changes !== []) {

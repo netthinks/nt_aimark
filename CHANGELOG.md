@@ -80,6 +80,13 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   Datensatz aber nie an. `aimark:verify` prüft Signaturen erneut, weil eine
   beim Upload gültige Signatur später brechen kann.
 
+- **Durchgängige Protokollierung**: Jede Änderung an den Transparenzfeldern
+  landet im Protokoll — die redaktionelle Bearbeitung im Formular ebenso wie
+  Schreibvorgänge anderer Extensions über die FAL-API, die Massenbearbeitung
+  im Backend-Modul, die automatische Erkennung und die CLI-Befehle. Der
+  vorherige Wert stammt aus dem Protokoll selbst; ein bereits erfasster
+  Vorgang wird dadurch kein zweites Mal geschrieben.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im

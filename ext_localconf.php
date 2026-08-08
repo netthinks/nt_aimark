@@ -13,6 +13,12 @@ defined('TYPO3') or die();
         'groups' => ['pages'],
     ];
 
+    // Records transparency changes made in the backend form. TYPO3 v14
+    // dispatches no PSR-14 event for record updates, and the FAL event only
+    // covers writes through the file API — a form save would leave no trace.
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['nt_aimark']
+        = \NetThinks\NtAimark\DataHandling\MetaDataChangeHook::class;
+
     // Labels audio and video without any template change. Images are not
     // claimed here — see the class comment for why.
     \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(

@@ -34,6 +34,11 @@ services:
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['ntaimark']
 
+  # DataHandler instantiates hooks through makeInstance, which only reaches
+  # services that are public.
+  NetThinks\NtAimark\DataHandling\MetaDataChangeHook:
+    public: true
+
   # CLI commands.
   NetThinks\NtAimark\Command\ScanCommand:
     tags:
