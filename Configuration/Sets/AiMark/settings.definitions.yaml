@@ -7,6 +7,15 @@ settings:
     type: bool
     default: false
 
+  ntAimark.useFileRenderer:
+    label: 'Audio und Video automatisch kennzeichnen'
+    description: >-
+      Kennzeichnet Audio- und Videoausgaben ohne Template-Anpassung.
+      Ausschalten, wenn die Kennzeichnung bereits über die ViewHelper im
+      eigenen Template gesetzt wird — sonst erscheint sie doppelt.
+    type: bool
+    default: true
+
   ntAimark.showDetails:
     label: 'Aufklappbare Detailebene anzeigen'
     description: >-

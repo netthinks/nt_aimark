@@ -33,6 +33,9 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
 - **Kontrastlogik**: Der Bildbereich hinter dem Symbol wird gemessen; die
   deckende Plakette entfällt nur, wenn die gewählte Symbolfarbe dort an jedem
   Messpunkt 4,5:1 erreicht. Jeder Fehlerpfad führt zurück zur Plakette.
+- **FileRenderer für Audio und Video**: kennzeichnet ohne Template-Anpassung,
+  indem er die Ausgabe des Core-Renderers umschließt. Per Site-Einstellung
+  `ntAimark.useFileRenderer` abschaltbar. Bilder deckt er bewusst nicht ab.
 - **Barrierefreiheits-Gate** in der CI: Playwright mit axe-core gegen WCAG
   2.1 AA, dazu Prüfungen auf Tastaturbedienbarkeit, eindeutige
   `aria-controls`-Ziele und ausbleibenden Layout-Shift.

@@ -12,4 +12,12 @@ defined('TYPO3') or die();
         'backend' => \TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend::class,
         'groups' => ['pages'],
     ];
+
+    // Labels audio and video without any template change. Images are not
+    // claimed here — see the class comment for why.
+    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Resource\Rendering\RendererRegistry::class,
+    )->registerRendererClass(
+        \NetThinks\NtAimark\Resource\Rendering\MarkedMediaRenderer::class,
+    );
 })();

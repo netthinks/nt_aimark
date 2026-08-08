@@ -9,6 +9,7 @@ setzbar — im Backend unter *Websites → Einrichtung → Einstellungen* oder i
 | Schlüssel | Typ | Standard | Bedeutung |
 |---|---|---|---|
 | `ntAimark.labelUnknownOrigin` | bool | `false` | Ob Dateien mit unbekannter Herkunft gekennzeichnet werden |
+| `ntAimark.useFileRenderer` | bool | `true` | Audio und Video ohne Template-Anpassung kennzeichnen |
 | `ntAimark.showDetails` | bool | `true` | Aufklappbare Detailebene unter dem Symbol |
 | `ntAimark.badgePosition` | string | `bottom-right` | `top-left`, `top-right`, `bottom-left`, `bottom-right` |
 | `ntAimark.badgeSize` | string | `medium` | `small`, `medium`, `large` |
@@ -25,10 +26,24 @@ Beispiel `settings.yaml`:
 ```yaml
 ntAimark:
   labelUnknownOrigin: false
+  useFileRenderer: true
   showDetails: true
   badgePosition: bottom-right
   badgeSize: medium
 ```
+
+### `useFileRenderer`
+
+Kennzeichnet Audio- und Videoausgaben automatisch, ohne dass Templates
+angepasst werden müssen. Ausschalten, wenn die Kennzeichnung dort bereits
+über die ViewHelper gesetzt wird — sonst erscheint sie doppelt.
+
+**Bilder deckt der FileRenderer bewusst nicht ab.** TYPO3 liefert für Bilder
+keinen FileRenderer; `f:media` fällt auf eine eigene, private Ausgabe
+zurück. Ein Bild-Renderer müsste diese Ausgabe nachbauen — samt
+Crop-Varianten, Fokusbereich, `loading`, `decoding`, Alternativtext — und
+diese Kopie über jedes Core-Release hinweg nachziehen. Für Bilder sind
+deshalb die ViewHelper der vorgesehene Weg.
 
 ## ViewHelper-Argumente
 
