@@ -167,6 +167,57 @@ final readonly class TransparencyRepository
     }
 
     /**
+     * File uids the scan should look at.
+     *
+     * Without $includeSuggestions only records nobody has looked at are
+     * returned. Records a human has confirmed are never in this list — the
+     * scan may not overrule a person, whatever flags it is given.
+     *
+     * @return list<int>
+     */
+    public function findFileUidsForScan(int $storage = 0, bool $includeSuggestions = false): array
+    {
+        $statuses = $includeSuggestions
+            ? [AiStatus::Unreviewed->value, AiStatus::Suggested->value]
+            : [AiStatus::Unreviewed->value];
+
+        $queryBuilder = $this->buildAssetQuery($statuses, $storage, 0, 0);
+
+        return array_values(array_map(
+            intval(...),
+            $queryBuilder->select('m.file')->executeQuery()->fetchFirstColumn(),
+        ));
+    }
+
+    /**
+     * Assets carrying a C2PA state, for revalidation.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function findWithC2paState(): array
+    {
+        $queryBuilder = $this->queryBuilder();
+
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $queryBuilder
+            ->select('m.uid', 'm.file', 'm.tx_ntaimark_c2pa_state', 'f.name', 'f.identifier')
+            ->from(self::METADATA_TABLE, 'm')
+            ->join('m', 'sys_file', 'f', $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('m.file')))
+            ->where(
+                $queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
+                $queryBuilder->expr()->neq(
+                    'm.tx_ntaimark_c2pa_state',
+                    $queryBuilder->createNamedParameter(C2paState::None->value, Connection::PARAM_INT),
+                ),
+            )
+            ->orderBy('f.name')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        return $rows;
+    }
+
+    /**
      * @param list<int> $statuses
      */
     private function buildAssetQuery(array $statuses, int $storage, int $createdAfter, int $createdBefore): QueryBuilder

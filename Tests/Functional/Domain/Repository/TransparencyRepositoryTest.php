@@ -1,0 +1,165 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NetThinks\NtAimark\Tests\Functional\Domain\Repository;
+
+use NetThinks\NtAimark\Domain\Enum\AiStatus;
+use NetThinks\NtAimark\Domain\Enum\C2paState;
+use NetThinks\NtAimark\Domain\Repository\TransparencyRepository;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+
+final class TransparencyRepositoryTest extends FunctionalTestCase
+{
+    protected array $testExtensionsToLoad = ['netthinks/nt-aimark'];
+
+    private TransparencyRepository $subject;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->subject = $this->get(TransparencyRepository::class);
+        $this->givenFiles();
+    }
+
+    /**
+     * One file per AI status, plus one with a broken signature.
+     */
+    private function givenFiles(): void
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $storage = $connectionPool->getConnectionForTable('sys_file_storage');
+        $storage->insert('sys_file_storage', ['uid' => 1, 'name' => 'Test storage', 'pid' => 0]);
+
+        $files = $connectionPool->getConnectionForTable('sys_file');
+        $metadata = $connectionPool->getConnectionForTable('sys_file_metadata');
+
+        $fixtures = [
+            [1, AiStatus::Unreviewed, C2paState::None],
+            [2, AiStatus::Suggested, C2paState::None],
+            [3, AiStatus::NoAi, C2paState::None],
+            [4, AiStatus::Generated, C2paState::Valid],
+            [5, AiStatus::Modified, C2paState::Broken],
+            [6, AiStatus::UnknownOrigin, C2paState::None],
+        ];
+
+        foreach ($fixtures as [$uid, $status, $c2pa]) {
+            $files->insert('sys_file', [
+                'uid' => $uid,
+                'pid' => 0,
+                'storage' => 1,
+                'identifier' => '/file-' . $uid . '.jpg',
+                'name' => 'file-' . $uid . '.jpg',
+                'mime_type' => 'image/jpeg',
+                'missing' => 0,
+            ]);
+            $metadata->insert('sys_file_metadata', [
+                'pid' => 0,
+                'file' => $uid,
+                'tx_ntaimark_status' => $status->value,
+                'tx_ntaimark_c2pa_state' => $c2pa->value,
+            ]);
+        }
+
+        // A file that is gone must not be counted or offered for review.
+        $files->insert('sys_file', [
+            'uid' => 99,
+            'pid' => 0,
+            'storage' => 1,
+            'identifier' => '/gone.jpg',
+            'name' => 'gone.jpg',
+            'mime_type' => 'image/jpeg',
+            'missing' => 1,
+        ]);
+        $metadata->insert('sys_file_metadata', [
+            'pid' => 0,
+            'file' => 99,
+            'tx_ntaimark_status' => AiStatus::Unreviewed->value,
+        ]);
+    }
+
+    #[Test]
+    public function theSummaryCountsReviewedOpenAndBrokenPerStorage(): void
+    {
+        $summaries = $this->subject->storageSummaries();
+
+        self::assertCount(1, $summaries);
+        $summary = $summaries[0];
+
+        // Six present files; the missing one is not counted.
+        self::assertSame(6, $summary->total);
+        self::assertSame(1, $summary->unreviewed);
+        self::assertSame(1, $summary->suggested);
+        self::assertSame(2, $summary->getOpen());
+        self::assertSame(4, $summary->getReviewed());
+        self::assertSame(1, $summary->brokenC2pa);
+    }
+
+    /**
+     * The guarantee behind the scan: a record a human has settled is never
+     * offered up again, whatever flags the command is given.
+     */
+    #[Test]
+    public function theScanOnlyOffersRecordsNobodyHasSettled(): void
+    {
+        $withoutForce = $this->subject->findFileUidsForScan();
+        $withForce = $this->subject->findFileUidsForScan(includeSuggestions: true);
+
+        self::assertSame([1], $withoutForce);
+
+        sort($withForce);
+        self::assertSame([1, 2], $withForce);
+
+        // The confirmed ones — no AI, generated, modified, unknown origin.
+        foreach ([3, 4, 5, 6] as $settled) {
+            self::assertNotContains($settled, $withForce, sprintf('File %d was settled and must not be rescanned.', $settled));
+        }
+    }
+
+    #[Test]
+    public function aMissingFileIsNeverOfferedForScanning(): void
+    {
+        self::assertNotContains(99, $this->subject->findFileUidsForScan(includeSuggestions: true));
+    }
+
+    #[Test]
+    public function onlyFilesCarryingASignatureAreOfferedForVerification(): void
+    {
+        $rows = $this->subject->findWithC2paState();
+
+        $fileUids = array_map(static fn(array $row): int => (int) $row['file'], $rows);
+        sort($fileUids);
+
+        self::assertSame([4, 5], $fileUids);
+    }
+
+    #[Test]
+    public function theWorkListCanBeFilteredByStatus(): void
+    {
+        $rows = $this->subject->findAssets([AiStatus::Generated->value]);
+
+        self::assertCount(1, $rows);
+        self::assertSame('file-4.jpg', $rows[0]['name']);
+    }
+
+    #[Test]
+    public function anUnknownStatusInTheFilterIsIgnoredRatherThanQueried(): void
+    {
+        // 99 is not a status; the filter must fall back to "every status"
+        // instead of returning nothing or reaching the database with it.
+        self::assertSame(6, $this->subject->countAssets([99]));
+    }
+
+    #[Test]
+    public function theCountMatchesTheFilteredList(): void
+    {
+        $statuses = [AiStatus::Unreviewed->value, AiStatus::Suggested->value];
+
+        self::assertSame(2, $this->subject->countAssets($statuses));
+        self::assertCount(2, $this->subject->findAssets($statuses));
+    }
+}

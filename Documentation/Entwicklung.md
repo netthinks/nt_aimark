@@ -83,6 +83,19 @@ ddev exec bash -c "cd packages/nt-aimark && composer ci:tests:unit"
   (als `int`, nicht als Enum-Case), `site` und `language`. Funktionale Tests
   müssen einen entsprechenden Request bauen.
 
+## CLI
+
+```bash
+vendor/bin/typo3 aimark:scan --dry-run --limit=50
+vendor/bin/typo3 aimark:scan --storage=1 --force
+vendor/bin/typo3 aimark:report --limit=25 --email=redaktion@example.com
+vendor/bin/typo3 aimark:verify --dry-run
+```
+
+Alle drei sind über den Scheduler planbar. `--force` beim Scan frischt
+bestehende Vorschläge auf und rührt bestätigte Datensätze nicht an — die
+Erkennung darf einen Menschen nicht überstimmen, unabhängig von den Optionen.
+
 ## Release
 
 Vor dem Tag:

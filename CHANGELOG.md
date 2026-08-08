@@ -74,11 +74,17 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   PHP-Erweiterung `exif` — alles Fälle, in denen die Extension bewusst leise
   degradiert und der Betreiber es trotzdem wissen sollte.
 
+- **CLI-Befehle** `aimark:scan`, `aimark:report` und `aimark:verify`, alle mit
+  `--dry-run` und über den Scheduler planbar. `aimark:scan --force` frischt
+  bestehende Vorschläge auf, rührt einen von einem Menschen bestätigten
+  Datensatz aber nie an. `aimark:verify` prüft Signaturen erneut, weil eine
+  beim Upload gültige Signatur später brechen kann.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
   Repository und müssen manuell ergänzt werden.
-- CLI-Befehle sind noch nicht enthalten.
+
 - Der Metadaten-Erhalt deckt nur JPEG ab; PNG und WebP verlieren ihr
   XMP-Paket bei der Verarbeitung.
 - Content Credentials überleben die Bildverarbeitung grundsätzlich nicht.

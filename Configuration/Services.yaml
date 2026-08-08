@@ -33,3 +33,25 @@ services:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['ntaimark']
+
+  # CLI commands.
+  NetThinks\NtAimark\Command\ScanCommand:
+    tags:
+      - name: 'console.command'
+        command: 'aimark:scan'
+        description: 'Examines stored files for AI provenance data and records what it finds as a suggestion.'
+        schedulable: true
+
+  NetThinks\NtAimark\Command\ReportCommand:
+    tags:
+      - name: 'console.command'
+        command: 'aimark:report'
+        description: 'Reports files whose AI involvement has not been decided yet.'
+        schedulable: true
+
+  NetThinks\NtAimark\Command\VerifyCommand:
+    tags:
+      - name: 'console.command'
+        command: 'aimark:verify'
+        description: 'Re-validates the C2PA signatures of files that carry one.'
+        schedulable: true
