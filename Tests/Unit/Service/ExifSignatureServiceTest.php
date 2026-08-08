@@ -28,6 +28,15 @@ final class ExifSignatureServiceTest extends UnitTestCase
 
     protected function tearDown(): void
     {
+        // Guard, not decoration: when setUp skips before assigning the
+        // directory, an unguarded glob('' . '*') lists the *working directory*
+        // and the unlink below deletes files from the repository.
+        if ($this->directory === '' || !is_dir($this->directory)) {
+            parent::tearDown();
+
+            return;
+        }
+
         foreach (glob($this->directory . '*') ?: [] as $file) {
             unlink($file);
         }

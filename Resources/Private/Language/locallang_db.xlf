@@ -185,6 +185,34 @@
 			<trans-unit id="textStatus.AiGenerated" resname="textStatus.AiGenerated">
 				<source>AI generated</source>
 			</trans-unit>
+
+			<trans-unit id="palette.text" resname="palette.text">
+				<source>AI transparency of this text</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_text_status" resname="text.tx_ntaimark_text_status">
+				<source>AI involvement in the text</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_text_status.description" resname="text.tx_ntaimark_text_status.description">
+				<source>To what extent was AI involved in writing this text?</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_public_interest" resname="text.tx_ntaimark_public_interest">
+				<source>Matter of public interest</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_public_interest.description" resname="text.tx_ntaimark_public_interest.description">
+				<source>The disclosure obligation for texts only covers matters of public interest, not every text.</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_editorial_control" resname="text.tx_ntaimark_editorial_control">
+				<source>Reviewed by a human</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_editorial_control.description" resname="text.tx_ntaimark_editorial_control.description">
+				<source>Editorial review lifts the obligation — but only together with the person answering for it.</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_responsible" resname="text.tx_ntaimark_responsible">
+				<source>Responsible person</source>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_responsible.description" resname="text.tx_ntaimark_responsible.description">
+				<source>Without a name the review documents nothing, and the text is disclosed anyway.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -32,6 +32,16 @@
 			<trans-unit id="detail.createdAt" resname="detail.createdAt">
 				<source>Created on</source>
 			</trans-unit>
+
+			<trans-unit id="text.notice.heading" resname="text.notice.heading">
+				<source>Note on AI use</source>
+			</trans-unit>
+			<trans-unit id="text.notice.generated" resname="text.notice.generated">
+				<source>This text was generated with artificial intelligence.</source>
+			</trans-unit>
+			<trans-unit id="text.notice.draftRevised" resname="text.notice.draftRevised">
+				<source>This text was drafted with artificial intelligence and revised editorially.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

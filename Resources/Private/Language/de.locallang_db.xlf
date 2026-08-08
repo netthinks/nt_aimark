@@ -243,6 +243,43 @@
 				<source>AI generated</source>
 				<target>KI-generiert</target>
 			</trans-unit>
+
+			<trans-unit id="palette.text" resname="palette.text">
+				<source>AI transparency of this text</source>
+				<target>KI-Transparenz dieses Textes</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_text_status" resname="text.tx_ntaimark_text_status">
+				<source>AI involvement in the text</source>
+				<target>KI-Anteil am Text</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_text_status.description" resname="text.tx_ntaimark_text_status.description">
+				<source>To what extent was AI involved in writing this text?</source>
+				<target>In welchem Umfang war KI an diesem Text beteiligt?</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_public_interest" resname="text.tx_ntaimark_public_interest">
+				<source>Matter of public interest</source>
+				<target>Angelegenheit von öffentlichem Interesse</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_public_interest.description" resname="text.tx_ntaimark_public_interest.description">
+				<source>The disclosure obligation for texts only covers matters of public interest, not every text.</source>
+				<target>Die Kennzeichnungspflicht für Texte greift nur bei Angelegenheiten von öffentlichem Interesse, nicht bei jedem Text.</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_editorial_control" resname="text.tx_ntaimark_editorial_control">
+				<source>Reviewed by a human</source>
+				<target>Redaktionell geprüft</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_editorial_control.description" resname="text.tx_ntaimark_editorial_control.description">
+				<source>Editorial review lifts the obligation — but only together with the person answering for it.</source>
+				<target>Die redaktionelle Prüfung hebt die Pflicht auf — aber nur zusammen mit der Person, die dafür einsteht.</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_responsible" resname="text.tx_ntaimark_responsible">
+				<source>Responsible person</source>
+				<target>Verantwortliche Person</target>
+			</trans-unit>
+			<trans-unit id="text.tx_ntaimark_responsible.description" resname="text.tx_ntaimark_responsible.description">
+				<source>Without a name the review documents nothing, and the text is disclosed anyway.</source>
+				<target>Ohne Namen dokumentiert die Prüfung nichts — der Text wird dann trotzdem gekennzeichnet.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

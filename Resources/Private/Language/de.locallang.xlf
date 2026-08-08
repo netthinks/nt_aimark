@@ -41,6 +41,19 @@
 				<source>Created on</source>
 				<target>Erzeugt am</target>
 			</trans-unit>
+
+			<trans-unit id="text.notice.heading" resname="text.notice.heading">
+				<source>Note on AI use</source>
+				<target>Hinweis zur KI-Nutzung</target>
+			</trans-unit>
+			<trans-unit id="text.notice.generated" resname="text.notice.generated">
+				<source>This text was generated with artificial intelligence.</source>
+				<target>Dieser Text wurde mit künstlicher Intelligenz erzeugt.</target>
+			</trans-unit>
+			<trans-unit id="text.notice.draftRevised" resname="text.notice.draftRevised">
+				<source>This text was drafted with artificial intelligence and revised editorially.</source>
+				<target>Dieser Text wurde mit künstlicher Intelligenz entworfen und redaktionell überarbeitet.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

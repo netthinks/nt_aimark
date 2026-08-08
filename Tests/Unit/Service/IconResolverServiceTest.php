@@ -25,6 +25,15 @@ final class IconResolverServiceTest extends UnitTestCase
 
     protected function tearDown(): void
     {
+        // Guard, not decoration: when setUp skips before assigning the
+        // directory, an unguarded glob('' . '*') lists the *working directory*
+        // and the unlink below deletes files from the repository.
+        if ($this->iconDirectory === '' || !is_dir($this->iconDirectory)) {
+            parent::tearDown();
+
+            return;
+        }
+
         foreach (glob($this->iconDirectory . '*') ?: [] as $file) {
             unlink($file);
         }

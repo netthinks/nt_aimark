@@ -58,6 +58,25 @@ Position, Größe und Detailebene lassen sich pro Aufruf übersteuern:
 | `nt:aiFigure` | Umschließt Bildmarkup mit `<figure>` und Kennzeichnung |
 | `nt:aiLabel` | Rendert nur die Kennzeichnung |
 | `nt:hasLabel` | Liefert `true`/`false` für eigene Fallunterscheidungen |
+| `nt:textNotice` | Kennzeichnungshinweis für einen Textdatensatz |
+
+### Texte kennzeichnen
+
+```html
+<nt:textNotice record="{data}" table="tt_content" />
+```
+
+Die Felder liegen von Haus aus auf `pages` und `tt_content`. Weitere Tabellen
+lassen sich in den Extension-Einstellungen unter *Texte* nachrüsten,
+kommagetrennt:
+
+```
+tx_news_domain_model_news, tx_blog_domain_model_post
+```
+
+Nach einer Änderung das Datenbankschema aktualisieren
+(`vendor/bin/typo3 extension:setup`). Nur plausible Tabellennamen werden
+übernommen; alles andere wird verworfen, statt in DDL oder TCA zu landen.
 
 ## Markup überschreiben
 

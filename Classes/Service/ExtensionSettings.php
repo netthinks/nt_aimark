@@ -31,6 +31,14 @@ final readonly class ExtensionSettings
     }
 
     /**
+     * Comma-separated list of further tables that carry the text fields.
+     */
+    public function additionalTextTables(): string
+    {
+        return $this->get('additionalTextTables', '');
+    }
+
+    /**
      * Whether the XMP packet is written back into processed images.
      */
     public function preserveMetadata(): bool

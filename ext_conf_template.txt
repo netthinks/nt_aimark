@@ -9,3 +9,6 @@ additionalExifSignatures =
 
 # cat=detection; type=boolean; label=XMP in verarbeiteten Bildern wiederherstellen: TYPO3 entfernt beim Skalieren standardmäßig alle Profile, samt XMP. Diese Option schreibt das Paket in die abgeleitete JPEG-Datei zurück. C2PA-Signaturen werden bewusst NICHT übernommen — sie sind nach dem Skalieren gebrochen.
 preserveMetadata = 1
+
+# cat=texts; type=string; label=Zusätzliche Tabellen für Textkennzeichnung: Kommagetrennt, z. B. "tx_news_domain_model_news". pages und tt_content sind immer dabei. Nach einer Änderung Datenbankschema aktualisieren.
+additionalTextTables =

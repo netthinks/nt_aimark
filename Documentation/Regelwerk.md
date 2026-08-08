@@ -58,6 +58,51 @@ Nur, was ein Besucher sehen soll: eingesetztes System mit Anbieter und das
 Erzeugungsdatum. **Prompt und interne Notiz erreichen das Markup nie**; ein
 Test sichert das ab.
 
+---
+
+# Regelwerk für Texte
+
+Die Pflicht für Texte ist anders geschnitten als die für Medien: Sie greift
+nur bei **Angelegenheiten von öffentlichem Interesse** und entfällt, wenn ein
+Mensch den Text geprüft hat **und** jemand dafür benannt ist.
+
+| # | Bedingung | Ergebnis | Begründungscode |
+|---|---|---|---|
+| 1 | KI-Anteil = Kein KI-Einsatz | kein Hinweis | `no_ai` |
+| 2 | Keine Angelegenheit von öffentlichem Interesse | kein Hinweis | `not_public_interest` |
+| 3 | Redaktionell geprüft **und** Person benannt | kein Hinweis | `editorial_control` |
+| 4 | Redaktionell geprüft, aber niemand benannt | **Hinweis** | `editorial_control_incomplete` |
+| 5 | Sonst | Hinweis | `rule_default` |
+
+## Warum Regel 4 so ausfällt
+
+Die Ausnahme lebt davon, dass jemand für die Prüfung einsteht. Ein Häkchen
+ohne Namen dokumentiert nichts. Der Text wird deshalb weiter gekennzeichnet,
+und der Fall ist als unvollständige Ausnahme erkennbar, damit die Lücke
+geschlossen werden kann statt unbemerkt zu bleiben. Das TCA verlangt den Namen
+folgerichtig, sobald das Häkchen gesetzt ist.
+
+## Warum es für Texte keine Stichtagsregel gibt
+
+Bei Medien entscheidet der Zeitpunkt der Erzeugung. Bei Texten zählt
+**zusätzlich** der Zeitpunkt der Veröffentlichung — und ein Text, der auf einer
+Website steht, wird laufend veröffentlicht. Daraus eine automatische Ausnahme
+zu bauen wäre eine rechtliche Auslegung, und die trifft die Extension nicht.
+Redaktionen haben die Felder, um ihre eigene Entscheidung festzuhalten.
+
+## Was im Frontend erscheint
+
+Ein Satz, kein Symbol: Bei einem Text ist eine Formulierung das, was die
+Kennzeichnung beim Erstkontakt verständlich macht. Die verantwortliche Person
+ist interne Nachweisführung und erscheint **nicht** im Frontend.
+
+```html
+{namespace nt=NetThinks\NtAimark\ViewHelpers}
+<nt:textNotice record="{data}" table="tt_content" />
+```
+
+---
+
 ## Testabdeckung
 
 Die Reihenfolge ist durch eine ausgeschriebene Matrix über alle Kombinationen
@@ -65,3 +110,7 @@ aus KI-Anteil × Kennzeichnungsmodus × Stichtag abgedeckt
 (`Tests/Unit/Service/DisclosureRuleServiceTest.php`). Die Erwartungen sind
 notiert, nicht berechnet — eine geänderte Regelreihenfolge fällt damit als
 fehlschlagende Zeile auf, statt stillschweigend mitzuwandern.
+
+Für Texte gilt dasselbe in `TextDisclosureRuleServiceTest.php`. Ein Test prüft
+dort zusätzlich, dass wirklich jede Kombination der drei gespeicherten Felder
+in der Matrix vorkommt — eine Zeilenzahl allein sagt darüber nichts aus.

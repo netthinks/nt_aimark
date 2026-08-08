@@ -170,3 +170,27 @@
     transition: opacity 120ms ease-in-out;
   }
 }
+
+/*
+ * Text disclosure. Running text rather than an icon: for a text, a sentence is
+ * what makes the disclosure understandable at first contact.
+ */
+.nt-aimark-notice {
+  margin: 1rem 0;
+  padding: 0.65rem 0.85rem;
+  border-left: 4px solid currentColor;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 0.875rem;
+}
+
+.nt-aimark-notice__text {
+  margin: 0;
+}
+
+@media (prefers-contrast: more) {
+  .nt-aimark-notice {
+    border-left-width: 6px;
+    background: transparent;
+    outline: 1px solid currentColor;
+  }
+}

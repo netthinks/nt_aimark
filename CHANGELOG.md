@@ -58,6 +58,13 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   würde die abgeleitete Datei als manipuliert ausweisen. Messergebnis siehe
   `Documentation/Metadata.md`.
 
+- **Textkennzeichnung**: Felder auf `pages` und `tt_content`, weitere Tabellen
+  über die Extension-Einstellungen nachrüstbar. Eigenes Regelwerk — die Pflicht
+  greift nur bei Angelegenheiten von öffentlichem Interesse und entfällt bei
+  redaktioneller Prüfung **mit** benannter verantwortlicher Person. Ein Häkchen
+  ohne Namen hebt die Pflicht nicht auf. Ausgabe über `nt:textNotice` als Satz
+  statt als Symbol.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
