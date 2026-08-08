@@ -51,12 +51,21 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
 - **Extension-Einstellungen** für Pfad und Zeitlimit von `c2patool` sowie für
   zusätzliche EXIF-Signaturen.
 
+- **Metadaten-Erhalt**: Das XMP-Paket wird nach der Bildverarbeitung in die
+  abgeleitete JPEG-Datei zurückgeschrieben, ohne die Strip-Konfiguration von
+  TYPO3 anzutasten. C2PA-Signaturen werden ausdrücklich **nicht** übertragen
+  — sie sind nach dem Skalieren gebrochen, und eine mitkopierte Signatur
+  würde die abgeleitete Datei als manipuliert ausweisen. Messergebnis siehe
+  `Documentation/Metadata.md`.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
   Repository und müssen manuell ergänzt werden.
-- Metadaten-Erhalt über die Bildverarbeitung, Backend-Modul und CLI-Befehle
-  sind noch nicht enthalten.
+- Backend-Modul und CLI-Befehle sind noch nicht enthalten.
+- Der Metadaten-Erhalt deckt nur JPEG ab; PNG und WebP verlieren ihr
+  XMP-Paket bei der Verarbeitung.
+- Content Credentials überleben die Bildverarbeitung grundsätzlich nicht.
 - Ohne `c2patool` entfällt die C2PA-Stufe der Erkennung; XMP und EXIF greifen
   weiterhin.
 - TYPO3 14.3 verwarnt `ext_emconf.php`. Die Datei bleibt bestehen, solange

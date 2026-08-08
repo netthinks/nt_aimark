@@ -31,6 +31,14 @@ final readonly class ExtensionSettings
     }
 
     /**
+     * Whether the XMP packet is written back into processed images.
+     */
+    public function preserveMetadata(): bool
+    {
+        return (bool) (int) $this->get('preserveMetadata', '1');
+    }
+
+    /**
      * @return array<string, string> Needle => vendor
      */
     public function additionalExifSignatures(): array

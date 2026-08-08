@@ -6,3 +6,6 @@ c2patoolTimeout = 15
 
 # cat=detection; type=string; label=Zusätzliche EXIF-Signaturen: Kommagetrennt als Suchbegriff=Anbieter, z. B. "mein-tool=Meine GmbH". Ergänzt die mitgelieferte Liste.
 additionalExifSignatures =
+
+# cat=detection; type=boolean; label=XMP in verarbeiteten Bildern wiederherstellen: TYPO3 entfernt beim Skalieren standardmäßig alle Profile, samt XMP. Diese Option schreibt das Paket in die abgeleitete JPEG-Datei zurück. C2PA-Signaturen werden bewusst NICHT übernommen — sie sind nach dem Skalieren gebrochen.
+preserveMetadata = 1

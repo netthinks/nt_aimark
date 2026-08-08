@@ -18,6 +18,7 @@ Verordnung (EU) 2024/1689.
 | [Konfiguration](Konfiguration.md) | Einstellungen des Site Sets, Templates überschreiben |
 | [Redaktionsleitfaden](Redaktionsleitfaden.md) | Wie Redakteure den Reiter „KI-Transparenz" ausfüllen |
 | [Regelwerk](Regelwerk.md) | Wann die Extension kennzeichnet und warum |
+| [Metadaten](Metadata.md) | Messergebnis: was die Bildverarbeitung überlebt |
 | [Entwicklung](Entwicklung.md) | Tests, Codequalität, Release |
 | [Konzept](Konzept.md) | Fach- und Geschäftskonzept |
 
