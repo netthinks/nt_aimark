@@ -65,7 +65,7 @@ final class AiDeclarationTest extends UnitTestCase
         self::assertSame(AiStatus::Unreviewed, $declaration->status);
         self::assertSame(DisclosureMode::Automatic, $declaration->disclosure);
         self::assertNull($declaration->exemptReason);
-        self::assertSame(IconVariant::None, $declaration->icon);
+        self::assertNull($declaration->icon);
         self::assertSame(C2paState::None, $declaration->c2paState);
     }
 
@@ -83,7 +83,7 @@ final class AiDeclarationTest extends UnitTestCase
         self::assertSame(AiStatus::Unreviewed, $declaration->status);
         self::assertSame(DisclosureMode::Automatic, $declaration->disclosure);
         self::assertNull($declaration->exemptReason);
-        self::assertSame(IconVariant::None, $declaration->icon);
+        self::assertNull($declaration->icon);
         self::assertSame(C2paState::None, $declaration->c2paState);
     }
 
@@ -111,11 +111,26 @@ final class AiDeclarationTest extends UnitTestCase
     }
 
     #[Test]
-    public function effectiveIconDerivesFromStatusWhenNoneWasChosen(): void
+    public function effectiveIconDerivesFromStatusWhenNothingWasChosen(): void
     {
         $declaration = AiDeclaration::fromRecord(['tx_ntaimark_status' => AiStatus::Modified->value]);
 
         self::assertSame(IconVariant::Modified, $declaration->effectiveIcon());
+    }
+
+    /**
+     * "No icon" is an editorial decision (e.g. a text-only label) and must not
+     * be overruled by the status default.
+     */
+    #[Test]
+    public function effectiveIconKeepsAnExplicitlyChosenNone(): void
+    {
+        $declaration = AiDeclaration::fromRecord([
+            'tx_ntaimark_status' => AiStatus::Generated->value,
+            'tx_ntaimark_icon' => IconVariant::None->value,
+        ]);
+
+        self::assertSame(IconVariant::None, $declaration->effectiveIcon());
     }
 
     #[Test]

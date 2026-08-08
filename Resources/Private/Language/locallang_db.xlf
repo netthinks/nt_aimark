@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="messages" date="2026-08-08T12:00:00Z" product-name="nt_aimark">
+		<header/>
+		<body>
+			<trans-unit id="tab.aimark" resname="tab.aimark">
+				<source>AI transparency</source>
+			</trans-unit>
+
+			<trans-unit id="palette.declaration" resname="palette.declaration">
+				<source>Declaration</source>
+			</trans-unit>
+			<trans-unit id="palette.label" resname="palette.label">
+				<source>Labelling</source>
+			</trans-unit>
+			<trans-unit id="palette.system" resname="palette.system">
+				<source>AI system used</source>
+			</trans-unit>
+			<trans-unit id="palette.review" resname="palette.review">
+				<source>Review</source>
+			</trans-unit>
+			<trans-unit id="palette.provenance" resname="palette.provenance">
+				<source>Detected provenance data</source>
+			</trans-unit>
+
+			<trans-unit id="sys_file_metadata.tx_ntaimark_status" resname="sys_file_metadata.tx_ntaimark_status">
+				<source>AI involvement</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_status.description" resname="sys_file_metadata.tx_ntaimark_status.description">
+				<source>To what extent was AI involved in creating this file? Only a confirmed status is used for labelling in the frontend.</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_disclosure" resname="sys_file_metadata.tx_ntaimark_disclosure">
+				<source>Labelling</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_disclosure.description" resname="sys_file_metadata.tx_ntaimark_disclosure.description">
+				<source>Leave on "automatic" unless you want to override the decision for this file.</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_exempt_reason" resname="sys_file_metadata.tx_ntaimark_exempt_reason">
+				<source>Reason for not labelling</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_exempt_reason.description" resname="sys_file_metadata.tx_ntaimark_exempt_reason.description">
+				<source>Documents why this file is not labelled. Recorded in the audit trail.</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_icon" resname="sys_file_metadata.tx_ntaimark_icon">
+				<source>Icon</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_icon.description" resname="sys_file_metadata.tx_ntaimark_icon.description">
+				<source>Which of the official EU icons to show. "Automatic" derives it from the AI involvement.</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_label_text" resname="sys_file_metadata.tx_ntaimark_label_text">
+				<source>Label text</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_label_text.description" resname="sys_file_metadata.tx_ntaimark_label_text.description">
+				<source>Optional wording shown next to the icon, e.g. "Voices generated with AI". Leave empty for the default text.</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_system" resname="sys_file_metadata.tx_ntaimark_system">
+				<source>AI system</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_vendor" resname="sys_file_metadata.tx_ntaimark_vendor">
+				<source>Vendor</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_prompt" resname="sys_file_metadata.tx_ntaimark_prompt">
+				<source>Prompt</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_prompt.description" resname="sys_file_metadata.tx_ntaimark_prompt.description">
+				<source>Internal documentation only. Never shown in the frontend.</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_created_at" resname="sys_file_metadata.tx_ntaimark_created_at">
+				<source>Created on</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_created_at.description" resname="sys_file_metadata.tx_ntaimark_created_at.description">
+				<source>When the content was created — not when it was uploaded or published. Content created before 2 August 2026 does not have to be labelled retroactively.</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_reviewer" resname="sys_file_metadata.tx_ntaimark_reviewer">
+				<source>Reviewed by</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_reviewed_at" resname="sys_file_metadata.tx_ntaimark_reviewed_at">
+				<source>Reviewed on</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_c2pa_state" resname="sys_file_metadata.tx_ntaimark_c2pa_state">
+				<source>Content Credentials (C2PA)</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_c2pa_manifest" resname="sys_file_metadata.tx_ntaimark_c2pa_manifest">
+				<source>C2PA manifest</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_source_type" resname="sys_file_metadata.tx_ntaimark_source_type">
+				<source>IPTC DigitalSourceType</source>
+			</trans-unit>
+			<trans-unit id="sys_file_metadata.tx_ntaimark_notes" resname="sys_file_metadata.tx_ntaimark_notes">
+				<source>Internal note</source>
+			</trans-unit>
+
+			<trans-unit id="status.Unreviewed" resname="status.Unreviewed">
+				<source>Not reviewed</source>
+			</trans-unit>
+			<trans-unit id="status.NoAi" resname="status.NoAi">
+				<source>No AI involved</source>
+			</trans-unit>
+			<trans-unit id="status.Generated" resname="status.Generated">
+				<source>AI generated</source>
+			</trans-unit>
+			<trans-unit id="status.Modified" resname="status.Modified">
+				<source>AI modified</source>
+			</trans-unit>
+			<trans-unit id="status.UnknownOrigin" resname="status.UnknownOrigin">
+				<source>Origin unknown</source>
+			</trans-unit>
+			<trans-unit id="status.Suggested" resname="status.Suggested">
+				<source>Suggestion — not confirmed</source>
+			</trans-unit>
+
+			<trans-unit id="disclosure.Automatic" resname="disclosure.Automatic">
+				<source>Automatic (follow the rule set)</source>
+			</trans-unit>
+			<trans-unit id="disclosure.Forced" resname="disclosure.Forced">
+				<source>Always label</source>
+			</trans-unit>
+			<trans-unit id="disclosure.Exempt" resname="disclosure.Exempt">
+				<source>Do not label</source>
+			</trans-unit>
+
+			<trans-unit id="icon.automatic" resname="icon.automatic">
+				<source>Automatic (from AI involvement)</source>
+			</trans-unit>
+			<trans-unit id="icon.Basic" resname="icon.Basic">
+				<source>AI</source>
+			</trans-unit>
+			<trans-unit id="icon.Generated" resname="icon.Generated">
+				<source>AI GENERATED</source>
+			</trans-unit>
+			<trans-unit id="icon.Modified" resname="icon.Modified">
+				<source>AI MODIFIED</source>
+			</trans-unit>
+			<trans-unit id="icon.None" resname="icon.None">
+				<source>No icon (text label only)</source>
+			</trans-unit>
+
+			<trans-unit id="exemptReason.none" resname="exemptReason.none">
+				<source>— please choose —</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.PreCutoff" resname="exemptReason.PreCutoff">
+				<source>Created before 2 August 2026</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.NotRealistic" resname="exemptReason.NotRealistic">
+				<source>Obviously unrealistic or cartoon-like</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.Artistic" resname="exemptReason.Artistic">
+				<source>Artistic work</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.Satire" resname="exemptReason.Satire">
+				<source>Satire</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.Fiction" resname="exemptReason.Fiction">
+				<source>Fictional work</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.Internal" resname="exemptReason.Internal">
+				<source>Internal content only</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.MinorAssist" resname="exemptReason.MinorAssist">
+				<source>Assistive editing without substantial change</source>
+			</trans-unit>
+			<trans-unit id="exemptReason.Other" resname="exemptReason.Other">
+				<source>Other (see internal note)</source>
+			</trans-unit>
+
+			<trans-unit id="c2paState.None" resname="c2paState.None">
+				<source>None present</source>
+			</trans-unit>
+			<trans-unit id="c2paState.Valid" resname="c2paState.Valid">
+				<source>Valid</source>
+			</trans-unit>
+			<trans-unit id="c2paState.Broken" resname="c2paState.Broken">
+				<source>Invalid or broken</source>
+			</trans-unit>
+			<trans-unit id="c2paState.NotVerifiable" resname="c2paState.NotVerifiable">
+				<source>Could not be verified</source>
+			</trans-unit>
+
+			<trans-unit id="textStatus.NoAi" resname="textStatus.NoAi">
+				<source>No AI involved</source>
+			</trans-unit>
+			<trans-unit id="textStatus.AiDraftRevised" resname="textStatus.AiDraftRevised">
+				<source>AI draft, revised by a human</source>
+			</trans-unit>
+			<trans-unit id="textStatus.AiGenerated" resname="textStatus.AiGenerated">
+				<source>AI generated</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

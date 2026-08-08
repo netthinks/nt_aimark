@@ -27,7 +27,8 @@ final readonly class AiDeclaration
         public AiStatus $status = AiStatus::Unreviewed,
         public DisclosureMode $disclosure = DisclosureMode::Automatic,
         public ?ExemptReason $exemptReason = null,
-        public IconVariant $icon = IconVariant::None,
+        /** null means "derive from status"; IconVariant::None means "deliberately no icon". */
+        public ?IconVariant $icon = null,
         public string $labelText = '',
         public string $system = '',
         public string $vendor = '',
@@ -54,7 +55,7 @@ final readonly class AiDeclaration
             status: AiStatus::tryFrom((int) $get('status')) ?? AiStatus::Unreviewed,
             disclosure: DisclosureMode::tryFrom((int) $get('disclosure')) ?? DisclosureMode::Automatic,
             exemptReason: ExemptReason::tryFromDatabase((string) $get('exempt_reason')),
-            icon: IconVariant::tryFrom((string) $get('icon')) ?? IconVariant::None,
+            icon: IconVariant::tryFrom((string) $get('icon')),
             labelText: (string) $get('label_text'),
             system: (string) $get('system'),
             vendor: (string) $get('vendor'),
@@ -80,12 +81,13 @@ final readonly class AiDeclaration
     /**
      * The icon to use when a label is rendered: the explicit editorial choice
      * if there is one, otherwise the one matching the status.
+     *
+     * An editor who deliberately selects "no icon" gets IconVariant::None back,
+     * not the status default — that choice has to survive.
      */
     public function effectiveIcon(): IconVariant
     {
-        return $this->icon === IconVariant::None
-            ? IconVariant::defaultForStatus($this->status)
-            : $this->icon;
+        return $this->icon ?? IconVariant::defaultForStatus($this->status);
     }
 
     /**

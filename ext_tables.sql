@@ -43,6 +43,9 @@ CREATE TABLE tt_content (
 # the record has to stay readable as evidence.
 #
 CREATE TABLE tx_ntaimark_audit (
+	# Declared explicitly: the table has no TCA, so the schema migrator does
+	# not add the default fields for it.
+	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT 0 NOT NULL,
 	tstamp int(11) unsigned DEFAULT 0 NOT NULL,
 	table_name varchar(64) DEFAULT '' NOT NULL,
@@ -56,6 +59,7 @@ CREATE TABLE tx_ntaimark_audit (
 	new_value text,
 	source varchar(32) DEFAULT '' NOT NULL,
 
+	PRIMARY KEY (uid),
 	KEY record (table_name, record_uid),
 	KEY tstamp (tstamp)
 );
