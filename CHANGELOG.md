@@ -87,6 +87,14 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   vorherige Wert stammt aus dem Protokoll selbst; ein bereits erfasster
   Vorgang wird dadurch kein zweites Mal geschrieben.
 
+- **Event-Schnittstelle** `AiContentGeneratedEvent` (`@api`): Wer KI-Inhalte
+  erzeugt, meldet sie und die Kennzeichnung entsteht ohne redaktionellen
+  Zusatzaufwand. Keine harte Abhängigkeit in eine der beiden Richtungen.
+  Gemeldete Medien werden zum **Vorschlag**, nicht zur Feststellung; gemeldete
+  Texte als Tatsache erfasst, weil die meldende Extension sie selbst
+  geschrieben hat; ein gemeldeter **Alt-Text ändert den Status des Bildes
+  nicht**, weil er nichts darüber aussagt, wie das Bild entstanden ist.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im

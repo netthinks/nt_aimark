@@ -19,6 +19,7 @@ Verordnung (EU) 2024/1689.
 | [Redaktionsleitfaden](Redaktionsleitfaden.md) | Wie Redakteure den Reiter „KI-Transparenz" ausfüllen |
 | [Regelwerk](Regelwerk.md) | Wann die Extension kennzeichnet und warum |
 | [Metadaten](Metadata.md) | Messergebnis: was die Bildverarbeitung überlebt |
+| [Integration](Integration.md) | Event-Schnittstelle für nt_ai, nt_lingua und eigenen Code |
 | [Entwicklung](Entwicklung.md) | Tests, Codequalität, Release |
 | [Konzept](Konzept.md) | Fach- und Geschäftskonzept |
 
