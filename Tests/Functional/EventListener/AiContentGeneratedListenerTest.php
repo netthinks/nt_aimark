@@ -36,7 +36,32 @@ final class AiContentGeneratedListenerTest extends FunctionalTestCase
 
     private function givenRecords(): void
     {
-        $this->connection('sys_file_storage')->insert('sys_file_storage', ['uid' => 1, 'pid' => 0, 'name' => 'Test']);
+        // A storage record needs a driver and its configuration. TYPO3 v14
+        // tolerates a thinner record here, v13.4 does not and FAL then refuses
+        // to hand out the file at all — so the thin version silently tested
+        // nothing on v13.4.
+        $this->connection('sys_file_storage')->insert('sys_file_storage', [
+            'uid' => 1,
+            'pid' => 0,
+            'name' => 'Test',
+            'driver' => 'Local',
+            'configuration' => '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3FlexForms>
+    <data>
+        <sheet index="sDEF">
+            <language index="lDEF">
+                <field index="basePath"><value index="vDEF">fileadmin/</value></field>
+                <field index="pathType"><value index="vDEF">relative</value></field>
+            </language>
+        </sheet>
+    </data>
+</T3FlexForms>',
+            'is_default' => 1,
+            'is_browsable' => 1,
+            'is_public' => 1,
+            'is_writable' => 1,
+            'is_online' => 1,
+        ]);
 
         // An untouched file, and one a person has already settled.
         foreach ([[1, AiStatus::Unreviewed], [2, AiStatus::NoAi]] as [$uid, $status]) {

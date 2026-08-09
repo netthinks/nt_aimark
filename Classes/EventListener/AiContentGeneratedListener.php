@@ -197,7 +197,17 @@ final readonly class AiContentGeneratedListener
                 : $event->recordUid;
 
             return $fileUid > 0 ? $this->resourceFactory->getFileObject($fileUid) : null;
-        } catch (\Throwable) {
+        } catch (\Throwable $exception) {
+            // Returning null is right — a report about a file that cannot be
+            // resolved must not break the reporting extension. Staying silent
+            // about it is not: the report is then lost without a trace, and
+            // an unresolvable file is a broken storage, not a normal case.
+            $this->logger->warning('Reported AI content refers to a file that cannot be resolved.', [
+                'table' => $event->tableName,
+                'record' => $event->recordUid,
+                'exception' => $exception,
+            ]);
+
             return null;
         }
     }
