@@ -153,6 +153,7 @@
 
         <div class="card-body border-bottom">
             <form method="get">
+                <input type="hidden" name="token" value="{moduleToken}">
                 <f:render section="Filter" arguments="{_all}" />
             </form>
         </div>

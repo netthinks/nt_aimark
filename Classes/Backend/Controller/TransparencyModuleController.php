@@ -71,6 +71,7 @@ final readonly class TransparencyModuleController
         $summaries = $this->repository->storageSummaries();
         $totals = $this->totals($summaries);
         $pages = (int) ceil($total / self::PAGE_SIZE);
+        $resetUri = (string) $this->uriBuilder->buildUriFromRoute('content_ntaimark_transparency');
 
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->assignMultiple([
@@ -87,7 +88,12 @@ final readonly class TransparencyModuleController
                 'storage' => $filter['storage'],
             ],
             'storageItems' => $this->storageItems($summaries, $filter['storage']),
-            'resetUri' => (string) $this->uriBuilder->buildUriFromRoute('content_ntaimark_transparency'),
+            'resetUri' => $resetUri,
+            // Ein GET-Formular ersetzt beim Absenden die gesamte Query der
+            // Zieladresse — das Token der Modul-Route ginge damit verloren,
+            // und die Antwort wäre die komplette Backend-Oberfläche im
+            // Modul-Frame statt des Moduls. Es muss deshalb als Feld mit.
+            'moduleToken' => $this->tokenFrom($resetUri),
             'assets' => $this->decorate($rows),
             // Fluid resolves {item.labelKey} via getLabelKey(); enum methods
             // are not reachable that way, so plain arrays go to the template.
@@ -268,6 +274,17 @@ final readonly class TransparencyModuleController
         }
 
         return $segments;
+    }
+
+    /**
+     * The route token out of a generated module URI.
+     */
+    private function tokenFrom(string $uri): string
+    {
+        $query = (string) parse_url($uri, PHP_URL_QUERY);
+        parse_str($query, $parameters);
+
+        return is_string($parameters['token'] ?? null) ? $parameters['token'] : '';
     }
 
     /**
