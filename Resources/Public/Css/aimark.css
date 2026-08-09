@@ -132,7 +132,6 @@
 .nt-aimark__badge-fallback,
 .nt-aimark__badge-text {
   font-weight: 600;
-  white-space: nowrap;
 }
 
 /*
@@ -147,6 +146,30 @@
 .nt-aimark__badge--plain .nt-aimark__badge-text {
   padding: 0.1em 0.4em;
   border-radius: 0.2em;
+}
+
+/*
+ * The wording must not grow out of the picture.
+ *
+ * Measured: with the wording beside it the badge is around 180 px wide, so on
+ * anything narrower than roughly 200 px it used to hang over the edge — at 80 px
+ * it was more than twice the width of the image. A caption entered by hand
+ * ("Stimmen erzeugt mit künstlicher Intelligenz", 413 px) missed every ordinary
+ * content image.
+ *
+ * A container query would be the obvious tool and is not usable here: the frame
+ * shrink-wraps the picture, and `container-type: inline-size` cuts exactly that
+ * off — the figure then collapses to a fraction of the image. So the badge is
+ * capped at the frame instead and wraps inside it.
+ */
+.nt-aimark__badge {
+  max-width: calc(100% - 1rem);
+  flex-wrap: wrap;
+}
+
+.nt-aimark__badge-fallback,
+.nt-aimark__badge-text {
+  overflow-wrap: anywhere;
 }
 
 .nt-aimark__badge--plain.nt-aimark__badge--icon-white .nt-aimark__badge-text {

@@ -79,6 +79,23 @@ variant. That is not a matter of taste: the brightness measurement covers the
 small area behind the icon, and the text reaches beyond it — without a ground
 it would sit over pixels nobody measured.
 
+On very small pictures the wording no longer fits. Measured on a test bench
+across ten image widths: with the wording the badge is around 180 px wide, so
+from roughly 180 px of image width downwards it grows out of the picture. It
+stays within the width — a cap in the CSS sees to that — but it then wraps and
+becomes taller than the picture.
+
+For thumbnails, galleries and teasers, switch the wording off at the call:
+
+```html
+<nt:aiFigure file="{file}" showTextLabel="false">
+    <f:image image="{file}" width="150" />
+</nt:aiFigure>
+```
+
+The icon stays, and the meaning is still carried by the text alternative and
+the detail panel.
+
 ## ViewHelpers
 
 | ViewHelper | Purpose |

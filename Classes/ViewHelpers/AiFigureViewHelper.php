@@ -39,6 +39,7 @@ final class AiFigureViewHelper extends AbstractLabelViewHelper
         $this->registerArgument('position', 'string', 'Badge position within the image', false, 'bottom-right');
         $this->registerArgument('size', 'string', 'Badge size', false, 'medium');
         $this->registerArgument('showDetails', 'bool', 'Render the expandable detail panel', false, true);
+        $this->registerArgument('showTextLabel', 'bool', 'Wording beside the icon. Null follows the site setting; false is the one to use for thumbnails, where it no longer fits.', false, null);
         $this->registerArgument('class', 'string', 'Additional CSS classes for the figure', false, '');
     }
 
@@ -63,7 +64,7 @@ final class AiFigureViewHelper extends AbstractLabelViewHelper
             (bool) $this->arguments['showDetails'],
             $file instanceof FileInterface ? $file : null,
             $content,
-            $this->settings()->showTextLabel,
+            $this->arguments['showTextLabel'] ?? $this->settings()->showTextLabel,
         );
 
         if ($badge === '') {

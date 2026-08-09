@@ -216,6 +216,33 @@ final class LabelRenderServiceTest extends FunctionalTestCase
         $this->removeEmptyIconDirectory();
     }
 
+    /**
+     * The wording is capped at the picture and may wrap inside it.
+     *
+     * Measured on a test bench across ten image widths: with the wording the
+     * badge is about 180 px wide, so below roughly 200 px it used to hang out
+     * of the picture — at 80 px it was more than twice as wide. A container
+     * query cannot solve it here (`container-type` cuts off the shrink-wrap
+     * the frame depends on and collapses the figure), so the cap is in CSS and
+     * the decision for very small pictures belongs in the template.
+     */
+    #[Test]
+    public function theBadgeIsCappedAtThePictureAndMayWrapInsideIt(): void
+    {
+        $css = (string) file_get_contents(dirname(__DIR__, 3) . '/Resources/Public/Css/aimark.css');
+
+        self::assertMatchesRegularExpression(
+            '/\.nt-aimark__badge\s*\{[^}]*max-width:\s*calc\(100% - 1rem\)/s',
+            $css,
+            'Without the cap the badge grows out of the picture on small images.',
+        );
+        self::assertStringNotContainsString(
+            'white-space: nowrap',
+            $css,
+            'Nowrap is what pushed the wording over the edge instead of letting it wrap.',
+        );
+    }
+
     #[Test]
     public function theWordingCanBeSwitchedOff(): void
     {

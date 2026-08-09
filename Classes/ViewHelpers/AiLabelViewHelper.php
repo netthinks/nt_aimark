@@ -35,6 +35,7 @@ final class AiLabelViewHelper extends AbstractLabelViewHelper
         $this->registerArgument('position', 'string', 'Badge position within the image', false, 'bottom-right');
         $this->registerArgument('size', 'string', 'Badge size', false, 'medium');
         $this->registerArgument('showDetails', 'bool', 'Render the expandable detail panel', false, true);
+        $this->registerArgument('showTextLabel', 'bool', 'Wording beside the icon. Null follows the site setting; false is the one to use for thumbnails, where it no longer fits.', false, null);
     }
 
     public function render(): string
@@ -56,6 +57,7 @@ final class AiLabelViewHelper extends AbstractLabelViewHelper
             (string) $this->arguments['size'],
             (bool) $this->arguments['showDetails'],
             $file instanceof FileInterface ? $file : null,
+            showTextLabel: $this->arguments['showTextLabel'] ?? $this->settings()->showTextLabel,
         );
     }
 }

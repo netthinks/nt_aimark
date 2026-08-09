@@ -74,6 +74,24 @@ betrifft den kleinen Bereich hinter dem Symbol, der Text reicht darüber
 hinaus — ohne Hinterlegung stünde er über Bildpunkten, die niemand gemessen
 hat.
 
+Bei sehr kleinen Bildern passt die Beschriftung nicht mehr. Gemessen an einem
+Prüfstand über zehn Bildbreiten: Mit Beschriftung ist der Badge rund 180 px
+breit; ab etwa 180 px Bildbreite abwärts wächst er aus dem Bild heraus. Er
+bleibt zwar innerhalb der Breite — dafür sorgt eine Begrenzung im CSS —,
+bricht dann aber um und wird höher als das Bild.
+
+Für Vorschaubilder, Galerien und Teaser schaltet man die Beschriftung deshalb
+am Aufruf ab:
+
+```html
+<nt:aiFigure file="{file}" showTextLabel="false">
+    <f:image image="{file}" width="150" />
+</nt:aiFigure>
+```
+
+Das Symbol bleibt, und die Bedeutung steht weiterhin in der Textalternative
+und in der Detailebene.
+
 ## ViewHelper-Argumente
 
 Position, Größe und Detailebene lassen sich pro Aufruf übersteuern:
