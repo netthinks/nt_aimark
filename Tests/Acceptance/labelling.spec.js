@@ -24,15 +24,19 @@ test('every badge carries a text alternative', async ({ page }) => {
     const badge = badges.nth(i);
     // Either an icon announced via role="img" + aria-label, or visible text.
     // A badge that is neither would be a disclosure nobody can perceive.
+    // Three ways a badge can be announced: the icon as role="img" with a
+    // label, the badge itself carrying the label (it is a button when the
+    // detail panel is on, and the icon is then aria-hidden), or visible text.
     const labelled = await badge.locator('[role="img"][aria-label]').count();
+    const ownLabel = (await badge.getAttribute('aria-label')) ?? '';
     const text = (await badge.innerText()).trim();
 
-    expect(labelled > 0 || text.length > 0).toBe(true);
+    expect(labelled > 0 || ownLabel.trim().length > 0 || text.length > 0).toBe(true);
   }
 });
 
 test('the detail panel starts collapsed and is announced as such', async ({ page }) => {
-  const toggles = page.locator('.nt-aimark__toggle');
+  const toggles = page.locator('.nt-aimark__badge[aria-controls]');
   const count = await toggles.count();
   expect(count).toBeGreaterThan(0);
 
@@ -44,7 +48,7 @@ test('the detail panel starts collapsed and is announced as such', async ({ page
 });
 
 test('the detail panel is operable by keyboard alone', async ({ page }) => {
-  const toggle = page.locator('.nt-aimark__toggle').first();
+  const toggle = page.locator('.nt-aimark__badge[aria-controls]').first();
   const panelId = await toggle.getAttribute('aria-controls');
   const panel = page.locator(`#${panelId}`);
 
@@ -65,7 +69,7 @@ test('the detail panel is operable by keyboard alone', async ({ page }) => {
 });
 
 test('each aria-controls target exists exactly once', async ({ page }) => {
-  const ids = await page.locator('.nt-aimark__toggle').evaluateAll((nodes) =>
+  const ids = await page.locator('.nt-aimark__badge[aria-controls]').evaluateAll((nodes) =>
     nodes.map((node) => node.getAttribute('aria-controls')),
   );
 
@@ -81,7 +85,7 @@ test('the badge does not move the image', async ({ page }) => {
   const image = figure.locator('.placeholder').first();
 
   const before = await image.boundingBox();
-  await figure.locator('.nt-aimark__toggle').click();
+  await figure.locator('.nt-aimark__badge[aria-controls]').click();
   const after = await image.boundingBox();
 
   expect(after.x).toBe(before.x);
@@ -96,7 +100,12 @@ test('the disclosure is not conveyed by position or colour alone', async ({ page
   const descriptions = await page.locator('.nt-aimark__badge').evaluateAll((nodes) =>
     nodes.map((node) => {
       const labelled = node.querySelector('[role="img"][aria-label]');
-      return labelled ? labelled.getAttribute('aria-label') : node.innerText.trim();
+
+      if (labelled) {
+        return labelled.getAttribute('aria-label');
+      }
+
+      return (node.getAttribute('aria-label') || node.innerText).trim();
     }),
   );
 
