@@ -111,6 +111,14 @@
 				<source>Reset</source>
 				<target>Zurücksetzen</target>
 			</trans-unit>
+			<trans-unit id="filter.allStorages" resname="filter.allStorages">
+				<source>All storages</source>
+				<target>Alle Speicher</target>
+			</trans-unit>
+			<trans-unit id="list.page" resname="list.page">
+				<source>Page %1$s of %2$s</source>
+				<target>Seite %1$s von %2$s</target>
+			</trans-unit>
 
 			<trans-unit id="bulk.heading" resname="bulk.heading">
 				<source>Set status for the selected files</source>

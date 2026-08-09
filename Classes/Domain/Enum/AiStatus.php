@@ -46,4 +46,22 @@ enum AiStatus: int
     {
         return 'LLL:EXT:nt_aimark/Resources/Private/Language/locallang_db.xlf:status.' . $this->name;
     }
+
+    /**
+     * Bootstrap contextual class for the badge in the backend list.
+     *
+     * The distinction the colour carries is "does this still need someone" —
+     * not "is AI involved". A confirmed AI use is a finished, correct state
+     * and is not coloured as a problem.
+     */
+    public function badgeClass(): string
+    {
+        return match ($this) {
+            self::Unreviewed => 'bg-secondary',
+            self::Suggested => 'bg-warning',
+            self::NoAi => 'bg-success',
+            self::Generated, self::Modified => 'bg-info',
+            self::UnknownOrigin => 'bg-light text-dark',
+        };
+    }
 }

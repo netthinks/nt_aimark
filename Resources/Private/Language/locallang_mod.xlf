@@ -85,6 +85,12 @@
 			<trans-unit id="filter.reset" resname="filter.reset">
 				<source>Reset</source>
 			</trans-unit>
+			<trans-unit id="filter.allStorages" resname="filter.allStorages">
+				<source>All storages</source>
+			</trans-unit>
+			<trans-unit id="list.page" resname="list.page">
+				<source>Page %1$s of %2$s</source>
+			</trans-unit>
 
 			<trans-unit id="bulk.heading" resname="bulk.heading">
 				<source>Set status for the selected files</source>

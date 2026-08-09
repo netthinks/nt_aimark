@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NetThinks\NtAimark\Backend\Controller;
 
 use NetThinks\NtAimark\Domain\Enum\AiStatus;
+use NetThinks\NtAimark\Domain\Model\StorageSummary;
 use NetThinks\NtAimark\Domain\Repository\TransparencyRepository;
 use NetThinks\NtAimark\Report\SystemStatusCheck;
 use NetThinks\NtAimark\Service\AuditService;
@@ -67,9 +68,24 @@ final readonly class TransparencyModuleController
             ($page - 1) * self::PAGE_SIZE,
         );
 
+        $summaries = $this->repository->storageSummaries();
+        $pages = (int) ceil($total / self::PAGE_SIZE);
+
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->assignMultiple([
-            'summaries' => $this->repository->storageSummaries(),
+            'summaries' => $summaries,
+            // One set of figures for the whole installation. Per storage the
+            // numbers answer "where is the work"; added up they answer "how
+            // far along are we", which is the question the module opens with.
+            'totals' => $this->totals($summaries),
+            'pagination' => $this->pagination($page, $pages, $parameters),
+            'filterValues' => [
+                'createdAfter' => $filter['createdAfter'] > 0 ? date('Y-m-d', $filter['createdAfter']) : '',
+                'createdBefore' => $filter['createdBefore'] > 0 ? date('Y-m-d', $filter['createdBefore']) : '',
+                'storage' => $filter['storage'],
+            ],
+            'storageItems' => $this->storageItems($summaries, $filter['storage']),
+            'resetUri' => (string) $this->uriBuilder->buildUriFromRoute('content_ntaimark_transparency'),
             'assets' => $this->decorate($rows),
             // Fluid resolves {item.labelKey} via getLabelKey(); enum methods
             // are not reachable that way, so plain arrays go to the template.
@@ -77,7 +93,7 @@ final readonly class TransparencyModuleController
             'filter' => $filter,
             'total' => $total,
             'page' => $page,
-            'pages' => (int) ceil($total / self::PAGE_SIZE),
+            'pages' => $pages,
             'findings' => $this->systemStatusCheck->findings(),
             'bulkUri' => (string) $this->uriBuilder->buildUriFromRoute('content_ntaimark_transparency.bulk'),
         ]);
@@ -191,6 +207,7 @@ final readonly class TransparencyModuleController
         foreach ($rows as $index => $row) {
             $status = AiStatus::tryFrom((int) ($row['tx_ntaimark_status'] ?? 0)) ?? AiStatus::Unreviewed;
             $rows[$index]['statusLabelKey'] = $status->labelKey();
+            $rows[$index]['statusBadgeClass'] = $status->badgeClass();
             $rows[$index]['needsReview'] = $status->requiresReview();
             $rows[$index]['editUri'] = (string) $this->uriBuilder->buildUriFromRoute('record_edit', [
                 'edit' => ['sys_file_metadata' => [(int) $row['uid'] => 'edit']],
@@ -199,6 +216,77 @@ final readonly class TransparencyModuleController
         }
 
         return $rows;
+    }
+
+    /**
+     * @param list<StorageSummary> $summaries
+     *
+     * @return array{total: int, reviewed: int, open: int, brokenC2pa: int, reviewedPercent: int}
+     */
+    private function totals(array $summaries): array
+    {
+        $total = $reviewed = $open = $broken = 0;
+
+        foreach ($summaries as $summary) {
+            $total += $summary->total;
+            $reviewed += $summary->getReviewed();
+            $open += $summary->getOpen();
+            $broken += $summary->brokenC2pa;
+        }
+
+        return [
+            'total' => $total,
+            'reviewed' => $reviewed,
+            'open' => $open,
+            'brokenC2pa' => $broken,
+            'reviewedPercent' => $total > 0 ? (int) round($reviewed / $total * 100) : 0,
+        ];
+    }
+
+    /**
+     * Page links that keep the current filter — without them the list stops
+     * at the first fifty files with no way on.
+     *
+     * @param array<string, mixed> $parameters
+     *
+     * @return array{current: int, pages: int, previousUri: string, nextUri: string}
+     */
+    private function pagination(int $page, int $pages, array $parameters): array
+    {
+        $uriFor = function (int $target) use ($parameters): string {
+            $query = $parameters;
+            $query['page'] = $target;
+            unset($query['token']);
+
+            return (string) $this->uriBuilder->buildUriFromRoute('content_ntaimark_transparency', $query);
+        };
+
+        return [
+            'current' => $page,
+            'pages' => $pages,
+            'previousUri' => $page > 1 ? $uriFor($page - 1) : '',
+            'nextUri' => $page < $pages ? $uriFor($page + 1) : '',
+        ];
+    }
+
+    /**
+     * @param list<StorageSummary> $summaries
+     *
+     * @return list<array{value: int, label: string, selected: bool}>
+     */
+    private function storageItems(array $summaries, int $selected): array
+    {
+        $items = [];
+
+        foreach ($summaries as $summary) {
+            $items[] = [
+                'value' => $summary->storageUid,
+                'label' => $summary->storageName,
+                'selected' => $summary->storageUid === $selected,
+            ];
+        }
+
+        return $items;
     }
 
     /**
@@ -232,7 +320,11 @@ final readonly class TransparencyModuleController
                 array_map(intval(...), $statuses),
                 static fn(int $status): bool => AiStatus::tryFrom($status) !== null,
             )),
-            'storage' => max(0, (int) ($parameters['storage'] ?? 0)),
+            // -1 means "every storage"; 0 cannot serve as that sentinel
+            // because FAL uses storage 0 for files outside any storage.
+            'storage' => isset($parameters['storage']) && $parameters['storage'] !== ''
+                ? max(-1, (int) $parameters['storage'])
+                : -1,
             'createdAfter' => $this->toTimestamp($parameters['createdAfter'] ?? ''),
             'createdBefore' => $this->toTimestamp($parameters['createdBefore'] ?? ''),
         ];

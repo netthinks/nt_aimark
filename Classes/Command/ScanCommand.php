@@ -34,7 +34,9 @@ final class ScanCommand extends Command
     {
         $this
             ->setDescription('Examines stored files for AI provenance data and records what it finds as a suggestion.')
-            ->addOption('storage', null, InputOption::VALUE_REQUIRED, 'Limit to one file storage', '0')
+            // -1, not 0: FAL uses storage 0 for files outside any configured
+            // storage, so 0 is a real storage and cannot mean "all of them".
+            ->addOption('storage', null, InputOption::VALUE_REQUIRED, 'Limit to one file storage', '-1')
             ->addOption(
                 'force',
                 null,

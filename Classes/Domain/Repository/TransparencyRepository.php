@@ -86,7 +86,7 @@ final readonly class TransparencyRepository
      */
     public function findAssets(
         array $statuses = [],
-        int $storage = 0,
+        int $storage = -1,
         int $createdAfter = 0,
         int $createdBefore = 0,
         int $limit = 100,
@@ -123,7 +123,7 @@ final readonly class TransparencyRepository
      */
     public function countAssets(
         array $statuses = [],
-        int $storage = 0,
+        int $storage = -1,
         int $createdAfter = 0,
         int $createdBefore = 0,
     ): int {
@@ -175,7 +175,7 @@ final readonly class TransparencyRepository
      *
      * @return list<int>
      */
-    public function findFileUidsForScan(int $storage = 0, bool $includeSuggestions = false): array
+    public function findFileUidsForScan(int $storage = -1, bool $includeSuggestions = false): array
     {
         $statuses = $includeSuggestions
             ? [AiStatus::Unreviewed->value, AiStatus::Suggested->value]
@@ -241,7 +241,9 @@ final readonly class TransparencyRepository
             ));
         }
 
-        if ($storage > 0) {
+        // Storage 0 is a real storage — FAL puts files outside any configured
+        // storage there — so "no filter" cannot be expressed as 0. It is -1.
+        if ($storage >= 0) {
             $queryBuilder->andWhere($queryBuilder->expr()->eq(
                 'f.storage',
                 $queryBuilder->createNamedParameter($storage, Connection::PARAM_INT),

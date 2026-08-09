@@ -162,4 +162,38 @@ final class TransparencyRepositoryTest extends FunctionalTestCase
         self::assertSame(2, $this->subject->countAssets($statuses));
         self::assertCount(2, $this->subject->findAssets($statuses));
     }
+
+    /**
+     * Storage 0 is a storage like any other — FAL puts files that live outside
+     * every configured storage there, and on this project that is a quarter of
+     * the whole file base. It can therefore not double as the "no filter"
+     * value, or those files could never be filtered to.
+     */
+    #[Test]
+    public function storageZeroCanBeFilteredToLikeAnyOtherStorage(): void
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool->getConnectionForTable('sys_file')->insert('sys_file', [
+            'uid' => 7,
+            'pid' => 0,
+            'storage' => 0,
+            'identifier' => '/outside.jpg',
+            'name' => 'outside.jpg',
+            'mime_type' => 'image/jpeg',
+            'missing' => 0,
+        ]);
+        $connectionPool->getConnectionForTable('sys_file_metadata')->insert('sys_file_metadata', [
+            'pid' => 0,
+            'file' => 7,
+            'tx_ntaimark_status' => AiStatus::Unreviewed->value,
+        ]);
+
+        $inStorageZero = $this->subject->findAssets(storage: 0);
+
+        self::assertCount(1, $inStorageZero);
+        self::assertSame('outside.jpg', $inStorageZero[0]['name']);
+
+        self::assertCount(6, $this->subject->findAssets(storage: 1));
+        self::assertSame(7, $this->subject->countAssets(), 'The default has to mean every storage.');
+    }
 }
