@@ -62,6 +62,30 @@ final readonly class ExtensionSettings
     }
 
     /**
+     * MIME types the review covers.
+     *
+     * A positive list rather than a list of exclusions: what the extension can
+     * say something about is a short, stable set — pictures, sound, moving
+     * images, documents — while the things that do not belong keep arriving in
+     * new shapes. On this project the list of non-media in the review was
+     * YAML, XML, HTML, empty files, a stylesheet and a script; excluding the
+     * latter two by name would have caught two of eighteen.
+     *
+     * An empty setting means "every file", for installations that want it.
+     *
+     * @return list<string>
+     */
+    public function reviewedMimeTypes(): array
+    {
+        $raw = $this->get('reviewedMimeTypes', 'image/*,audio/*,video/*,application/pdf');
+
+        return array_values(array_filter(
+            array_map(trim(...), explode(',', $raw)),
+            static fn(string $type): bool => $type !== '',
+        ));
+    }
+
+    /**
      * @return array<string, string> Needle => vendor
      */
     public function additionalExifSignatures(): array

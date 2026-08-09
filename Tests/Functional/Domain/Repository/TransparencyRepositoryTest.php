@@ -220,7 +220,39 @@ final class TransparencyRepositoryTest extends FunctionalTestCase
         self::assertSame($counted, array_sum($this->subject->statusDistribution()));
     }
 
-    private function givenFile(int $uid, string $identifier): void
+    /**
+     * Only file types the extension can say something about belong in the
+     * review.
+     *
+     * A positive list, not a list of exclusions: on this project the non-media
+     * in the list were YAML, XML, HTML, empty files, a stylesheet and a script
+     * — naming the last two would have caught two of eighteen, and the next
+     * type would need naming too.
+     */
+    #[Test]
+    public function onlyMediaAndDocumentsAreUpForReview(): void
+    {
+        $this->givenFile(30, '/theme.css', 'text/css');
+        $this->givenFile(31, '/app.js', 'application/javascript');
+        $this->givenFile(32, '/form.yaml', 'application/yaml');
+        $this->givenFile(33, '/broken', 'inode/x-empty');
+        $this->givenFile(34, '/clip.mp4', 'video/mp4');
+        $this->givenFile(35, '/voice.mp3', 'audio/mpeg');
+        $this->givenFile(36, '/report.pdf', 'application/pdf');
+        $this->givenFile(37, '/logo.svg', 'image/svg+xml');
+
+        $identifiers = array_column($this->subject->findAssets(), 'identifier');
+
+        foreach (['/theme.css', '/app.js', '/form.yaml', '/broken'] as $ignored) {
+            self::assertNotContains($ignored, $identifiers);
+        }
+
+        foreach (['/clip.mp4', '/voice.mp3', '/report.pdf', '/logo.svg'] as $reviewed) {
+            self::assertContains($reviewed, $identifiers, $reviewed . ' has to stay in the review.');
+        }
+    }
+
+    private function givenFile(int $uid, string $identifier, string $mimeType = 'image/webp'): void
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $connectionPool->getConnectionForTable('sys_file')->insert('sys_file', [
@@ -229,7 +261,7 @@ final class TransparencyRepositoryTest extends FunctionalTestCase
             'storage' => 1,
             'identifier' => $identifier,
             'name' => ltrim($identifier, '/'),
-            'mime_type' => 'image/webp',
+            'mime_type' => $mimeType,
             'missing' => 0,
         ]);
         $connectionPool->getConnectionForTable('sys_file_metadata')->insert('sys_file_metadata', [

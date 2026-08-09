@@ -64,6 +64,7 @@ final readonly class TransparencyRepository
             ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
 
         $this->excludeDerivedFormats($queryBuilder);
+        $this->restrictToReviewedTypes($queryBuilder);
 
         $rows = $queryBuilder
             ->groupBy('m.tx_ntaimark_status')
@@ -118,6 +119,7 @@ final readonly class TransparencyRepository
             ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
 
         $this->excludeDerivedFormats($queryBuilder);
+        $this->restrictToReviewedTypes($queryBuilder);
 
         $rows = $queryBuilder
             ->groupBy('f.storage')
@@ -294,6 +296,37 @@ final readonly class TransparencyRepository
      * Switchable off in the extension settings, for installations that want
      * every file assessed separately.
      */
+    /**
+     * Narrows the review to the file types it can actually speak about.
+     *
+     * `image/*` becomes a LIKE, an exact type an equality — nothing else is
+     * interpreted, so a configured value cannot turn into a pattern by
+     * accident.
+     */
+    private function restrictToReviewedTypes(QueryBuilder $queryBuilder): void
+    {
+        $types = $this->settings->reviewedMimeTypes();
+
+        if ($types === []) {
+            return;
+        }
+
+        $conditions = [];
+
+        foreach ($types as $type) {
+            $conditions[] = str_ends_with($type, '*')
+                ? $queryBuilder->expr()->like(
+                    'f.mime_type',
+                    $queryBuilder->createNamedParameter(
+                        $queryBuilder->escapeLikeWildcards(substr($type, 0, -1)) . '%',
+                    ),
+                )
+                : $queryBuilder->expr()->eq('f.mime_type', $queryBuilder->createNamedParameter($type));
+        }
+
+        $queryBuilder->andWhere($queryBuilder->expr()->or(...$conditions));
+    }
+
     private function excludeDerivedFormats(QueryBuilder $queryBuilder): void
     {
         if (!$this->settings->hideDerivedFormats()) {
@@ -323,6 +356,7 @@ final readonly class TransparencyRepository
             ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
 
         $this->excludeDerivedFormats($queryBuilder);
+        $this->restrictToReviewedTypes($queryBuilder);
 
         $statuses = array_values(array_filter(
             array_map(intval(...), $statuses),

@@ -15,3 +15,6 @@ additionalTextTables =
 
 # cat=list; type=boolean; label=Formatvarianten ausblenden: Viele Installationen legen zu jedem Bild automatisch eine WebP- und AVIF-Fassung als eigene Datei an (bild.jpg.webp). Sie zeigen denselben Inhalt wie das Original und blähen Arbeitsliste und Prüfquote auf. Ausschalten, wenn diese Dateien einzeln eingestuft werden sollen.
 hideDerivedFormats = 1
+
+# cat=list; type=string; label=Zu prüfende Dateitypen: Kommagetrennte MIME-Typen, * als Platzhalter erlaubt. Nur diese Dateien erscheinen in der Arbeitsliste und in den Kennzahlen — für ein Stylesheet oder eine YAML-Datei gibt es keine sinnvolle KI-Kennzeichnung. Leer lassen, um alle Dateien zu prüfen.
+reviewedMimeTypes = image/*,audio/*,video/*,application/pdf
