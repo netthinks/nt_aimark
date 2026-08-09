@@ -1,20 +1,14 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
 <f:spaceless>
-    <span class="nt-aimark__badge nt-aimark__badge--{position} nt-aimark__badge--{size} nt-aimark__badge--{variant} nt-aimark__badge--{contrast} nt-aimark__badge--icon-{iconColour}"
-          data-ai-variant="{variant}">
-        <f:if condition="{icon}">
-            <f:then>
-                <span class="nt-aimark__badge-icon" role="img" aria-label="{f:translate(key: ariaLabelKey)}">{icon -> f:format.raw()}</span>
-            </f:then>
-            <f:else>
-                <span class="nt-aimark__badge-fallback"><f:translate key="{fallbackTextKey}" /></span>
-            </f:else>
-        </f:if>
-        <f:if condition="{labelText}">
-            <span class="nt-aimark__badge-text">{labelText}</span>
-        </f:if>
-    </span>
+    <f:if condition="{imageMarkup}">
+        <f:then>
+            <span class="nt-aimark__frame">{imageMarkup -> f:format.raw()}<f:render section="Badge" arguments="{_all}" /></span>
+        </f:then>
+        <f:else>
+            <f:render section="Badge" arguments="{_all}" />
+        </f:else>
+    </f:if>
 
     <f:if condition="{showDetails}">
         <button type="button"
@@ -36,5 +30,22 @@
         </div>
     </f:if>
 </f:spaceless>
+
+<f:section name="Badge">
+    <span class="nt-aimark__badge nt-aimark__badge--{position} nt-aimark__badge--{size} nt-aimark__badge--{variant} nt-aimark__badge--{contrast} nt-aimark__badge--icon-{iconColour}"
+          data-ai-variant="{variant}">
+        <f:if condition="{icon}">
+            <f:then>
+                <span class="nt-aimark__badge-icon" role="img" aria-label="{f:translate(key: ariaLabelKey)}">{icon -> f:format.raw()}</span>
+            </f:then>
+            <f:else>
+                <span class="nt-aimark__badge-fallback"><f:translate key="{fallbackTextKey}" /></span>
+            </f:else>
+        </f:if>
+        <f:if condition="{labelText}">
+            <span class="nt-aimark__badge-text">{labelText}</span>
+        </f:if>
+    </span>
+</f:section>
 
 </html>

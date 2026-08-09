@@ -156,12 +156,12 @@
 </div>
 
 <f:section name="Filter">
-    <div class="d-flex gap-3 flex-wrap align-items-end">
+    <div class="d-flex gap-3 flex-wrap align-items-start">
         <div>
             <label class="form-label" for="nt-aimark-filter-status">
                 <f:translate key="{ll}filter.status" />
             </label>
-            <select name="status[]" id="nt-aimark-filter-status" class="form-select" multiple size="6">
+            <select name="status[]" id="nt-aimark-filter-status" class="form-select" multiple size="4">
                 <f:for each="{statusItems}" as="item">
                     <f:if condition="{item.selected}">
                         <f:then>

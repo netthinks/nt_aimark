@@ -21,6 +21,19 @@ final class IconResolverService
 {
     public const ICON_DIRECTORY = 'EXT:nt_aimark/Resources/Public/Icons/Eu/';
 
+    /**
+     * CSS properties that mean the same thing as an SVG presentation
+     * attribute. The list is deliberately short: a property not on it stops
+     * the rewrite instead of being guessed at.
+     *
+     * @var list<string>
+     */
+    private const PRESENTATION_ATTRIBUTES = [
+        'fill', 'fill-rule', 'fill-opacity',
+        'stroke', 'stroke-width', 'stroke-opacity', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray',
+        'opacity', 'color', 'clip-rule', 'isolation', 'mix-blend-mode',
+    ];
+
     /** @var array<string, string|null> */
     private array $runtimeCache = [];
 
@@ -135,32 +148,202 @@ final class IconResolverService
     }
 
     /**
-     * Makes the icon's own class names and ids unique to this copy.
+     * Removes the icon's dependency on an inline stylesheet.
      *
-     * The official files all carry the same generic identifiers — every one of
-     * the twelve declares `.cls-1`/`.cls-2` and `id="Calque_1"`. Inlined twice
-     * on one page, the second file's `<style>` block restyles the first: a page
-     * showing a light and a dark image side by side would render one of the two
-     * badges in the wrong colours, and the duplicated ids are invalid markup
-     * besides.
+     * The official files carry their colours in a `<style>` block inside the
+     * SVG. That does not survive contact with a Content Security Policy: as
+     * soon as `style-src-elem` names a nonce — which TYPO3 v14 does by default
+     * — the browser drops `'unsafe-inline'` and refuses the block. Nothing
+     * fails visibly; the paths simply fall back to the initial fill and the
+     * official mark renders as a solid black shape. A wrong label, silently,
+     * on exactly the hardened installations one would want to get this right.
      *
-     * The suffix is derived from the content, so the same icon used twice stays
-     * one shared rule set while different variants stay apart.
+     * The declarations are therefore moved onto the elements as presentation
+     * attributes, which no policy blocks. As a side effect the shared generic
+     * class names (all twelve files declare `.cls-1`/`.cls-2`) disappear along
+     * with the collision they would cause between two icons on one page.
+     *
+     * If anything about the file is not understood, the markup is left as it
+     * was and only the ids are made unique — a degraded icon still beats none.
      */
     private function isolateInternalStyling(string $svg): string
     {
-        if (!str_contains($svg, 'class="') && !str_contains($svg, 'id="')) {
+        if (str_contains($svg, '<style')) {
+            $svg = $this->inlineStyleDeclarations($svg) ?? $this->uniquifyClassNames($svg);
+        }
+
+        return $this->uniquifyIds($svg);
+    }
+
+    private function inlineStyleDeclarations(string $svg): ?string
+    {
+        $document = new \DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+
+        try {
+            if (!$document->loadXML($svg, LIBXML_NONET)) {
+                return null;
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
+
+        $xpath = new \DOMXPath($document);
+        $styleElements = $xpath->query('//*[local-name()="style"]');
+
+        if (!$styleElements instanceof \DOMNodeList || $styleElements->length === 0) {
+            return null;
+        }
+
+        $rules = [];
+
+        foreach ($styleElements as $style) {
+            if (!$style instanceof \DOMElement) {
+                continue;
+            }
+
+            $parsed = $this->parseClassRules($style->textContent);
+
+            if ($parsed === null) {
+                // Something beyond plain class rules — leave the file alone
+                // rather than half-applying it.
+                return null;
+            }
+
+            foreach ($parsed as $class => $declarations) {
+                $rules[$class] = array_merge($rules[$class] ?? [], $declarations);
+            }
+        }
+
+        if ($rules === []) {
+            return null;
+        }
+
+        $elements = $xpath->query('//*[@class]');
+
+        if ($elements instanceof \DOMNodeList) {
+            foreach ($elements as $element) {
+                if (!$element instanceof \DOMElement) {
+                    continue;
+                }
+
+                $remaining = [];
+
+                foreach (preg_split('/\s+/', trim($element->getAttribute('class'))) ?: [] as $class) {
+                    if ($class === '') {
+                        continue;
+                    }
+
+                    if (!isset($rules[$class])) {
+                        // Not from the icon's own stylesheet — the class this
+                        // service puts on the root element, for one. Dropping
+                        // it would take the sizing rules with it.
+                        $remaining[] = $class;
+
+                        continue;
+                    }
+
+                    foreach ($rules[$class] as $property => $value) {
+                        // CSS outranks presentation attributes, so a rule
+                        // replaces an attribute of the same name.
+                        $element->setAttribute($property, $value);
+                    }
+                }
+
+                if ($remaining === []) {
+                    $element->removeAttribute('class');
+                } else {
+                    $element->setAttribute('class', implode(' ', $remaining));
+                }
+            }
+        }
+
+        foreach (iterator_to_array($styleElements) as $style) {
+            if ($style instanceof \DOMNode) {
+                $style->parentNode?->removeChild($style);
+            }
+        }
+
+        $result = $document->saveXML($document->documentElement);
+
+        return is_string($result) ? $result : null;
+    }
+
+    /**
+     * Only plain single-class selectors are understood; anything else returns
+     * null so the caller can leave the file untouched.
+     *
+     * @return array<string, array<string, string>>|null
+     */
+    private function parseClassRules(string $css): ?array
+    {
+        $css = (string) preg_replace('#/\*.*?\*/#s', '', $css);
+        $rules = [];
+        $offset = 0;
+
+        while (preg_match('/([^{}]+)\{([^{}]*)\}/s', $css, $match, PREG_OFFSET_CAPTURE, $offset) === 1) {
+            $offset = $match[0][1] + strlen($match[0][0]);
+            $selectors = array_map('trim', explode(',', $match[1][0]));
+
+            foreach ($selectors as $selector) {
+                if (preg_match('/^\.([A-Za-z_][\w-]*)$/', $selector, $name) !== 1) {
+                    return null;
+                }
+
+                foreach (explode(';', $match[2][0]) as $declaration) {
+                    if (trim($declaration) === '') {
+                        continue;
+                    }
+
+                    $parts = explode(':', $declaration, 2);
+
+                    if (count($parts) !== 2) {
+                        return null;
+                    }
+
+                    $property = strtolower(trim($parts[0]));
+                    $value = trim($parts[1]);
+
+                    // Presentation attributes cover paint and geometry only.
+                    // Anything else would silently change meaning as an
+                    // attribute, so it stops the whole rewrite.
+                    if (!in_array($property, self::PRESENTATION_ATTRIBUTES, true) || $value === '') {
+                        return null;
+                    }
+
+                    $rules[$name[1]][$property] = $value;
+                }
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Fallback when the stylesheet cannot be inlined: at least keep two icons
+     * on one page from restyling each other.
+     */
+    private function uniquifyClassNames(string $svg): string
+    {
+        return (string) preg_replace(
+            '/(?<![\w-])(cls-\d+)(?![\w-])/',
+            '$1-' . substr(hash('xxh128', $svg), 0, 8),
+            $svg,
+        );
+    }
+
+    /**
+     * All twelve official files use `id="Calque_1"`; duplicated ids in one
+     * document are invalid markup.
+     */
+    private function uniquifyIds(string $svg): string
+    {
+        if (!str_contains($svg, 'id="')) {
             return $svg;
         }
 
         $suffix = '-' . substr(hash('xxh128', $svg), 0, 8);
-
-        // Class names, both in the <style> block and on the elements.
-        $svg = (string) preg_replace(
-            '/(?<![\w-])(cls-\d+)(?![\w-])/',
-            '$1' . $suffix,
-            $svg,
-        );
 
         return (string) preg_replace_callback(
             '/\bid="([^"]+)"/',

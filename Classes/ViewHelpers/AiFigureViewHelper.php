@@ -62,6 +62,7 @@ final class AiFigureViewHelper extends AbstractLabelViewHelper
             (string) $this->arguments['size'],
             (bool) $this->arguments['showDetails'],
             $file instanceof FileInterface ? $file : null,
+            $content,
         );
 
         if ($badge === '') {
@@ -70,11 +71,12 @@ final class AiFigureViewHelper extends AbstractLabelViewHelper
 
         $classes = trim('nt-aimark ' . (string) $this->arguments['class']);
 
+        // The image markup is already inside $badge — it was handed over so the
+        // badge could be framed around it.
         return sprintf(
-            '<figure class="%s" data-ai-status="%s">%s%s</figure>',
+            '<figure class="%s" data-ai-status="%s">%s</figure>',
             htmlspecialchars($classes, ENT_QUOTES | ENT_HTML5),
             htmlspecialchars($decision->iconVariant->value, ENT_QUOTES | ENT_HTML5),
-            $content,
             $badge,
         );
     }

@@ -46,6 +46,7 @@ final class LabelRenderService
         string $size = 'medium',
         bool $showDetails = true,
         ?FileInterface $file = null,
+        string $imageMarkup = '',
     ): string {
         if (!$decision->shouldLabel) {
             return '';
@@ -106,6 +107,12 @@ final class LabelRenderService
             'detailId' => 'aimark-detail-' . $declaration->recordUid . '-' . ++$this->instanceCounter,
             'detailRows' => $detailRows,
             'showDetails' => $withDetails,
+            // When the image markup comes along, the badge is placed inside a
+            // frame around it. Without that frame it would be positioned
+            // against the whole figure — which also holds the toggle and the
+            // detail panel — and would come to rest below the picture instead
+            // of on it.
+            'imageMarkup' => $imageMarkup,
         ]);
 
         return trim($view->render('Label/Badge'));

@@ -148,6 +148,58 @@ final class LabelRenderServiceTest extends FunctionalTestCase
         self::assertNotSame($firstId[1], $secondId[1]);
     }
 
+    /**
+     * The badge is positioned against its frame, and the frame holds nothing
+     * but the picture.
+     *
+     * Without it the badge positions against the whole figure — which also
+     * contains the toggle and the detail panel — and "bottom right" lands
+     * below the image, on the page background. The black-or-white choice made
+     * from the image is then measured against something else entirely, which
+     * is how the contrast guarantee quietly stops holding. Seen on this
+     * project's own site before it was fixed.
+     */
+    #[Test]
+    public function theBadgeIsFramedWithTheImageAndNotWithTheToggle(): void
+    {
+        $declaration = $this->generatedDeclaration();
+        $decision = (new DisclosureRuleService())->resolve($declaration, new AiMarkSettings());
+
+        $html = $this->get(LabelRenderService::class)->renderBadge(
+            $declaration,
+            $decision,
+            $this->frontendRequest(),
+            'bottom-right',
+            'medium',
+            true,
+            null,
+            '<img src="/example.jpg" alt="">',
+        );
+
+        self::assertMatchesRegularExpression(
+            '#<span class="nt-aimark__frame"><img[^>]*><span class="nt-aimark__badge[^"]*"#',
+            $html,
+            'The frame has to wrap image and badge together.',
+        );
+
+        // Toggle and detail panel stay outside — they must not stretch the box
+        // the badge is positioned against.
+        $frame = (string) preg_replace('#^.*<span class="nt-aimark__frame">(.*?)</span></span>.*$#s', '$1', $html);
+
+        self::assertStringNotContainsString('nt-aimark__toggle', $frame);
+        self::assertStringNotContainsString('nt-aimark__detail', $frame);
+        self::assertStringContainsString('nt-aimark__toggle', $html);
+    }
+
+    /**
+     * Used on its own, without image markup, there is nothing to frame.
+     */
+    #[Test]
+    public function withoutImageMarkupNoFrameIsEmitted(): void
+    {
+        self::assertStringNotContainsString('nt-aimark__frame', $this->render($this->generatedDeclaration()));
+    }
+
     #[Test]
     public function theDetailPanelShowsTheRecordedSystemAndDate(): void
     {

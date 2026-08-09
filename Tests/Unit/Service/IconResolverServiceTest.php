@@ -129,31 +129,81 @@ final class IconResolverServiceTest extends UnitTestCase
     }
 
     /**
-     * The official artwork is the reason this exists.
+     * The reason the icons must not depend on their own stylesheet.
      *
-     * All twelve files the Commission publishes declare the same `.cls-1` /
-     * `.cls-2` inside their own `<style>` block and the same `id="Calque_1"`.
-     * Inlined together — which happens on any page mixing a light and a dark
-     * image — the later block would restyle the earlier icon and the ids would
-     * be duplicated. Each copy therefore gets its own suffix.
+     * The official files carry their colours in a `<style>` block. A Content
+     * Security Policy that names a nonce for `style-src-elem` — which TYPO3
+     * v14 sets up by default — makes the browser drop `'unsafe-inline'` and
+     * refuse that block. Nothing errors; the paths fall back to the initial
+     * fill and the official mark renders as a solid black shape. Measured on
+     * this project's own site before it was fixed.
      */
     #[Test]
-    public function twoIconsOnOnePageDoNotRestyleEachOther(): void
+    public function theIconCarriesItsColoursWithoutAStylesheet(): void
     {
-        $artwork = static fn(string $discFill): string => '<svg xmlns="http://www.w3.org/2000/svg" id="Calque_1" viewBox="0 0 10 10">'
-            . '<defs><style>.cls-1 { ' . $discFill . ' } .cls-2 { fill: #fff; }</style></defs>'
-            . '<path class="cls-1" d="M0 0h10v10H0z"/><path class="cls-2" d="M2 2h6v6H2z"/></svg>';
+        $this->writeIcon(
+            'ai-generated-white.svg',
+            '<svg xmlns="http://www.w3.org/2000/svg" id="Calque_1" viewBox="0 0 10 10">'
+                . '<defs><style>.cls-1 { fill: #fff; fill-rule: evenodd; } .cls-2 { fill: #1d1d1b; }</style></defs>'
+                . '<path class="cls-1" d="M0 0h10v10H0z"/><path class="cls-2" d="M2 2h6v6H2z"/></svg>',
+        );
 
-        $this->writeIcon('ai-generated-black.svg', $artwork('fill-rule: evenodd;'));
-        $this->writeIcon('ai-generated-white.svg', $artwork('fill: #fff;'));
+        $svg = (string) $this->subject()->inlineSvg(IconVariant::Generated, white: true);
+
+        self::assertStringNotContainsString('<style', $svg, 'A CSP with a nonce would block this.');
+        self::assertStringNotContainsString('class="cls-', $svg);
+
+        // The colours have to arrive — as attributes, which no policy blocks.
+        self::assertMatchesRegularExpression('/<path[^>]*fill="#fff"/', $svg);
+        self::assertMatchesRegularExpression('/<path[^>]*fill-rule="evenodd"/', $svg);
+        self::assertMatchesRegularExpression('/<path[^>]*fill="#1d1d1b"/', $svg);
+
+        // The class this service puts on the root element carries the sizing
+        // rules and must not be swept up with the artwork's own classes.
+        self::assertStringContainsString('class="nt-aimark__icon"', $svg);
+    }
+
+    /**
+     * Transparency is expressed as `opacity` in the stylesheet and has to
+     * survive the move to attributes — otherwise the 50 % variants would come
+     * out fully opaque, i.e. as the wrong icon.
+     */
+    #[Test]
+    public function theTransparentVariantKeepsItsOpacity(): void
+    {
+        $this->writeIcon(
+            'ai-basic-black-50.svg',
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">'
+                . '<defs><style>.cls-1 { fill-rule: evenodd; opacity: .5; }</style></defs>'
+                . '<path class="cls-1" d="M0 0h10v10H0z"/></svg>',
+        );
+
+        $svg = (string) $this->subject()->inlineSvg(IconVariant::Basic, transparent: true);
+
+        self::assertMatchesRegularExpression('/<path[^>]*opacity="\.5"/', $svg);
+    }
+
+    /**
+     * A file whose stylesheet is beyond plain class rules is left alone rather
+     * than half-converted — but two of them on one page still must not restyle
+     * each other, so the names are made unique instead.
+     */
+    #[Test]
+    public function anUnexpectedStylesheetFallsBackToUniqueNames(): void
+    {
+        $artwork = static fn(string $fill): string => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">'
+            . '<defs><style>path.cls-1 { fill: ' . $fill . '; }</style></defs>'
+            . '<path class="cls-1" d="M0 0h10v10H0z"/></svg>';
+
+        $this->writeIcon('ai-generated-black.svg', $artwork('#000'));
+        $this->writeIcon('ai-generated-white.svg', $artwork('#fff'));
 
         $black = (string) $this->subject()->inlineSvg(IconVariant::Generated, white: false);
         $white = (string) $this->subject()->inlineSvg(IconVariant::Generated, white: true);
 
-        self::assertStringNotContainsString('.cls-1 {', $black, 'The generic class name must not survive.');
-        self::assertStringNotContainsString('id="Calque_1"', $black);
+        self::assertStringContainsString('<style', $black, 'The stylesheet stays when it is not understood.');
+        self::assertStringNotContainsString('class="cls-1"', $black);
 
-        // Whatever names the two ended up with, they must not be the same ones.
         preg_match_all('/cls-\d+-[0-9a-f]+/', $black, $blackNames);
         preg_match_all('/cls-\d+-[0-9a-f]+/', $white, $whiteNames);
 
@@ -163,21 +213,26 @@ final class IconResolverServiceTest extends UnitTestCase
             array_intersect(array_unique($blackNames[0]), array_unique($whiteNames[0])),
             'Two variants on one page must not share class names.',
         );
-        self::assertSame(
-            [],
-            array_intersect(
-                self::idsOf($black),
-                self::idsOf($white),
-            ),
-            'Two variants on one page must not share element ids.',
-        );
+    }
 
-        // The rule still has to reach its own paths.
-        foreach ([$black, $white] as $svg) {
-            preg_match('/\.(cls-1-[0-9a-f]+)/', $svg, $rule);
-            self::assertNotSame([], $rule);
-            self::assertStringContainsString('class="' . $rule[1] . '"', $svg);
-        }
+    /**
+     * All twelve official files use `id="Calque_1"`; duplicated ids in one
+     * document are invalid markup.
+     */
+    #[Test]
+    public function twoIconsOnOnePageDoNotShareElementIds(): void
+    {
+        $artwork = static fn(string $fill): string => '<svg xmlns="http://www.w3.org/2000/svg" id="Calque_1" viewBox="0 0 10 10">'
+            . '<path fill="' . $fill . '" d="M0 0h10v10H0z"/></svg>';
+
+        $this->writeIcon('ai-modified-black.svg', $artwork('#000'));
+        $this->writeIcon('ai-modified-white.svg', $artwork('#fff'));
+
+        $black = (string) $this->subject()->inlineSvg(IconVariant::Modified, white: false);
+        $white = (string) $this->subject()->inlineSvg(IconVariant::Modified, white: true);
+
+        self::assertStringNotContainsString('id="Calque_1"', $black);
+        self::assertSame([], array_intersect(self::idsOf($black), self::idsOf($white)));
     }
 
     /**
@@ -191,11 +246,11 @@ final class IconResolverServiceTest extends UnitTestCase
     }
 
     /**
-     * The same icon twice is one piece of artwork, not two — it stays a single
-     * shared rule set rather than duplicating the styles per occurrence.
+     * The same icon twice is one piece of artwork, not two — the same file
+     * yields the same markup, so nothing drifts between two occurrences.
      */
     #[Test]
-    public function theSameIconTwiceKeepsOneSetOfNames(): void
+    public function theSameIconTwiceProducesTheSameMarkup(): void
     {
         $this->writeIcon(
             'ai-basic-black.svg',
