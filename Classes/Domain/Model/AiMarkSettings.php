@@ -31,5 +31,15 @@ final readonly class AiMarkSettings
         public bool $showDetails = true,
         public string $badgePosition = 'bottom-right',
         public string $badgeSize = 'medium',
+        /**
+         * Whether the icon is accompanied by wording in the site's language.
+         *
+         * The official icons carry an English wordmark and are not translated
+         * — they are the Commission's artwork and apply unchanged across the
+         * Union, which is what makes them recognisable in the first place. The
+         * meaning therefore travels in the text beside them, which the Code of
+         * Practice asks to be plain language.
+         */
+        public bool $showTextLabel = true,
     ) {}
 }

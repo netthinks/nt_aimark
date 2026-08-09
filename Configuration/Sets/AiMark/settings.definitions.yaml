@@ -42,3 +42,16 @@ settings:
       medium: 'Mittel'
       large: 'Groß'
     default: 'medium'
+
+  ntAimark.showTextLabel:
+    label: 'Beschriftung neben dem Symbol anzeigen'
+    description: >-
+      Die offiziellen EU-Symbole tragen den Schriftzug „AI GENERATED" bzw.
+      „AI MODIFIED" und sind ausdrücklich nicht übersetzbar — sie sind die
+      Fassung der Kommission und gelten EU-weit unverändert. Diese Option
+      stellt daneben die Bezeichnung in der Sprache der Website
+      („KI-generiert", „KI-bearbeitet"). Die Kommission empfiehlt eine solche
+      Begleitbeschriftung in einfacher Sprache. Eine eigene Beschriftung an
+      der Datei hat Vorrang.
+    type: bool
+    default: true

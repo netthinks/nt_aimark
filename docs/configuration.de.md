@@ -13,6 +13,7 @@ setzbar — im Backend unter *Websites → Einrichtung → Einstellungen* oder i
 | `ntAimark.showDetails` | bool | `true` | Aufklappbare Detailebene unter dem Symbol |
 | `ntAimark.badgePosition` | string | `bottom-right` | `top-left`, `top-right`, `bottom-left`, `bottom-right` |
 | `ntAimark.badgeSize` | string | `medium` | `small`, `medium`, `large` |
+| `ntAimark.showTextLabel` | bool | `true` | Bezeichnung in der Sprache der Website neben dem Symbol |
 
 ### `labelUnknownOrigin`
 
@@ -30,6 +31,7 @@ ntAimark:
   showDetails: true
   badgePosition: bottom-right
   badgeSize: medium
+  showTextLabel: true
 ```
 
 ### `useFileRenderer`
@@ -44,6 +46,33 @@ zurück. Ein Bild-Renderer müsste diese Ausgabe nachbauen — samt
 Crop-Varianten, Fokusbereich, `loading`, `decoding`, Alternativtext — und
 diese Kopie über jedes Core-Release hinweg nachziehen. Für Bilder sind
 deshalb die ViewHelper der vorgesehene Weg.
+
+### `showTextLabel`
+
+Die offiziellen Symbole tragen den englischen Schriftzug „AI", „AI GENERATED"
+bzw. „AI MODIFIED". **Sie sind nicht übersetzbar**: Die Kommission
+veröffentlicht sie in drei Varianten und vier Farbfassungen, in keiner
+weiteren Sprache, und gestattet keine Änderung des Schriftzugs. Genau darin
+liegt ihr Zweck — ein Zeichen, das in der ganzen Union gleich aussieht, wird
+wiedererkannt wie ein Verkehrsschild. Eine selbst gesetzte deutsche Fassung
+wäre ein Nachbau, kein offizielles Symbol.
+
+Die Bedeutung transportiert deshalb der Text daneben. Diese Einstellung
+stellt neben das Symbol die Bezeichnung in der Sprache der Website —
+„KI-generiert", „KI-bearbeitet", „KI" —, übersetzbar über XLIFF wie jeder
+andere Text der Extension. Der Verhaltenskodex empfiehlt eine solche
+Begleitbeschriftung ausdrücklich, in einfacher Sprache und ohne Abkürzungen
+außer „AI".
+
+Eine an der Datei hinterlegte eigene Beschriftung hat Vorrang. Fehlen die
+Symboldateien ganz, erscheint ohnehin nur der Text — dann wird er nicht
+doppelt gesetzt.
+
+Der Schriftzug bekommt eine eigene Hinterlegung, hell oder dunkel passend zur
+gewählten Symbolvariante. Das ist keine Stilfrage: Die Helligkeitsmessung
+betrifft den kleinen Bereich hinter dem Symbol, der Text reicht darüber
+hinaus — ohne Hinterlegung stünde er über Bildpunkten, die niemand gemessen
+hat.
 
 ## ViewHelper-Argumente
 

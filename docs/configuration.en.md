@@ -13,6 +13,7 @@ site — in the backend under *Sites → Setup → Settings*, or in
 | `ntAimark.showDetails` | bool | `true` | Expandable detail panel below the icon |
 | `ntAimark.badgePosition` | string | `bottom-right` | `top-left`, `top-right`, `bottom-left`, `bottom-right` |
 | `ntAimark.badgeSize` | string | `medium` | `small`, `medium`, `large` |
+| `ntAimark.showTextLabel` | bool | `true` | Wording in the site language beside the icon |
 
 ```yaml
 ntAimark:
@@ -21,6 +22,7 @@ ntAimark:
   showDetails: true
   badgePosition: bottom-right
   badgeSize: medium
+  showTextLabel: true
 ```
 
 ### `labelUnknownOrigin`
@@ -53,6 +55,29 @@ long it may take. Backend → *Settings → Extension Configuration → nt_aimar
 | `additionalExifSignatures` | empty | Extra EXIF signatures, comma-separated as `needle=vendor` |
 | `preserveMetadata` | on | Restore the XMP packet in processed images |
 | `additionalTextTables` | empty | Further tables carrying the text fields |
+
+### `showTextLabel`
+
+The official icons carry the English wordmark "AI", "AI GENERATED" or "AI
+MODIFIED". **They cannot be translated**: the Commission publishes them in
+three variants and four colour versions, in no other language, and permits no
+change to the wording. That is precisely the point — a mark that looks the
+same across the Union is recognised the way a road sign is. A version of one's
+own would be a lookalike, not the official icon.
+
+The meaning therefore travels in the text beside it. This setting places the
+wording in the site's language next to the icon — "AI generated", "AI
+modified", "AI" — translatable through XLIFF like any other text in the
+extension. The Code of Practice explicitly recommends such an accompanying
+label, in plain language and without abbreviations other than "AI".
+
+A caption entered on the file itself takes precedence. With the icon files
+absent the text appears on its own anyway, and is not then set twice.
+
+The wording gets a ground of its own, light or dark to match the chosen icon
+variant. That is not a matter of taste: the brightness measurement covers the
+small area behind the icon, and the text reaches beyond it — without a ground
+it would sit over pixels nobody measured.
 
 ## ViewHelpers
 

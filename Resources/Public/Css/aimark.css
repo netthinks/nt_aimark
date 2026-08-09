@@ -135,6 +135,30 @@
   white-space: nowrap;
 }
 
+/*
+ * The wording beside the icon gets a ground of its own.
+ *
+ * The icon is a filled disc and brings its own contrast; the text does not.
+ * BadgeContrastService samples the small area behind the icon, and the text
+ * reaches beyond it — over pixels nobody measured. Without this the label
+ * would be legible on the sample and possibly not where it actually sits.
+ * On a badge that already has a plate the plate does the job.
+ */
+.nt-aimark__badge--plain .nt-aimark__badge-text {
+  padding: 0.1em 0.4em;
+  border-radius: 0.2em;
+}
+
+.nt-aimark__badge--plain.nt-aimark__badge--icon-white .nt-aimark__badge-text {
+  background: #111111;
+  color: #ffffff;
+}
+
+.nt-aimark__badge--plain.nt-aimark__badge--icon-dark .nt-aimark__badge-text {
+  background: #ffffff;
+  color: #111111;
+}
+
 .nt-aimark__toggle {
   display: inline-block;
   margin-top: 0.35rem;

@@ -48,6 +48,7 @@ final readonly class AiMarkSettingsFactory
                 self::SIZES,
                 $defaults->badgeSize,
             ),
+            showTextLabel: (bool) $settings->get('ntAimark.showTextLabel', $defaults->showTextLabel),
         );
     }
 

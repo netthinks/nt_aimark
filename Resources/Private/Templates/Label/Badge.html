@@ -43,7 +43,14 @@
             </f:else>
         </f:if>
         <f:if condition="{labelText}">
-            <span class="nt-aimark__badge-text">{labelText}</span>
+            <f:then>
+                <span class="nt-aimark__badge-text">{labelText}</span>
+            </f:then>
+            <f:else>
+                <f:if condition="{standardTextKey}">
+                    <span class="nt-aimark__badge-text"><f:translate key="{standardTextKey}" /></span>
+                </f:if>
+            </f:else>
         </f:if>
     </span>
 </f:section>

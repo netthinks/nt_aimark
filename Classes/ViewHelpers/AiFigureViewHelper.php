@@ -63,6 +63,7 @@ final class AiFigureViewHelper extends AbstractLabelViewHelper
             (bool) $this->arguments['showDetails'],
             $file instanceof FileInterface ? $file : null,
             $content,
+            $this->settings()->showTextLabel,
         );
 
         if ($badge === '') {

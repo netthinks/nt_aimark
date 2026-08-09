@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NetThinks\NtAimark\ViewHelpers;
 
 use NetThinks\NtAimark\Domain\Model\AiDeclaration;
+use NetThinks\NtAimark\Domain\Model\AiMarkSettings;
 use NetThinks\NtAimark\Domain\Model\LabelDecision;
 use NetThinks\NtAimark\Domain\Repository\DeclarationRepository;
 use NetThinks\NtAimark\Service\AiMarkSettingsFactory;
@@ -34,12 +35,14 @@ abstract class AbstractLabelViewHelper extends AbstractViewHelper
         }
 
         $declaration = $this->declarationRepository->forFile($file);
-        $decision = $this->disclosureRuleService->resolve(
-            $declaration,
-            $this->settingsFactory->fromRequest($this->request()),
-        );
+        $decision = $this->disclosureRuleService->resolve($declaration, $this->settings());
 
         return [$declaration, $decision];
+    }
+
+    protected function settings(): AiMarkSettings
+    {
+        return $this->settingsFactory->fromRequest($this->request());
     }
 
     /**

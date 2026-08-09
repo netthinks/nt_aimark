@@ -47,6 +47,7 @@ final class LabelRenderService
         bool $showDetails = true,
         ?FileInterface $file = null,
         string $imageMarkup = '',
+        bool $showTextLabel = true,
     ): string {
         if (!$decision->shouldLabel) {
             return '';
@@ -113,6 +114,14 @@ final class LabelRenderService
             // detail panel — and would come to rest below the picture instead
             // of on it.
             'imageMarkup' => $imageMarkup,
+            // The official icons carry an English wordmark and must not be
+            // redrawn — so the meaning travels in the text beside them, in
+            // the language of the site. An entry on the file wins over it.
+            // Suppressed when the icon is absent, because the fallback below
+            // already says the same thing.
+            'standardTextKey' => $showTextLabel && $icon !== null && $decision->labelText === ''
+                ? $this->fallbackTextKey($decision->iconVariant)
+                : '',
         ]);
 
         return trim($view->render('Label/Badge'));

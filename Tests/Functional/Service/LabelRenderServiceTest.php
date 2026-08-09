@@ -192,6 +192,72 @@ final class LabelRenderServiceTest extends FunctionalTestCase
     }
 
     /**
+     * The official icons carry an English wordmark and must not be redrawn or
+     * translated — they are the Commission's artwork and apply unchanged
+     * across the Union. The meaning therefore travels in the wording beside
+     * them, in the language of the site.
+     */
+    #[Test]
+    public function theIconIsAccompaniedByWordingInTheSiteLanguage(): void
+    {
+        $declaration = $this->generatedDeclaration();
+        $decision = (new DisclosureRuleService())->resolve($declaration, new AiMarkSettings());
+
+        $html = $this->rendererWithIcons()->renderBadge(
+            $declaration,
+            $decision,
+            $this->frontendRequest(),
+            showTextLabel: true,
+        );
+
+        self::assertStringContainsString('<svg', $html, 'The official icon still carries the badge.');
+        self::assertStringContainsString('KI-generiert', $html);
+
+        $this->removeEmptyIconDirectory();
+    }
+
+    #[Test]
+    public function theWordingCanBeSwitchedOff(): void
+    {
+        $declaration = $this->generatedDeclaration();
+        $decision = (new DisclosureRuleService())->resolve($declaration, new AiMarkSettings());
+
+        $html = $this->rendererWithIcons()->renderBadge(
+            $declaration,
+            $decision,
+            $this->frontendRequest(),
+            showTextLabel: false,
+        );
+
+        self::assertStringContainsString('<svg', $html);
+        self::assertStringNotContainsString('nt-aimark__badge-text', $html);
+
+        $this->removeEmptyIconDirectory();
+    }
+
+    /**
+     * Without the icon the badge already falls back to the same words. Adding
+     * the standard wording on top would say it twice.
+     */
+    #[Test]
+    public function withoutAnIconTheWordingIsNotRepeated(): void
+    {
+        $declaration = $this->generatedDeclaration();
+        $decision = (new DisclosureRuleService())->resolve($declaration, new AiMarkSettings());
+
+        $html = $this->rendererWithoutIcons()->renderBadge(
+            $declaration,
+            $decision,
+            $this->frontendRequest(),
+            showTextLabel: true,
+        );
+
+        self::assertSame(1, substr_count($html, 'KI-generiert'));
+
+        $this->removeEmptyIconDirectory();
+    }
+
+    /**
      * Used on its own, without image markup, there is nothing to frame.
      */
     #[Test]
