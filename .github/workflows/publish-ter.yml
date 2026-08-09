@@ -94,9 +94,33 @@ jobs:
       - name: Install tailor
         run: composer global require typo3/tailor --prefer-dist --no-progress
 
+      # Tailor packt nach einer eigenen Ausschlussliste und liest
+      # .gitattributes NICHT. Ohne diese Variable landet der komplette
+      # node_modules-Baum im Archiv — gemessen 6,1 MB statt 824 kB.
+      - name: Verify the archive stays lean
+        env:
+          TYPO3_EXCLUDE_FROM_PACKAGING: Build/ExcludeFromPackaging.php
+          VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          php ~/.composer/vendor/bin/tailor create-artefact "${VERSION}"
+          ARCHIVE="tailor-version-artefact/${EXTENSION_KEY}_${VERSION}.zip"
+          SIZE=$(stat -c%s "${ARCHIVE}")
+          echo "Archive: $((SIZE / 1024)) kB"
+          if unzip -l "${ARCHIVE}" | grep -qE ' (node_modules|docs|var)/'; then
+            echo "::error::Development files ended up in the release archive."
+            unzip -l "${ARCHIVE}" | grep -E ' (node_modules|docs|var)/' | head
+            exit 1
+          fi
+          if [ "${SIZE}" -gt 3145728 ]; then
+            echo "::error::Archive is larger than 3 MB — something is in it that does not belong."
+            exit 1
+          fi
+          rm -rf tailor-version-artefact
+
       - name: Publish to TER
         env:
           TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+          TYPO3_EXCLUDE_FROM_PACKAGING: Build/ExcludeFromPackaging.php
           VERSION: ${{ steps.version.outputs.number }}
         run: |
           if [ -z "${TYPO3_API_TOKEN}" ]; then
@@ -106,3 +130,19 @@ jobs:
           php ~/.composer/vendor/bin/tailor ter:publish \
             --comment "Released from ${GITHUB_REF_NAME}" \
             "${VERSION}"
+
+      # Titel, Beschreibung, Zustand und Autor zieht das TER aus der
+      # ext_emconf.php des hochgeladenen Archivs. Composer-Name, Repository,
+      # Handbuch und Schlagworte gehoeren dagegen zur Extension selbst und
+      # muessen eigens gesetzt werden — sonst bleibt die Seite ohne
+      # Installationsbefehl und ohne Verweis auf die Dokumentation.
+      - name: Update extension meta data
+        env:
+          TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+        run: |
+          php ~/.composer/vendor/bin/tailor ter:update \
+            --composer "netthinks/nt-aimark" \
+            --repository "https://github.com/netthinks/nt_aimark" \
+            --issues "https://github.com/netthinks/nt_aimark/issues" \
+            --manual "https://docs.netthinks.com/nt-aimark/" \
+            --tags "ai,ai-act,transparency,accessibility,compliance,metadata"
