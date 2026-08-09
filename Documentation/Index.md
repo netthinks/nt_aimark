@@ -18,6 +18,7 @@ Verordnung (EU) 2024/1689.
 | [Konfiguration](Konfiguration.md) | Einstellungen des Site Sets, Templates überschreiben |
 | [Redaktionsleitfaden](Redaktionsleitfaden.md) | Wie Redakteure den Reiter „KI-Transparenz" ausfüllen |
 | [Regelwerk](Regelwerk.md) | Wann die Extension kennzeichnet und warum |
+| [Architektur](Architektur.md) | Aufbau, Entscheidungsweg, Datenmodell, Erweiterungspunkte |
 | [Metadaten](Metadata.md) | Messergebnis: was die Bildverarbeitung überlebt |
 | [Integration](Integration.md) | Event-Schnittstelle für nt_ai, nt_lingua und eigenen Code |
 | [Entwicklung](Entwicklung.md) | Tests, Codequalität, Release |

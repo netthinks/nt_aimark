@@ -42,6 +42,7 @@ nav:
   - Configuration: configuration.md
   - Editorial Guide: user-guide.md
   - Rules: rules.md
+  - Architecture: architecture.md
   - Metadata: metadata.md
   - Integration: integration.md
   - Developer Guide: developer.md
@@ -96,6 +97,7 @@ plugins:
             Configuration: Konfiguration
             Editorial Guide: Redaktionsleitfaden
             Rules: Regelwerk
+            Architecture: Architektur
             Metadata: Metadaten
             Integration: Integration
             Developer Guide: Entwicklerhandbuch
