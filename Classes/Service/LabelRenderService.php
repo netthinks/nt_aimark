@@ -108,6 +108,7 @@ final class LabelRenderService
             'detailId' => 'aimark-detail-' . $declaration->recordUid . '-' . ++$this->instanceCounter,
             'detailRows' => $detailRows,
             'showDetails' => $withDetails,
+            'll' => self::LL,
             // When the image markup comes along, the badge is placed inside a
             // frame around it. Without that frame it would be positioned
             // against the whole figure — which also holds the toggle and the

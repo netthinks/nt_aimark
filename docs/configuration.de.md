@@ -10,10 +10,10 @@ setzbar — im Backend unter *Websites → Einrichtung → Einstellungen* oder i
 |---|---|---|---|
 | `ntAimark.labelUnknownOrigin` | bool | `false` | Ob Dateien mit unbekannter Herkunft gekennzeichnet werden |
 | `ntAimark.useFileRenderer` | bool | `true` | Audio und Video ohne Template-Anpassung kennzeichnen |
-| `ntAimark.showDetails` | bool | `true` | Aufklappbare Detailebene unter dem Symbol |
+| `ntAimark.showDetails` | bool | `false` | Symbol wird anklickbar und klappt Angaben zum KI-System auf |
 | `ntAimark.badgePosition` | string | `bottom-right` | `top-left`, `top-right`, `bottom-left`, `bottom-right` |
 | `ntAimark.badgeSize` | string | `medium` | `small`, `medium`, `large` |
-| `ntAimark.showTextLabel` | bool | `true` | Bezeichnung in der Sprache der Website neben dem Symbol |
+| `ntAimark.showTextLabel` | bool | `false` | Bezeichnung in der Sprache der Website neben dem Symbol |
 
 ### `labelUnknownOrigin`
 
@@ -28,10 +28,10 @@ Beispiel `settings.yaml`:
 ntAimark:
   labelUnknownOrigin: false
   useFileRenderer: true
-  showDetails: true
+  showDetails: false
   badgePosition: bottom-right
   badgeSize: medium
-  showTextLabel: true
+  showTextLabel: false
 ```
 
 ### `useFileRenderer`
@@ -46,6 +46,27 @@ zurück. Ein Bild-Renderer müsste diese Ausgabe nachbauen — samt
 Crop-Varianten, Fokusbereich, `loading`, `decoding`, Alternativtext — und
 diese Kopie über jedes Core-Release hinweg nachziehen. Für Bilder sind
 deshalb die ViewHelper der vorgesehene Weg.
+
+### `showDetails`
+
+Standardmäßig **aus**. Art. 50 Abs. 4 verlangt die Offenlegung, dass KI
+beteiligt war — nicht das eingesetzte System, den Anbieter oder das
+Erzeugungsdatum. Diese Angaben sind eine freiwillige Zugabe, und die
+zurückhaltende Kennzeichnung ist das Symbol allein.
+
+Wird die Option eingeschaltet, ist **das Symbol selbst die Schaltfläche**, die
+die Angaben aufklappt. Eine zusätzliche Schaltfläche unter dem Bild gab es
+früher; sie sagte dasselbe zweimal und war das lauteste Element der ganzen
+Kennzeichnung.
+
+Das Symbol wird dann zu einem `<button>` mit `aria-expanded` und
+`aria-controls`, ist per Tastatur erreichbar, und der Fokus bleibt beim
+Aufklappen darauf. Als Name bekommt es die Textalternative des Symbols plus
+den Hinweis auf die Detailebene.
+
+Bewusst **kein** Hover: Auf Touch-Geräten gäbe es keinen Hover-Zustand, und
+eine Angabe, die nur mit Maus erreichbar ist, wäre für einen Teil der Nutzer
+gar nicht vorhanden.
 
 ### `showTextLabel`
 

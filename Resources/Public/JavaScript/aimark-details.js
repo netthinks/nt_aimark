@@ -1,26 +1,28 @@
 /**
  * Toggle for the AI disclosure detail panel.
  *
- * Focus deliberately stays on the button: moving it into the panel would make
- * the disclosure harder to operate, not easier.
+ * The badge itself is the control: a separate button below the picture said
+ * the same thing twice and was the loudest part of the label. Focus stays on
+ * the badge — moving it into the panel would make the disclosure harder to
+ * operate, not easier.
  */
-const toggle = (button) => {
-  const panel = document.getElementById(button.getAttribute('aria-controls'));
+const toggle = (control) => {
+  const panel = document.getElementById(control.getAttribute('aria-controls'));
 
   if (!panel) {
     return;
   }
 
-  const expanded = button.getAttribute('aria-expanded') === 'true';
+  const expanded = control.getAttribute('aria-expanded') === 'true';
 
-  button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+  control.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   panel.toggleAttribute('hidden', expanded);
 };
 
 document.addEventListener('click', (event) => {
-  const button = event.target.closest('.nt-aimark__toggle');
+  const control = event.target.closest('.nt-aimark__badge[aria-controls]');
 
-  if (button) {
-    toggle(button);
+  if (control) {
+    toggle(control);
   }
 });

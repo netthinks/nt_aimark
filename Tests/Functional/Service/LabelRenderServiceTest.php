@@ -177,18 +177,19 @@ final class LabelRenderServiceTest extends FunctionalTestCase
         );
 
         self::assertMatchesRegularExpression(
-            '#<span class="nt-aimark__frame"><img[^>]*><span class="nt-aimark__badge[^"]*"#',
+            '#<span class="nt-aimark__frame"><img[^>]*><(?:span|button)[^>]*nt-aimark__badge#s',
             $html,
             'The frame has to wrap image and badge together.',
         );
 
-        // Toggle and detail panel stay outside — they must not stretch the box
-        // the badge is positioned against.
-        $frame = (string) preg_replace('#^.*<span class="nt-aimark__frame">(.*?)</span></span>.*$#s', '$1', $html);
+        // The detail panel stays outside — it must not stretch the box the
+        // badge is positioned against.
+        $badgeEnd = strpos($html, '</button>');
+        $panelStart = strpos($html, 'nt-aimark__detail');
 
-        self::assertStringNotContainsString('nt-aimark__toggle', $frame);
-        self::assertStringNotContainsString('nt-aimark__detail', $frame);
-        self::assertStringContainsString('nt-aimark__toggle', $html);
+        self::assertIsInt($badgeEnd, 'With the detail panel on, the badge is the button that opens it.');
+        self::assertIsInt($panelStart);
+        self::assertGreaterThan($badgeEnd, $panelStart, 'The panel belongs after the frame, not inside it.');
     }
 
     /**

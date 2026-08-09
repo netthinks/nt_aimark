@@ -10,19 +10,19 @@ site — in the backend under *Sites → Setup → Settings*, or in
 |---|---|---|---|
 | `ntAimark.labelUnknownOrigin` | bool | `false` | Whether files of unknown origin are labelled |
 | `ntAimark.useFileRenderer` | bool | `true` | Label audio and video without template changes |
-| `ntAimark.showDetails` | bool | `true` | Expandable detail panel below the icon |
+| `ntAimark.showDetails` | bool | `false` | Makes the icon clickable and unfolds the AI system details |
 | `ntAimark.badgePosition` | string | `bottom-right` | `top-left`, `top-right`, `bottom-left`, `bottom-right` |
 | `ntAimark.badgeSize` | string | `medium` | `small`, `medium`, `large` |
-| `ntAimark.showTextLabel` | bool | `true` | Wording in the site language beside the icon |
+| `ntAimark.showTextLabel` | bool | `false` | Wording in the site language beside the icon |
 
 ```yaml
 ntAimark:
   labelUnknownOrigin: false
   useFileRenderer: true
-  showDetails: true
+  showDetails: false
   badgePosition: bottom-right
   badgeSize: medium
-  showTextLabel: true
+  showTextLabel: false
 ```
 
 ### `labelUnknownOrigin`
@@ -55,6 +55,25 @@ long it may take. Backend → *Settings → Extension Configuration → nt_aimar
 | `additionalExifSignatures` | empty | Extra EXIF signatures, comma-separated as `needle=vendor` |
 | `preserveMetadata` | on | Restore the XMP packet in processed images |
 | `additionalTextTables` | empty | Further tables carrying the text fields |
+
+### `showDetails`
+
+**Off** by default. Article 50(4) asks for the disclosure that AI was
+involved — not for the system used, the vendor or the creation date. Those are
+a voluntary addition, and the quiet form of the label is the icon on its own.
+
+With the option on, **the icon itself is the control** that unfolds the
+details. There used to be a separate button below the picture; it said the
+same thing twice and was the loudest element of the whole label.
+
+The icon then becomes a `<button>` with `aria-expanded` and `aria-controls`,
+reachable by keyboard, and focus stays on it while the panel opens. Its
+accessible name is the icon's text alternative plus the hint about the detail
+layer.
+
+Deliberately **not** a hover: touch devices have no hover state, and a piece of
+information reachable only with a mouse would not exist at all for part of the
+audience.
 
 ### `showTextLabel`
 

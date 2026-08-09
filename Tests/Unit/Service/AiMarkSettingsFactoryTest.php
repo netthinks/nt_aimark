@@ -39,9 +39,14 @@ final class AiMarkSettingsFactoryTest extends UnitTestCase
 
         self::assertFalse($settings->labelUnknownOrigin);
         self::assertTrue($settings->useFileRenderer);
-        self::assertTrue($settings->showDetails);
         self::assertSame('bottom-right', $settings->badgePosition);
         self::assertSame('medium', $settings->badgeSize);
+
+        // The quiet default: the official icon and nothing else. Neither the
+        // detail panel nor the wording beside it is required by Art. 50(4),
+        // and both add to the label rather than to the disclosure.
+        self::assertFalse($settings->showDetails);
+        self::assertFalse($settings->showTextLabel);
     }
 
     #[Test]

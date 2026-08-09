@@ -34,7 +34,7 @@ final class AiLabelViewHelper extends AbstractLabelViewHelper
         $this->registerArgument('file', 'object', 'FAL file or file reference', true);
         $this->registerArgument('position', 'string', 'Badge position within the image', false, 'bottom-right');
         $this->registerArgument('size', 'string', 'Badge size', false, 'medium');
-        $this->registerArgument('showDetails', 'bool', 'Render the expandable detail panel', false, true);
+        $this->registerArgument('showDetails', 'bool', 'Offer the expandable detail panel. Null follows the site setting.', false, null);
         $this->registerArgument('showTextLabel', 'bool', 'Wording beside the icon. Null follows the site setting; false is the one to use for thumbnails, where it no longer fits.', false, null);
     }
 
@@ -55,7 +55,7 @@ final class AiLabelViewHelper extends AbstractLabelViewHelper
             $this->request(),
             (string) $this->arguments['position'],
             (string) $this->arguments['size'],
-            (bool) $this->arguments['showDetails'],
+            $this->arguments['showDetails'] ?? $this->settings()->showDetails,
             $file instanceof FileInterface ? $file : null,
             showTextLabel: $this->arguments['showTextLabel'] ?? $this->settings()->showTextLabel,
         );

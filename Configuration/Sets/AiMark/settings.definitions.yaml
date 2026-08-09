@@ -17,12 +17,14 @@ settings:
     default: true
 
   ntAimark.showDetails:
-    label: 'Aufklappbare Detailebene anzeigen'
+    label: 'Aufklappbare Detailebene anbieten'
     description: >-
-      Blendet unter dem Symbol eine Schaltfläche ein, die Angaben zum
-      eingesetzten System und zum Erzeugungsdatum aufklappt.
+      Macht das Symbol anklickbar und klappt darunter Angaben zum eingesetzten
+      System und zum Erzeugungsdatum auf. Standardmäßig aus: Art. 50 Abs. 4
+      verlangt die Offenlegung, dass KI beteiligt war — nicht das System, den
+      Anbieter oder das Datum. Diese Angaben sind eine freiwillige Zugabe.
     type: bool
-    default: true
+    default: false
 
   ntAimark.badgePosition:
     label: 'Position des Symbols im Bild'
@@ -52,6 +54,7 @@ settings:
       stellt daneben die Bezeichnung in der Sprache der Website
       („KI-generiert", „KI-bearbeitet"). Die Kommission empfiehlt eine solche
       Begleitbeschriftung in einfacher Sprache. Eine eigene Beschriftung an
-      der Datei hat Vorrang.
+      der Datei hat Vorrang. Standardmäßig aus — das Symbol allein ist die
+      unauffälligere und EU-weit einheitliche Form.
     type: bool
-    default: true
+    default: false

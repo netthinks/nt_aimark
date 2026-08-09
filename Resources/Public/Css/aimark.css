@@ -74,23 +74,23 @@
 }
 
 .nt-aimark__badge--top-left {
-  top: 0.5rem;
-  left: 0.5rem;
+  top: 0.25rem;
+  left: 0.25rem;
 }
 
 .nt-aimark__badge--top-right {
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.25rem;
+  right: 0.25rem;
 }
 
 .nt-aimark__badge--bottom-left {
-  bottom: 0.5rem;
-  left: 0.5rem;
+  bottom: 0.25rem;
+  left: 0.25rem;
 }
 
 .nt-aimark__badge--bottom-right {
-  bottom: 0.5rem;
-  right: 0.5rem;
+  bottom: 0.25rem;
+  right: 0.25rem;
 }
 
 .nt-aimark__badge--small {
@@ -189,22 +189,31 @@
   color: #111111;
 }
 
-.nt-aimark__toggle {
-  display: inline-block;
-  margin-top: 0.35rem;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid currentColor;
-  border-radius: 0.25em;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: 0.8125rem;
+/*
+ * The badge doubles as the control for the detail panel, so it has to shed the
+ * browser's button styling without losing a visible focus ring.
+ */
+.nt-aimark__badge--interactive {
+  font-family: inherit;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.nt-aimark__toggle:focus-visible {
-  outline: 3px solid currentColor;
+.nt-aimark__badge--interactive.nt-aimark__badge--plain {
+  background: transparent;
+  border: 0;
+}
+
+.nt-aimark__badge--interactive:focus-visible {
+  outline: 3px solid #ffffff;
   outline-offset: 2px;
+  box-shadow: 0 0 0 5px #111111;
+}
+
+.nt-aimark__badge--interactive.nt-aimark__badge--icon-dark:focus-visible {
+  outline-color: #111111;
+  box-shadow: 0 0 0 5px #ffffff;
 }
 
 .nt-aimark__detail {

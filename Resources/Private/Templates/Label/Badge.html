@@ -11,10 +11,6 @@
     </f:if>
 
     <f:if condition="{showDetails}">
-        <button type="button"
-                class="nt-aimark__toggle"
-                aria-expanded="false"
-                aria-controls="{detailId}"><f:translate key="LLL:EXT:nt_aimark/Resources/Private/Language/locallang.xlf:detail.toggle" /></button>
         <div id="{detailId}" class="nt-aimark__detail" hidden="hidden">
             <dl class="nt-aimark__detail-list">
                 <f:for each="{detailRows}" as="row">
@@ -32,27 +28,54 @@
 </f:spaceless>
 
 <f:section name="Badge">
-    <span class="nt-aimark__badge nt-aimark__badge--{position} nt-aimark__badge--{size} nt-aimark__badge--{variant} nt-aimark__badge--{contrast} nt-aimark__badge--icon-{iconColour}"
-          data-ai-variant="{variant}">
-        <f:if condition="{icon}">
-            <f:then>
-                <span class="nt-aimark__badge-icon" role="img" aria-label="{f:translate(key: ariaLabelKey)}">{icon -> f:format.raw()}</span>
-            </f:then>
-            <f:else>
-                <span class="nt-aimark__badge-fallback"><f:translate key="{fallbackTextKey}" /></span>
-            </f:else>
-        </f:if>
-        <f:if condition="{labelText}">
-            <f:then>
-                <span class="nt-aimark__badge-text">{labelText}</span>
-            </f:then>
-            <f:else>
-                <f:if condition="{standardTextKey}">
-                    <span class="nt-aimark__badge-text"><f:translate key="{standardTextKey}" /></span>
-                </f:if>
-            </f:else>
-        </f:if>
-    </span>
+    <f:variable name="badgeClasses">nt-aimark__badge nt-aimark__badge--{position} nt-aimark__badge--{size} nt-aimark__badge--{variant} nt-aimark__badge--{contrast} nt-aimark__badge--icon-{iconColour}</f:variable>
+
+    <f:if condition="{showDetails}">
+        <f:then>
+            <f:comment>
+                With the detail panel switched on the badge is the control that
+                opens it. A separate button below the picture said the same
+                thing twice and was the loudest element of the whole label.
+            </f:comment>
+            <button type="button"
+                    class="{badgeClasses} nt-aimark__badge--interactive"
+                    data-ai-variant="{variant}"
+                    aria-expanded="false"
+                    aria-controls="{detailId}"
+                    aria-label="{f:translate(key: ariaLabelKey)} — {f:translate(key: '{ll}detail.toggle')}"><f:render section="Face" arguments="{_all}" /></button>
+        </f:then>
+        <f:else>
+            <span class="{badgeClasses}" data-ai-variant="{variant}"><f:render section="Face" arguments="{_all}" /></span>
+        </f:else>
+    </f:if>
+</f:section>
+
+<f:section name="Face">
+    <f:if condition="{icon}">
+        <f:then>
+            <f:if condition="{showDetails}">
+                <f:then>
+                    <span class="nt-aimark__badge-icon" aria-hidden="true">{icon -> f:format.raw()}</span>
+                </f:then>
+                <f:else>
+                    <span class="nt-aimark__badge-icon" role="img" aria-label="{f:translate(key: ariaLabelKey)}">{icon -> f:format.raw()}</span>
+                </f:else>
+            </f:if>
+        </f:then>
+        <f:else>
+            <span class="nt-aimark__badge-fallback"><f:translate key="{fallbackTextKey}" /></span>
+        </f:else>
+    </f:if>
+    <f:if condition="{labelText}">
+        <f:then>
+            <span class="nt-aimark__badge-text">{labelText}</span>
+        </f:then>
+        <f:else>
+            <f:if condition="{standardTextKey}">
+                <span class="nt-aimark__badge-text"><f:translate key="{standardTextKey}" /></span>
+            </f:if>
+        </f:else>
+    </f:if>
 </f:section>
 
 </html>
