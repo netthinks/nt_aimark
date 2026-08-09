@@ -108,7 +108,14 @@
 .nt-aimark__icon {
   display: block;
   width: auto;
-  height: 1.5em;
+  /*
+   * Measured, not chosen: the wordmark occupies 129 of the 566.93 viewBox
+   * units, i.e. 23 % of the icon's height. At the previous 1.5em the letters
+   * came out 4.4 px tall next to 13 px body text — a smudge rather than a
+   * mark. 2.75em puts them at roughly 8 px, which is where "clearly
+   * perceivable" starts.
+   */
+  height: 2.75em;
   /*
    * Deliberately no `fill`. The official icons are two-tone — a filled disc
    * with the wordmark knocked out of it — and only the knocked-out part
@@ -121,11 +128,11 @@
 }
 
 .nt-aimark__badge--small .nt-aimark__icon {
-  height: 1.25em;
+  height: 2.25em;
 }
 
 .nt-aimark__badge--large .nt-aimark__icon {
-  height: 1.75em;
+  height: 3.5em;
 }
 
 /* Shown when the official icon files have not been downloaded. */
