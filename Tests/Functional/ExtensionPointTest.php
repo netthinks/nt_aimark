@@ -154,6 +154,27 @@ final class ExtensionPointTest extends FunctionalTestCase
     }
 
     /**
+     * An interface nobody calls is documentation, not an extension point.
+     *
+     * The compositor was declared and registered but never reached from the
+     * processing chain, so an implementation in a second package would simply
+     * never have run.
+     */
+    #[Test]
+    public function theCompositorIsReachedFromTheProcessingChain(): void
+    {
+        $listener = file_get_contents(
+            dirname(__DIR__, 2) . '/Classes/EventListener/AfterFileProcessingListener.php',
+        );
+
+        self::assertIsString($listener);
+        self::assertStringContainsString('iconCompositor->composite(', $listener);
+
+        // And it must cost nothing while no second package is installed.
+        self::assertStringContainsString('instanceof NullIconCompositor', $listener);
+    }
+
+    /**
      * The rule that shapes the whole distribution model: no licence check, no
      * activation, no domain binding, no phone-home — not even prepared.
      */
