@@ -69,6 +69,7 @@ final readonly class TransparencyModuleController
         );
 
         $summaries = $this->repository->storageSummaries();
+        $totals = $this->totals($summaries);
         $pages = (int) ceil($total / self::PAGE_SIZE);
 
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
@@ -77,7 +78,8 @@ final readonly class TransparencyModuleController
             // One set of figures for the whole installation. Per storage the
             // numbers answer "where is the work"; added up they answer "how
             // far along are we", which is the question the module opens with.
-            'totals' => $this->totals($summaries),
+            'totals' => $totals,
+            'segments' => $this->chartSegments($this->repository->statusDistribution(), $totals['total']),
             'pagination' => $this->pagination($page, $pages, $parameters),
             'filterValues' => [
                 'createdAfter' => $filter['createdAfter'] > 0 ? date('Y-m-d', $filter['createdAfter']) : '',
@@ -219,9 +221,59 @@ final readonly class TransparencyModuleController
     }
 
     /**
+     * Ring segments for the status chart.
+     *
+     * The circle is drawn with a radius whose circumference is exactly 100, so
+     * a percentage can be used as a dash length without further arithmetic in
+     * the template. Everything lands in presentation attributes — the chart
+     * must not depend on inline CSS, which a Content Security Policy with a
+     * nonce drops without a word.
+     *
+     * @param array<int, int> $distribution
+     *
+     * @return list<array{labelKey: string, value: int, percent: float, percentLabel: string, colour: string, dashArray: string, dashOffset: string}>
+     */
+    private function chartSegments(array $distribution, int $total): array
+    {
+        if ($total <= 0) {
+            return [];
+        }
+
+        $segments = [];
+        $covered = 0.0;
+
+        foreach (AiStatus::cases() as $case) {
+            $value = $distribution[$case->value] ?? 0;
+
+            if ($value === 0) {
+                continue;
+            }
+
+            $percent = round($value / $total * 100, 3);
+
+            $segments[] = [
+                'labelKey' => $case->labelKey(),
+                'value' => $value,
+                'percent' => $percent,
+                // Three decimals are what the ring geometry needs; one is what
+                // a legend can be read at.
+                'percentLabel' => number_format($percent, 1),
+                'colour' => $case->chartColour(),
+                'dashArray' => $percent . ' ' . round(100 - $percent, 3),
+                // 25 puts the start of the ring at twelve o'clock.
+                'dashOffset' => (string) round(25 - $covered, 3),
+            ];
+
+            $covered += $percent;
+        }
+
+        return $segments;
+    }
+
+    /**
      * @param list<StorageSummary> $summaries
      *
-     * @return array{total: int, reviewed: int, open: int, brokenC2pa: int, reviewedPercent: int}
+     * @return array{total: int, reviewed: int, open: int, brokenC2pa: int, reviewedPercent: int, openPercent: int}
      */
     private function totals(array $summaries): array
     {
@@ -239,7 +291,9 @@ final readonly class TransparencyModuleController
             'reviewed' => $reviewed,
             'open' => $open,
             'brokenC2pa' => $broken,
-            'reviewedPercent' => $total > 0 ? (int) round($reviewed / $total * 100) : 0,
+            'reviewedPercent' => $reviewedPercent = $total > 0 ? (int) round($reviewed / $total * 100) : 0,
+            // The remainder of the ring, so the template needs no arithmetic.
+            'openPercent' => 100 - $reviewedPercent,
         ];
     }
 

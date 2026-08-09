@@ -85,6 +85,15 @@
 			<trans-unit id="filter.reset" resname="filter.reset">
 				<source>Reset</source>
 			</trans-unit>
+			<trans-unit id="chart.progress" resname="chart.progress">
+				<source>Review progress</source>
+			</trans-unit>
+			<trans-unit id="chart.progressAria" resname="chart.progressAria">
+				<source>%1$s of %2$s files reviewed</source>
+			</trans-unit>
+			<trans-unit id="chart.distribution" resname="chart.distribution">
+				<source>Distribution by AI involvement</source>
+			</trans-unit>
 			<trans-unit id="filter.allStorages" resname="filter.allStorages">
 				<source>All storages</source>
 			</trans-unit>

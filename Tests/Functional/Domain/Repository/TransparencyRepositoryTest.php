@@ -164,6 +164,82 @@ final class TransparencyRepositoryTest extends FunctionalTestCase
     }
 
     /**
+     * Converters write a WebP and an AVIF next to every image. They show the
+     * same picture, so a separate declaration says nothing new — but they do
+     * treble the work list and drag the reviewed percentage down to a figure
+     * that describes the converter rather than the review. On this project
+     * that was 162 of 560 files.
+     */
+    #[Test]
+    public function formatVariantsOfAnImageStayOutOfTheReview(): void
+    {
+        $this->givenFile(20, '/photo.jpg.webp');
+        $this->givenFile(21, '/photo.jpg.avif');
+        $this->givenFile(22, '/photo.png.webp');
+
+        $identifiers = array_column($this->subject->findAssets(), 'identifier');
+
+        self::assertNotContains('/photo.jpg.webp', $identifiers);
+        self::assertNotContains('/photo.jpg.avif', $identifiers);
+        self::assertNotContains('/photo.png.webp', $identifiers);
+    }
+
+    /**
+     * The distinction is the second extension. Somebody uploading a WebP has
+     * uploaded a picture like any other, and leaving it out of the review
+     * would be a gap in exactly the evidence this module produces.
+     */
+    #[Test]
+    public function anUploadedWebpIsNotMistakenForAFormatVariant(): void
+    {
+        $this->givenFile(23, '/holiday.webp');
+        $this->givenFile(24, '/holiday.avif');
+
+        $identifiers = array_column($this->subject->findAssets(), 'identifier');
+
+        self::assertContains('/holiday.webp', $identifiers);
+        self::assertContains('/holiday.avif', $identifiers);
+    }
+
+    /**
+     * The figures at the top of the module have to describe the same set of
+     * files as the list below them.
+     */
+    #[Test]
+    public function theFiguresCountTheSameFilesAsTheList(): void
+    {
+        $this->givenFile(25, '/photo.jpg.webp');
+
+        $counted = 0;
+
+        foreach ($this->subject->storageSummaries() as $summary) {
+            $counted += $summary->total;
+        }
+
+        self::assertSame($this->subject->countAssets(), $counted);
+        self::assertSame($counted, array_sum($this->subject->statusDistribution()));
+    }
+
+    private function givenFile(int $uid, string $identifier): void
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool->getConnectionForTable('sys_file')->insert('sys_file', [
+            'uid' => $uid,
+            'pid' => 0,
+            'storage' => 1,
+            'identifier' => $identifier,
+            'name' => ltrim($identifier, '/'),
+            'mime_type' => 'image/webp',
+            'missing' => 0,
+        ]);
+        $connectionPool->getConnectionForTable('sys_file_metadata')->insert('sys_file_metadata', [
+            'pid' => 0,
+            'file' => $uid,
+            'tx_ntaimark_status' => AiStatus::Unreviewed->value,
+        ]);
+    }
+
+    /**
      * Storage 0 is a storage like any other — FAL puts files that live outside
      * every configured storage there, and on this project that is a quarter of
      * the whole file base. It can therefore not double as the "no filter"

@@ -7,6 +7,7 @@ namespace NetThinks\NtAimark\Domain\Repository;
 use NetThinks\NtAimark\Domain\Enum\AiStatus;
 use NetThinks\NtAimark\Domain\Enum\C2paState;
 use NetThinks\NtAimark\Domain\Model\StorageSummary;
+use NetThinks\NtAimark\Service\ExtensionSettings;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -21,9 +22,70 @@ final readonly class TransparencyRepository
 {
     private const METADATA_TABLE = 'sys_file_metadata';
 
+    /**
+     * Extensions a converter appends to an existing image file.
+     *
+     * @var list<string>
+     */
+    private const DERIVED_EXTENSIONS = ['webp', 'avif'];
+
+    /**
+     * What such a file was derived from. Both halves are needed: only a name
+     * carrying two extensions — `photo.jpg.webp` — is a converter product. A
+     * plain `photo.webp` is somebody's upload and stays in the review.
+     *
+     * @var list<string>
+     */
+    private const ORIGINAL_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff'];
+
     public function __construct(
         private ConnectionPool $connectionPool,
+        private ExtensionSettings $settings,
     ) {}
+
+    /**
+     * How many files sit in each status, across every storage.
+     *
+     * Counted in SQL rather than derived from the storage summaries: those
+     * only separate "reviewed" from "open", which is not enough to show what
+     * the reviewed part actually consists of.
+     *
+     * @return array<int, int> status value => count, every status present
+     */
+    public function statusDistribution(): array
+    {
+        $queryBuilder = $this->queryBuilder();
+
+        $rows = $queryBuilder
+            ->select('m.tx_ntaimark_status')
+            ->addSelectLiteral('COUNT(*) AS files')
+            ->from(self::METADATA_TABLE, 'm')
+            ->join('m', 'sys_file', 'f', $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('m.file')))
+            ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+
+        $this->excludeDerivedFormats($queryBuilder);
+
+        $rows = $queryBuilder
+            ->groupBy('m.tx_ntaimark_status')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $distribution = [];
+
+        foreach (AiStatus::cases() as $case) {
+            $distribution[$case->value] = 0;
+        }
+
+        foreach ($rows as $row) {
+            $status = AiStatus::tryFrom((int) $row['tx_ntaimark_status']);
+
+            if ($status !== null) {
+                $distribution[$status->value] = (int) $row['files'];
+            }
+        }
+
+        return $distribution;
+    }
 
     /**
      * One row per storage, so an editor sees where the work is.
@@ -53,7 +115,11 @@ final readonly class TransparencyRepository
             )
             ->from(self::METADATA_TABLE, 'm')
             ->join('m', 'sys_file', 'f', $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('m.file')))
-            ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)))
+            ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+
+        $this->excludeDerivedFormats($queryBuilder);
+
+        $rows = $queryBuilder
             ->groupBy('f.storage')
             ->orderBy('f.storage')
             ->executeQuery()
@@ -218,6 +284,33 @@ final readonly class TransparencyRepository
     }
 
     /**
+     * Keeps converter output out of the review.
+     *
+     * Matched by name — `photo.jpg.webp` — rather than by looking the original
+     * up: the pattern is what the converters produce, it needs no subquery on
+     * every list request, and a genuinely uploaded `photo.webp` keeps its own
+     * declaration because it carries no second extension.
+     *
+     * Switchable off in the extension settings, for installations that want
+     * every file assessed separately.
+     */
+    private function excludeDerivedFormats(QueryBuilder $queryBuilder): void
+    {
+        if (!$this->settings->hideDerivedFormats()) {
+            return;
+        }
+
+        foreach (self::DERIVED_EXTENSIONS as $derived) {
+            foreach (self::ORIGINAL_EXTENSIONS as $original) {
+                $queryBuilder->andWhere($queryBuilder->expr()->notLike(
+                    'f.identifier',
+                    $queryBuilder->createNamedParameter('%.' . $original . '.' . $derived),
+                ));
+            }
+        }
+    }
+
+    /**
      * @param list<int> $statuses
      */
     private function buildAssetQuery(array $statuses, int $storage, int $createdAfter, int $createdBefore): QueryBuilder
@@ -228,6 +321,8 @@ final readonly class TransparencyRepository
             ->from(self::METADATA_TABLE, 'm')
             ->join('m', 'sys_file', 'f', $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('m.file')))
             ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+
+        $this->excludeDerivedFormats($queryBuilder);
 
         $statuses = array_values(array_filter(
             array_map(intval(...), $statuses),

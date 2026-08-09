@@ -47,6 +47,21 @@ final readonly class ExtensionSettings
     }
 
     /**
+     * Whether automatically produced format variants are kept out of the
+     * review.
+     *
+     * Converters write a second and third file next to every image
+     * (`photo.jpg.webp`, `photo.jpg.avif`). They show the same picture as the
+     * original, so a separate declaration would say nothing new — but they do
+     * treble the work list and push the reviewed percentage down to a figure
+     * that describes the converter rather than the review.
+     */
+    public function hideDerivedFormats(): bool
+    {
+        return (bool) (int) $this->get('hideDerivedFormats', '1');
+    }
+
+    /**
      * @return array<string, string> Needle => vendor
      */
     public function additionalExifSignatures(): array

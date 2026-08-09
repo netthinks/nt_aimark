@@ -111,6 +111,18 @@
 				<source>Reset</source>
 				<target>Zurücksetzen</target>
 			</trans-unit>
+			<trans-unit id="chart.progress" resname="chart.progress">
+				<source>Review progress</source>
+				<target>Prüffortschritt</target>
+			</trans-unit>
+			<trans-unit id="chart.progressAria" resname="chart.progressAria">
+				<source>%1$s of %2$s files reviewed</source>
+				<target>%1$s von %2$s Dateien geprüft</target>
+			</trans-unit>
+			<trans-unit id="chart.distribution" resname="chart.distribution">
+				<source>Distribution by AI involvement</source>
+				<target>Verteilung nach KI-Anteil</target>
+			</trans-unit>
 			<trans-unit id="filter.allStorages" resname="filter.allStorages">
 				<source>All storages</source>
 				<target>Alle Speicher</target>

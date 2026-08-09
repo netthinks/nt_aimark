@@ -12,3 +12,6 @@ preserveMetadata = 1
 
 # cat=texts; type=string; label=Zusätzliche Tabellen für Textkennzeichnung: Kommagetrennt, z. B. "tx_news_domain_model_news". pages und tt_content sind immer dabei. Nach einer Änderung Datenbankschema aktualisieren.
 additionalTextTables =
+
+# cat=list; type=boolean; label=Formatvarianten ausblenden: Viele Installationen legen zu jedem Bild automatisch eine WebP- und AVIF-Fassung als eigene Datei an (bild.jpg.webp). Sie zeigen denselben Inhalt wie das Original und blähen Arbeitsliste und Prüfquote auf. Ausschalten, wenn diese Dateien einzeln eingestuft werden sollen.
+hideDerivedFormats = 1

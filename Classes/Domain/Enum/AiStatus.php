@@ -64,4 +64,25 @@ enum AiStatus: int
             self::UnknownOrigin => 'bg-light text-dark',
         };
     }
+
+    /**
+     * Segment colour in the module's charts.
+     *
+     * Fixed values rather than CSS variables: the chart is an SVG built from
+     * presentation attributes so that no Content Security Policy can drop it,
+     * and these mid-tones stay legible on the light and the dark backend alike.
+     * The chart never carries meaning by colour alone — the legend beside it
+     * names every segment and its count.
+     */
+    public function chartColour(): string
+    {
+        return match ($this) {
+            self::Unreviewed => '#8a9199',
+            self::Suggested => '#e0a800',
+            self::NoAi => '#2f9e5f',
+            self::Generated => '#1f8fb0',
+            self::Modified => '#5a4fcf',
+            self::UnknownOrigin => '#c2c8ce',
+        };
+    }
 }
