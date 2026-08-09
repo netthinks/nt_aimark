@@ -25,8 +25,12 @@ Signaturliste über EXIF-Felder. Die Bestätigung bleibt beim Menschen.
 EU-Symbolen, inklusive aufklappbarer Detailebene. Für Texte ein Satz statt
 eines Symbols.
 
+![Ein KI-erzeugtes Bild im Frontend mit dem offiziellen EU-Symbol „AI GENERATED" unten rechts und der Schaltfläche „Details zur KI-Nutzung" darunter](assets/frontend-badge.png)
+
 **Nachweisen** — Backend-Modul mit Übersicht über geprüfte und offene Dateien
 sowie ein Protokoll aller Statusänderungen.
+
+![Das Backend-Modul „KI-Transparenz" mit Ringdiagrammen für Prüffortschritt und Verteilung](assets/backend-module.png)
 
 ## Was sie ausdrücklich nicht macht
 

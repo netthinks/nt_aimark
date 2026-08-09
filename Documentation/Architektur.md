@@ -200,6 +200,8 @@ Elements. Siehe [Installation](Installation.md).
 
 ## Backend-Modul
 
+![Das Modul „KI-Transparenz": zwei Ringe für Prüffortschritt und Verteilung, darunter Speicherübersicht, Systemstatus und die gefilterte Arbeitsliste](Images/backend-module.png)
+
 ```mermaid
 flowchart LR
     repo[TransparencyRepository] --> kpi[Kennzahlen und Ringe]

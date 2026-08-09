@@ -196,6 +196,8 @@ element. See [Installation](installation.md).
 
 ## Backend module
 
+![The "AI transparency" module: two rings for review progress and distribution, below them the storage overview, system status and the filtered work list](assets/backend-module.png)
+
 ```mermaid
 flowchart LR
     repo[TransparencyRepository] --> kpi[Figures and rings]

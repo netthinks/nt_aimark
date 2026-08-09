@@ -10,6 +10,8 @@ Person im Haus, nicht die Extension.
 *Medien* → Datei auswählen → *Metadaten bearbeiten* → Reiter
 **KI-Transparenz**.
 
+![Der Reiter „KI-Transparenz" in den Datei-Metadaten](Images/metadata-tab.png)
+
 ## Das Wichtigste in drei Sätzen
 
 1. **KI-Anteil** ist das einzige Pflichtfeld — alles andere folgt daraus.

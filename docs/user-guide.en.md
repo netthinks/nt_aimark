@@ -8,6 +8,8 @@ person responsible in your organisation decides, not the extension.
 
 *Media* → select a file → *Edit metadata* → tab **AI transparency**.
 
+![The "AI transparency" tab in the file metadata, with the sections classification, labelling, AI system used, editorial review and detected provenance](assets/metadata-tab.png)
+
 For texts the same tab appears on pages and content elements.
 
 ## The essentials in three sentences
@@ -18,6 +20,19 @@ For texts the same tab appears on pages and content elements.
    the decision.
 3. Fields you cannot see are not relevant to your case. They appear after
    saving, once the AI involvement calls for them.
+
+## The "AI transparency" module
+
+*Content* → **AI transparency**. The module answers two questions: how far the
+review has come, and what is up next.
+
+![The work list, filtered to classified files, with colour-coded badges per AI involvement and the bulk edit below](assets/work-list.png)
+
+The work list can be filtered by AI involvement, storage and creation period.
+Several files can be classified at once — each one gets its own trail entry.
+
+A **suggestion** comes from automatic detection and is not yet a finding: it
+produces no label in the frontend and waits for you to confirm it.
 
 ## The fields for media
 

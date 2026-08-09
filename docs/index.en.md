@@ -23,8 +23,12 @@ list over EXIF fields. Confirming it stays with a human.
 **Label** — accessible frontend output using the official EU icons, with an
 expandable detail panel. For texts, a sentence rather than an icon.
 
+![An AI-generated image in the frontend carrying the official "AI GENERATED" icon in the bottom right, with the "Details on AI use" button below it](assets/frontend-badge.png)
+
 **Evidence** — a backend module showing how far the review has come and what
 is still open, plus a trail of every status change.
+
+![The "AI transparency" backend module with ring charts for review progress and distribution](assets/backend-module.png)
 
 ## What it deliberately does not do
 

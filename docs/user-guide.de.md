@@ -10,6 +10,8 @@ Person im Haus, nicht die Extension.
 *Medien* → Datei auswählen → *Metadaten bearbeiten* → Reiter
 **KI-Transparenz**.
 
+![Der Reiter „KI-Transparenz" in den Datei-Metadaten, mit den Bereichen Einstufung, Kennzeichnung, Eingesetztes KI-System, Redaktionelle Prüfung und Erkannte Herkunftsdaten](assets/metadata-tab.png)
+
 ## Das Wichtigste in drei Sätzen
 
 1. **KI-Anteil** ist das einzige Pflichtfeld — alles andere folgt daraus.
@@ -17,6 +19,21 @@ Person im Haus, nicht die Extension.
    übersteuern wollen.
 3. Felder, die Sie nicht sehen, sind für Ihren Fall nicht relevant. Sie
    erscheinen nach dem Speichern, sobald der KI-Anteil sie erforderlich macht.
+
+## Das Modul „KI-Transparenz"
+
+*Inhalt* → **KI-Transparenz**. Das Modul beantwortet zwei Fragen: wie weit die
+Prüfung gediehen ist, und was als Nächstes ansteht.
+
+![Die Arbeitsliste, gefiltert auf eingestufte Dateien, mit farbigen Plaketten je KI-Anteil und der Massenbearbeitung darunter](assets/work-list.png)
+
+Die Arbeitsliste lässt sich nach KI-Anteil, Speicher und Erzeugungszeitraum
+filtern. Mehrere Dateien lassen sich auf einmal einstufen — jede einzelne
+erhält dabei ihren eigenen Protokolleintrag.
+
+Ein **Vorschlag** stammt aus der automatischen Erkennung und ist noch keine
+Feststellung: Er erzeugt im Frontend keine Kennzeichnung, sondern wartet auf
+Ihre Bestätigung.
 
 ## Die Felder im Einzelnen
 
