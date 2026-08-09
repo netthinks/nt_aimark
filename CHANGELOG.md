@@ -4,9 +4,13 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
-## [0.1.0] – unveröffentlicht
+## [0.9.0] – 2026-08-09
 
-Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
+Erste Veröffentlichung. Funktional vollständig: Erfassung, automatische
+Vorschläge, Kennzeichnung im Frontend, Nachweisführung und die
+Erweiterungspunkte stehen. Beta, weil die Extension noch keine Laufzeit in
+fremden Installationen hinter sich hat — die Schnittstellen gelten ab hier
+als stabil.
 
 ### Hinzugefügt
 
@@ -108,6 +112,27 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   **Keinerlei Lizenz-, Aktivierungs- oder Domainprüfung** — ein Test sichert
   das ab.
 
+- **Begleitbeschriftung** in der Sprache der Website neben dem Symbol
+  (`ntAimark.showTextLabel`, Vorgabe aus). Die offiziellen Symbole tragen einen
+  englischen Schriftzug und sind nicht übersetzbar; der Verhaltenskodex
+  empfiehlt stattdessen eine Beschriftung in einfacher Sprache daneben.
+- **Detailebene als Option** (`ntAimark.showDetails`, Vorgabe aus). Art. 50
+  Abs. 4 verlangt die Offenlegung, dass KI beteiligt war — nicht das System,
+  den Anbieter oder das Datum. Ist sie eingeschaltet, ist das Symbol selbst die
+  Schaltfläche; eine zweite Fläche unter dem Bild gibt es nicht mehr.
+- **Backend-Modul**: Ringdiagramme für Prüffortschritt und Verteilung, Kennzahlen
+  über alle Speicher, farbige Statusplaketten, Blätterfunktion, Speicherfilter
+  und dauerhafte Filterwerte. Reines SVG mit Präsentationsattributen, damit eine
+  Content Security Policy nichts davon verwirft.
+- **Formatvarianten ausgenommen**: automatisch erzeugte WebP- und AVIF-Fassungen
+  (`bild.jpg.webp`) erscheinen nicht in Arbeitsliste und Kennzahlen
+  (`hideDerivedFormats`). Ein hochgeladenes `bild.webp` bleibt drin.
+- **Prüfung auf Medien beschränkt** (`reviewedMimeTypes`, Vorgabe
+  `image/*,audio/*,video/*,application/pdf`) — für ein Stylesheet gibt es keine
+  sinnvolle KI-Kennzeichnung.
+- **Architekturdokumentation** mit sieben Diagrammen, zweisprachig, dazu
+  Screenshots aus einer laufenden Installation.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
@@ -120,3 +145,11 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   weiterhin.
 - TYPO3 14.3 verwarnt `ext_emconf.php`. Die Datei bleibt bestehen, solange
   TYPO3 13.4 unterstützt wird.
+
+- Ein Bild, das als CSS-Hintergrund eingebunden ist (typisch für Hero-Banner),
+  wird nicht automatisch gekennzeichnet — es gibt kein Bildelement, an dem die
+  Überlagerung hängen könnte. Der ViewHelper `nt:aiLabel` lässt sich im
+  umgebenden Container setzen; automatisch findet die Extension solche Bilder
+  nicht.
+- Unterhalb von rund 180 px Bildbreite passt die Begleitbeschriftung nicht mehr
+  neben das Symbol. Für Vorschaubilder `showTextLabel="false"` am Aufruf setzen.

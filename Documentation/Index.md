@@ -26,6 +26,6 @@ Verordnung (EU) 2024/1689.
 
 ## Stand
 
-`0.1.0`, Entwicklungsstand (`alpha`). Der Funktionsumfang wächst entlang der
+`0.9.0`, Beta. Der Funktionsumfang wächst entlang der
 Umsetzungsreihenfolge in [`CLAUDE.md`](../CLAUDE.md); der aktuelle Stand steht
 im [Changelog](../CHANGELOG.md).

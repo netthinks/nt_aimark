@@ -6,7 +6,9 @@
 
 Erfassen, kennzeichnen und dokumentieren Sie KI-generierte Inhalte in TYPO3 — passend zu den Transparenzpflichten aus Art. 50 der EU-KI-Verordnung (VO (EU) 2024/1689), die seit dem 2. August 2026 gelten.
 
-> **Status:** In Entwicklung (`alpha`). Noch nicht für den Produktiveinsatz geeignet.
+> **Status:** `0.9.0`, Beta. Funktional vollständig und durchgehend getestet;
+> die Schnittstellen gelten ab hier als stabil. Bis zur 1.0 kann sich noch
+> Feinschliff ändern.
 
 ---
 
