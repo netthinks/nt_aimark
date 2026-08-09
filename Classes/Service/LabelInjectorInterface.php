@@ -17,5 +17,10 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 interface LabelInjectorInterface
 {
-    public function inject(string $html, ServerRequestInterface $request): string;
+    /**
+     * Deliberately not called inject(): Symfony treats methods whose name
+     * starts with "inject" as setter injection when autowiring is on, and the
+     * container then refuses to build the service.
+     */
+    public function apply(string $html, ServerRequestInterface $request): string;
 }

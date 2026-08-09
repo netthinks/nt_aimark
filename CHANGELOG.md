@@ -99,6 +99,15 @@ Erster Entwicklungsstand. Noch nicht für den Produktiveinsatz geeignet.
   eine zweisprachige MkDocs-Site unter `docs/` (Material-Theme, i18n), nach
   demselben Muster wie nt_ai und nt_lingua.
 
+- **Erweiterungspunkte** für ein späteres Zusatzpaket, alle `@api` und in
+  `Documentation/Integration.md` dokumentiert: `LabelDecisionModifierInterface`,
+  die Events `AfterLabelDecisionEvent` und `AfterStatusChangedEvent`,
+  `IconCompositorInterface` und `LabelInjectorInterface` (beide mit
+  Durchreiche-Standard), ein benannter Platz in der Middleware-Kette sowie der
+  `ProcessedFileDeclarationResolver`. `AuditService` ist beschreibbar.
+  **Keinerlei Lizenz-, Aktivierungs- oder Domainprüfung** — ein Test sichert
+  das ab.
+
 ### Bekannte Einschränkungen
 
 - Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im

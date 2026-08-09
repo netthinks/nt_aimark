@@ -87,3 +87,91 @@ Sensible places to dispatch:
 
 For `nt_lingua`, `fullyGenerated: false` is the normal case: a translation is
 an AI modification of an existing text, not a new creation.
+
+---
+
+# Extension points
+
+This repository is the **free core package**. It is complete on its own — no
+locked feature, no licence key, no upgrade hint anywhere in the interface.
+Additional features arrive as a **separate Composer package** and hook in
+through the points below, without patching this one.
+
+Everything listed here is `@api` and stays stable within a major version.
+
+## Adjusting a labelling decision
+
+```php
+use NetThinks\NtAimark\Service\LabelDecisionModifierInterface;
+
+final class MyModifier implements LabelDecisionModifierInterface
+{
+    public function modify(AiDeclaration $declaration, LabelDecision $decision): LabelDecision
+    {
+        return $decision;
+    }
+}
+```
+
+Register with the tag `nt_aimark.label_decision_modifier`; with `autoconfigure`
+on, implementing the interface is enough. Several modifiers run in registration
+order, each seeing what the previous one produced.
+
+The rules in `DisclosureRuleService` remain the single place the reasoning
+lives — a modifier refines it, it does not replace it.
+
+## Events
+
+| Event | When | Purpose |
+|---|---|---|
+| `AfterLabelDecisionEvent` | after every decision | Observing (counting, logging). To change the outcome, use the modifier. |
+| `AfterStatusChangedEvent` | on every status change | Reacting: notify a service, invalidate a cache, feed a dashboard |
+
+`AfterStatusChangedEvent` is dispatched from the audit trail and therefore
+covers **every** route: the form, bulk editing, automatic detection, the CLI
+and reports from sibling extensions. If it is in the trail, this event fired.
+
+`AfterLabelDecisionEvent` fires once per resolved file — many times on a page
+with many images. Keep listeners cheap.
+
+## Burning the icon into the image
+
+`IconCompositorInterface` is registered and passes through unchanged by default
+(`NullIconCompositor`). A second package overrides the service alias and takes
+over.
+
+## Post-processing finished HTML
+
+For grown projects whose templates cannot carry the ViewHelpers. Two building
+blocks are provided:
+
+- **A named place in the middleware chain**:
+  `netthinks/nt-aimark/label-injection`. The core package passes through
+  unchanged; overriding `LabelInjectorInterface` as a service alias takes over,
+  with no middleware registration of your own.
+- **`ProcessedFileDeclarationResolver`**: given an image path from the finished
+  HTML, finds the matching `AiDeclaration` — including scaled variants, through
+  `sys_file_processedfile`.
+
+The method is called `apply()` rather than `inject()` on purpose: Symfony
+treats methods whose name starts with "inject" as setter injection, and the
+container then refuses to build the service.
+
+## Writing to the audit trail
+
+`AuditService` is `public: true`, so a second package can add its own entries.
+The evaluation view (audit log, export) is deliberately not part of the core
+package — but writing happens here in full, so the data is complete.
+
+## Configuration keys
+
+Keys belonging to an additional package live in their own namespace
+(`aimarkPro.*`) and do not appear in the core package.
+
+## Why there is no licence check
+
+TYPO3 extensions using core API are derivative works and therefore
+GPL-2.0-or-later. Selling is allowed; forbidding redistribution is not. A
+runtime lock would be legally contestable — and the wrong foundation for a
+product whose selling point is legal compliance. A test in this repository
+asserts that no licence or activation logic appears in the code.

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace NetThinks\NtAimark\Service;
 
+use NetThinks\NtAimark\Event\AfterStatusChangedEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -28,8 +30,12 @@ final readonly class AuditService
     /** Keeps a runaway value from filling the log. */
     private const VALUE_LIMIT = 4096;
 
+    /** The fields whose change is worth announcing beyond the trail. */
+    private const STATUS_FIELDS = ['tx_ntaimark_status', 'tx_ntaimark_text_status'];
+
     public function __construct(
         private ConnectionPool $connectionPool,
+        private ?EventDispatcherInterface $eventDispatcher = null,
     ) {}
 
     public function log(
@@ -74,6 +80,19 @@ final readonly class AuditService
                 Connection::PARAM_STR,
             ],
         );
+
+        // Dispatched from here rather than from each caller, so every route
+        // into a status change is covered by construction.
+        if (in_array($fieldName, self::STATUS_FIELDS, true)) {
+            $this->eventDispatcher?->dispatch(new AfterStatusChangedEvent(
+                $tableName,
+                $recordUid,
+                $fieldName,
+                (string) $oldValue,
+                (string) $newValue,
+                $source,
+            ));
+        }
     }
 
     /**

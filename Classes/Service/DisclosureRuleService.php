@@ -10,6 +10,8 @@ use NetThinks\NtAimark\Domain\Enum\DisclosureMode;
 use NetThinks\NtAimark\Domain\Model\AiDeclaration;
 use NetThinks\NtAimark\Domain\Model\AiMarkSettings;
 use NetThinks\NtAimark\Domain\Model\LabelDecision;
+use NetThinks\NtAimark\Event\AfterLabelDecisionEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Answers the one question the whole extension exists for: does this asset get
@@ -26,7 +28,30 @@ use NetThinks\NtAimark\Domain\Model\LabelDecision;
  */
 final readonly class DisclosureRuleService
 {
+    /**
+     * @param iterable<LabelDecisionModifierInterface> $modifiers
+     */
+    public function __construct(
+        private iterable $modifiers = [],
+        private ?EventDispatcherInterface $eventDispatcher = null,
+    ) {}
+
     public function resolve(AiDeclaration $declaration, AiMarkSettings $settings): LabelDecision
+    {
+        $decision = $this->applyRules($declaration, $settings);
+
+        // Modifiers refine the outcome; the rules above remain the single
+        // place the reasoning lives.
+        foreach ($this->modifiers as $modifier) {
+            $decision = $modifier->modify($declaration, $decision);
+        }
+
+        $this->eventDispatcher?->dispatch(new AfterLabelDecisionEvent($declaration, $decision));
+
+        return $decision;
+    }
+
+    private function applyRules(AiDeclaration $declaration, AiMarkSettings $settings): LabelDecision
     {
         // 1. An editor has assessed this case and decided against disclosure.
         if ($declaration->disclosure === DisclosureMode::Exempt) {

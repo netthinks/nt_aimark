@@ -80,6 +80,14 @@ Sind `nt_ai` oder `nt_lingua` installiert, übernimmt `nt_aimark` die Provenienz
 
 ---
 
+## Freies Kernpaket
+
+Dieses Repository ist vollständig und eigenständig nutzbar: kein
+Lizenzschlüssel, keine Domainbindung, keine ausgegrauten Funktionen.
+Zusatzfunktionen erscheinen als eigenes Composer-Paket und klinken sich über
+dokumentierte Erweiterungspunkte ein — siehe
+[Integration](Documentation/Integration.md).
+
 ## Dokumentation
 
 | | |
