@@ -9,7 +9,6 @@ use NetThinks\NtAimark\Domain\Enum\AiStatus;
 use NetThinks\NtAimark\Domain\Model\AiDeclaration;
 use NetThinks\NtAimark\Domain\Model\AiMarkSettings;
 use NetThinks\NtAimark\Service\DisclosureRuleService;
-use NetThinks\NtAimark\Service\LabelRenderService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -27,6 +26,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 final class MarkupFixtureTest extends FunctionalTestCase
 {
+    use IconDirectoryTrait;
+
     protected array $testExtensionsToLoad = ['netthinks/nt-aimark'];
 
     private const FIXTURE = __DIR__ . '/../../Acceptance/fixtures/labelled-page.html';
@@ -55,8 +56,12 @@ final class MarkupFixtureTest extends FunctionalTestCase
         );
         $decision = (new DisclosureRuleService())->resolve($declaration, new AiMarkSettings());
 
-        $rendered = $this->get(LabelRenderService::class)->renderBadge($declaration, $decision, $request);
+        // The fixture documents the icon-less case, so it is rendered that way
+        // on purpose — otherwise it would match only on machines where the EU
+        // icons happen to have been downloaded.
+        $rendered = $this->rendererWithoutIcons()->renderBadge($declaration, $decision, $request);
         $fixture = (string) file_get_contents(self::FIXTURE);
+        $this->removeEmptyIconDirectory();
 
         self::assertStringContainsString(
             $this->normalise($rendered),

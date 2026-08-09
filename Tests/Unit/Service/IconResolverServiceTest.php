@@ -128,6 +128,88 @@ final class IconResolverServiceTest extends UnitTestCase
         self::assertStringContainsString('viewBox="0 0 10 10"', $svg);
     }
 
+    /**
+     * The official artwork is the reason this exists.
+     *
+     * All twelve files the Commission publishes declare the same `.cls-1` /
+     * `.cls-2` inside their own `<style>` block and the same `id="Calque_1"`.
+     * Inlined together — which happens on any page mixing a light and a dark
+     * image — the later block would restyle the earlier icon and the ids would
+     * be duplicated. Each copy therefore gets its own suffix.
+     */
+    #[Test]
+    public function twoIconsOnOnePageDoNotRestyleEachOther(): void
+    {
+        $artwork = static fn(string $discFill): string => '<svg xmlns="http://www.w3.org/2000/svg" id="Calque_1" viewBox="0 0 10 10">'
+            . '<defs><style>.cls-1 { ' . $discFill . ' } .cls-2 { fill: #fff; }</style></defs>'
+            . '<path class="cls-1" d="M0 0h10v10H0z"/><path class="cls-2" d="M2 2h6v6H2z"/></svg>';
+
+        $this->writeIcon('ai-generated-black.svg', $artwork('fill-rule: evenodd;'));
+        $this->writeIcon('ai-generated-white.svg', $artwork('fill: #fff;'));
+
+        $black = (string) $this->subject()->inlineSvg(IconVariant::Generated, white: false);
+        $white = (string) $this->subject()->inlineSvg(IconVariant::Generated, white: true);
+
+        self::assertStringNotContainsString('.cls-1 {', $black, 'The generic class name must not survive.');
+        self::assertStringNotContainsString('id="Calque_1"', $black);
+
+        // Whatever names the two ended up with, they must not be the same ones.
+        preg_match_all('/cls-\d+-[0-9a-f]+/', $black, $blackNames);
+        preg_match_all('/cls-\d+-[0-9a-f]+/', $white, $whiteNames);
+
+        self::assertNotSame([], array_unique($blackNames[0]));
+        self::assertSame(
+            [],
+            array_intersect(array_unique($blackNames[0]), array_unique($whiteNames[0])),
+            'Two variants on one page must not share class names.',
+        );
+        self::assertSame(
+            [],
+            array_intersect(
+                self::idsOf($black),
+                self::idsOf($white),
+            ),
+            'Two variants on one page must not share element ids.',
+        );
+
+        // The rule still has to reach its own paths.
+        foreach ([$black, $white] as $svg) {
+            preg_match('/\.(cls-1-[0-9a-f]+)/', $svg, $rule);
+            self::assertNotSame([], $rule);
+            self::assertStringContainsString('class="' . $rule[1] . '"', $svg);
+        }
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function idsOf(string $svg): array
+    {
+        preg_match_all('/\bid="([^"]+)"/', $svg, $matches);
+
+        return $matches[1];
+    }
+
+    /**
+     * The same icon twice is one piece of artwork, not two — it stays a single
+     * shared rule set rather than duplicating the styles per occurrence.
+     */
+    #[Test]
+    public function theSameIconTwiceKeepsOneSetOfNames(): void
+    {
+        $this->writeIcon(
+            'ai-basic-black.svg',
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">'
+                . '<defs><style>.cls-1 { fill-rule: evenodd; }</style></defs>'
+                . '<path class="cls-1" d="M0 0h10v10H0z"/></svg>',
+        );
+
+        self::assertSame(
+            $this->subject()->inlineSvg(IconVariant::Basic),
+            $this->subject()->inlineSvg(IconVariant::Basic),
+        );
+    }
+
     #[Test]
     public function aFileThatIsNotAnSvgIsRejected(): void
     {

@@ -97,8 +97,15 @@
   display: block;
   width: auto;
   height: 1.5em;
-  /* The EU icons ship as single-colour artwork; this keeps them on the plate colour. */
-  fill: currentColor;
+  /*
+   * Deliberately no `fill`. The official icons are two-tone — a filled disc
+   * with the wordmark knocked out of it — and only the knocked-out part
+   * declares a colour. `fill: currentColor` therefore left the disc taking on
+   * whatever colour the surrounding text happened to have, which is exactly
+   * what IconResolverService picks black or white to prevent. The artwork
+   * carries its own colours; leaving fill alone is what keeps the measured
+   * contrast the one that actually renders.
+   */
 }
 
 .nt-aimark__badge--small .nt-aimark__icon {

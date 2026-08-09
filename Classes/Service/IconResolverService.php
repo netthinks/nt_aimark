@@ -131,6 +131,41 @@ final class IconResolverService
             1,
         );
 
-        return trim($svg);
+        return trim($this->isolateInternalStyling($svg));
+    }
+
+    /**
+     * Makes the icon's own class names and ids unique to this copy.
+     *
+     * The official files all carry the same generic identifiers — every one of
+     * the twelve declares `.cls-1`/`.cls-2` and `id="Calque_1"`. Inlined twice
+     * on one page, the second file's `<style>` block restyles the first: a page
+     * showing a light and a dark image side by side would render one of the two
+     * badges in the wrong colours, and the duplicated ids are invalid markup
+     * besides.
+     *
+     * The suffix is derived from the content, so the same icon used twice stays
+     * one shared rule set while different variants stay apart.
+     */
+    private function isolateInternalStyling(string $svg): string
+    {
+        if (!str_contains($svg, 'class="') && !str_contains($svg, 'id="')) {
+            return $svg;
+        }
+
+        $suffix = '-' . substr(hash('xxh128', $svg), 0, 8);
+
+        // Class names, both in the <style> block and on the elements.
+        $svg = (string) preg_replace(
+            '/(?<![\w-])(cls-\d+)(?![\w-])/',
+            '$1' . $suffix,
+            $svg,
+        );
+
+        return (string) preg_replace_callback(
+            '/\bid="([^"]+)"/',
+            static fn(array $m): string => 'id="' . $m[1] . $suffix . '"',
+            $svg,
+        );
     }
 }

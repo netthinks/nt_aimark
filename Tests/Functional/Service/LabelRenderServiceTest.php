@@ -24,6 +24,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 final class LabelRenderServiceTest extends FunctionalTestCase
 {
+    use IconDirectoryTrait;
+
     protected array $testExtensionsToLoad = ['netthinks/nt-aimark'];
 
     private function render(AiDeclaration $declaration, bool $showDetails = true): string
@@ -93,12 +95,17 @@ final class LabelRenderServiceTest extends FunctionalTestCase
     #[Test]
     public function withoutTheIconFilesTheBadgeFallsBackToText(): void
     {
-        $html = $this->render($this->generatedDeclaration());
+        $declaration = $this->generatedDeclaration();
+        $decision = (new DisclosureRuleService())->resolve($declaration, new AiMarkSettings());
+
+        $html = $this->rendererWithoutIcons()->renderBadge($declaration, $decision, $this->frontendRequest());
 
         self::assertStringContainsString('nt-aimark__badge-fallback', $html);
         self::assertStringNotContainsString('<svg', $html);
         // The fixture site is German, so the label comes from de.locallang.xlf.
         self::assertStringContainsString('KI-generiert', $html);
+
+        $this->removeEmptyIconDirectory();
     }
 
     #[Test]
@@ -131,8 +138,10 @@ final class LabelRenderServiceTest extends FunctionalTestCase
         $first = $service->renderBadge($declaration, $decision, $request);
         $second = $service->renderBadge($declaration, $decision, $request);
 
-        preg_match('/id="([^"]+)"/', $first, $firstId);
-        preg_match('/id="([^"]+)"/', $second, $secondId);
+        // Specifically the detail panel: an inlined icon brings ids of its own,
+        // and matching the first id in the markup found those instead.
+        preg_match('/id="(aimark-detail-[^"]+)"/', $first, $firstId);
+        preg_match('/id="(aimark-detail-[^"]+)"/', $second, $secondId);
         self::assertArrayHasKey(1, $firstId);
         self::assertArrayHasKey(1, $secondId);
 
