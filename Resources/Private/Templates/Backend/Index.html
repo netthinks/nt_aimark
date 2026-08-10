@@ -12,7 +12,9 @@
         <div class="row g-4 mb-4">
             <div class="col-xl-4">
                 <div class="card h-100">
-                    <div class="card-header"><f:translate key="{ll}chart.progress" /></div>
+                    <div class="card-header">
+                        <h2 class="card-title"><f:translate key="{ll}chart.progress" /></h2>
+                    </div>
                     <div class="card-body d-flex align-items-center gap-4">
                         <f:render section="Ring" arguments="{
                             segments: {0: {percent: totals.reviewedPercent, dashArray: '{totals.reviewedPercent} {totals.openPercent}', dashOffset: '25', colour: '#2f9e5f'}},
@@ -23,12 +25,12 @@
                             <div class="fs-5 fw-semibold">{totals.reviewed} / {totals.total}</div>
                             <div class="text-body-secondary"><f:translate key="{ll}overview.reviewed" /></div>
                             <div class="mt-2">
-                                <span class="badge bg-warning">{totals.open}</span>
+                                <span class="badge badge-warning">{totals.open}</span>
                                 <span class="text-body-secondary"><f:translate key="{ll}overview.open" /></span>
                             </div>
                             <f:if condition="{totals.brokenC2pa} > 0">
                                 <div class="mt-1">
-                                    <span class="badge bg-danger">{totals.brokenC2pa}</span>
+                                    <span class="badge badge-danger">{totals.brokenC2pa}</span>
                                     <span class="text-body-secondary"><f:translate key="{ll}overview.brokenC2pa" /></span>
                                 </div>
                             </f:if>
@@ -39,7 +41,9 @@
 
             <div class="col-xl-8">
                 <div class="card h-100">
-                    <div class="card-header"><f:translate key="{ll}chart.distribution" /></div>
+                    <div class="card-header">
+                        <h2 class="card-title"><f:translate key="{ll}chart.distribution" /></h2>
+                    </div>
                     <div class="card-body d-flex align-items-center gap-4 flex-wrap">
                         <f:render section="Ring" arguments="{
                             segments: segments,
@@ -67,7 +71,9 @@
     <div class="row g-4 mb-4">
         <div class="col-xl-7">
             <div class="card h-100">
-                <div class="card-header"><f:translate key="{ll}overview.heading" /></div>
+                <div class="card-header">
+                    <h2 class="card-title"><f:translate key="{ll}overview.heading" /></h2>
+                </div>
                 <f:if condition="{summaries}">
                     <f:then>
                         <div class="table-fit mb-0">
@@ -92,13 +98,13 @@
                                             </td>
                                             <td class="text-end">
                                                 <f:if condition="{summary.open} > 0">
-                                                    <f:then><span class="badge bg-warning">{summary.open}</span></f:then>
+                                                    <f:then><span class="badge badge-warning">{summary.open}</span></f:then>
                                                     <f:else><span class="text-body-secondary">0</span></f:else>
                                                 </f:if>
                                             </td>
                                             <td class="text-end">
                                                 <f:if condition="{summary.brokenC2pa} > 0">
-                                                    <f:then><span class="badge bg-danger">{summary.brokenC2pa}</span></f:then>
+                                                    <f:then><span class="badge badge-danger">{summary.brokenC2pa}</span></f:then>
                                                     <f:else><span class="text-body-secondary">0</span></f:else>
                                                 </f:if>
                                             </td>
@@ -117,16 +123,18 @@
 
         <div class="col-xl-5">
             <div class="card h-100">
-                <div class="card-header"><f:translate key="{ll}status.heading" /></div>
+                <div class="card-header">
+                    <h2 class="card-title"><f:translate key="{ll}status.heading" /></h2>
+                </div>
                 <ul class="list-group list-group-flush">
                     <f:for each="{findings}" as="finding">
                         <li class="list-group-item d-flex gap-2 align-items-baseline">
                             <f:if condition="{finding.severity} == 'ok'">
                                 <f:then>
-                                    <span class="badge bg-success flex-shrink-0"><f:translate key="{ll}status.ok" /></span>
+                                    <span class="badge badge-success flex-shrink-0"><f:translate key="{ll}status.ok" /></span>
                                 </f:then>
                                 <f:else>
-                                    <span class="badge bg-warning flex-shrink-0">!</span>
+                                    <span class="badge badge-warning flex-shrink-0">!</span>
                                 </f:else>
                             </f:if>
                             <span>
@@ -147,8 +155,8 @@
 
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center gap-3 flex-wrap">
-            <span><f:translate key="{ll}list.heading" /></span>
-            <span class="badge bg-secondary"><f:translate key="{ll}list.count" arguments="{0: total}" /></span>
+            <h2 class="card-title"><f:translate key="{ll}list.heading" /></h2>
+            <span class="badge badge-secondary"><f:translate key="{ll}list.count" arguments="{0: total}" /></span>
         </div>
 
         <div class="card-body border-bottom">

@@ -23,6 +23,12 @@
 			<trans-unit id="overview.storage" resname="overview.storage">
 				<source>Storage</source>
 			</trans-unit>
+			<trans-unit id="storage.fallback" resname="storage.fallback">
+				<source>Files outside the file storages</source>
+			</trans-unit>
+			<trans-unit id="storage.unnamed" resname="storage.unnamed">
+				<source>File storage %d</source>
+			</trans-unit>
 			<trans-unit id="overview.total" resname="overview.total">
 				<source>Files</source>
 			</trans-unit>
