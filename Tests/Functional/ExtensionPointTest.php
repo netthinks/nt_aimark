@@ -158,13 +158,15 @@ final class ExtensionPointTest extends FunctionalTestCase
      *
      * The compositor was declared and registered but never reached from the
      * processing chain, so an implementation in a second package would simply
-     * never have run.
+     * never have run. It has a listener of its own — sharing one with the
+     * metadata restoration gave that listener seven constructor arguments and
+     * two unrelated jobs.
      */
     #[Test]
     public function theCompositorIsReachedFromTheProcessingChain(): void
     {
         $listener = file_get_contents(
-            dirname(__DIR__, 2) . '/Classes/EventListener/AfterFileProcessingListener.php',
+            dirname(__DIR__, 2) . '/Classes/EventListener/BurnInIconListener.php',
         );
 
         self::assertIsString($listener);

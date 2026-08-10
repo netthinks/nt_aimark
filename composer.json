@@ -71,6 +71,9 @@
         "typo3/cms": {
             "extension-key": "nt_aimark",
             "web-dir": ".Build/public"
+        },
+        "branch-alias": {
+            "dev-develop": "0.9.x-dev"
         }
     },
     "scripts": {
