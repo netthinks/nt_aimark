@@ -8,11 +8,14 @@ not only for developers.
 
 The extension keeps three things apart that are easily conflated:
 
-| | |
-|---|---|
-| **What is known about a file?** | Recording — metadata fields, automatic detection, reports from sibling extensions |
-| **What follows from it?** | Rules — a single class decides whether and how to label |
-| **What does it look like?** | Output — ViewHelpers, icon, detail layer |
+| Stage | Question | What happens there |
+|---|---|---|
+| **1 Recording** | What is known about a file? | Metadata fields, automatic detection, reports from sibling extensions |
+| **2 Deciding** | What follows from it? | A single class decides whether and how to label |
+| **3 Output** | What does it look like? | ViewHelpers, icon, detail layer |
+| **4 Evidence** | What remains of it? | Every status change in the trail, whichever route produced it |
+
+These four stages are the four boxes in the diagram below.
 
 That separation is why automatic detection can never produce a label without a
 person agreeing to it: recording and deciding are different steps, and the
@@ -22,33 +25,44 @@ transition between them is exactly one status change.
 
 ```mermaid
 flowchart TB
-    subgraph Recording
+    subgraph recording["1 · RECORDING — what is known about a file"]
         upload[File upload] --> extract[ProvenanceExtractorService]
         extract --> c2pa[C2paService<br/>Content Credentials]
         extract --> xmp[XmpReaderService<br/>IPTC DigitalSourceType]
         extract --> exif[ExifSignatureService<br/>signature list]
         event[AiContentGeneratedEvent<br/>from nt_ai / nt_lingua] --> listener[AiContentGeneratedListener]
         form[&quot;AI transparency&quot; tab<br/>in the backend] --> meta
+        c2pa --> meta[(sys_file_metadata<br/>tx_ntaimark_*)]
+        xmp --> meta
+        exif --> meta
+        listener --> meta
     end
 
-    c2pa --> meta[(sys_file_metadata<br/>tx_ntaimark_*)]
-    xmp --> meta
-    exif --> meta
-    listener --> meta
+    subgraph deciding["2 · DECIDING — what follows from it"]
+        decl[AiDeclaration<br/>value object] --> rules{{DisclosureRuleService}}
+        settings[Site set<br/>settings] --> rules
+        rules --> decision[LabelDecision]
+    end
 
-    meta --> decl[AiDeclaration<br/>value object]
-    decl --> rules{{DisclosureRuleService}}
-    settings[Site set<br/>settings] --> rules
-    rules --> decision[LabelDecision]
+    subgraph output["3 · OUTPUT — what it looks like"]
+        vh[ViewHelpers<br/>aiFigure / aiLabel / hasLabel] --> render[LabelRenderService]
+        icons[IconResolverService<br/>EU icons] --> render
+        contrast[BadgeContrastService<br/>brightness of the image] --> render
+        render --> out([Label in the frontend])
+    end
 
-    decision --> vh[ViewHelpers<br/>aiFigure / aiLabel / hasLabel]
-    vh --> render[LabelRenderService]
-    icons[IconResolverService<br/>EU icons] --> render
-    contrast[BadgeContrastService<br/>brightness of the image] --> render
-    render --> out([Label in the frontend])
+    subgraph evidence["4 · EVIDENCE — what remains of it"]
+        audit[(tx_ntaimark_audit<br/>trail)]
+    end
 
-    meta -.every change.-> audit[(tx_ntaimark_audit<br/>trail)]
+    meta --> decl
+    decision --> vh
+
+    meta -.every change.-> audit
     decision -.-> audit
+
+    classDef stage fill:#f4f6fa,stroke:#9aa6bd,stroke-width:1px
+    class recording,deciding,output,evidence stage
 ```
 
 Dotted lines are evidence: every status change lands in the trail, whichever
