@@ -8,11 +8,14 @@ nachvollziehen oder daran andocken wollen — nicht nur an Entwickler.
 
 Die Extension trennt drei Dinge, die gern vermischt werden:
 
-| | |
-|---|---|
-| **Was ist über eine Datei bekannt?** | Erfassung — Metadatenfelder, automatische Erkennung, Meldungen anderer Extensions |
-| **Was folgt daraus?** | Regelwerk — eine einzige Klasse entscheidet, ob und wie gekennzeichnet wird |
-| **Wie sieht das aus?** | Ausgabe — ViewHelper, Symbol, Detailebene |
+| Stufe | Frage | Was dort passiert |
+|---|---|---|
+| **1 Erfassung** | Was ist über eine Datei bekannt? | Metadatenfelder, automatische Erkennung, Meldungen anderer Extensions |
+| **2 Entscheidung** | Was folgt daraus? | Eine einzige Klasse entscheidet, ob und wie gekennzeichnet wird |
+| **3 Ausgabe** | Wie sieht das aus? | ViewHelper, Symbol, Detailebene |
+| **4 Nachweis** | Was bleibt davon? | Jede Statusänderung im Protokoll, unabhängig vom Weg |
+
+Diese vier Stufen sind auch die vier Kästen im folgenden Diagramm.
 
 Diese Trennung ist der Grund, warum eine automatische Erkennung nie zu einer
 Kennzeichnung führen kann, ohne dass ein Mensch zugestimmt hat: Erfassung und
@@ -23,33 +26,44 @@ genau eine Statusänderung.
 
 ```mermaid
 flowchart TB
-    subgraph Erfassung
+    subgraph erfassung["1 · ERFASSUNG — was über eine Datei bekannt ist"]
         upload[Datei-Upload] --> extract[ProvenanceExtractorService]
         extract --> c2pa[C2paService<br/>Content Credentials]
         extract --> xmp[XmpReaderService<br/>IPTC DigitalSourceType]
         extract --> exif[ExifSignatureService<br/>Signaturliste]
         event[AiContentGeneratedEvent<br/>aus nt_ai / nt_lingua] --> listener[AiContentGeneratedListener]
         form[Reiter „KI-Transparenz&quot;<br/>im Backend] --> meta
+        c2pa --> meta[(sys_file_metadata<br/>tx_ntaimark_*)]
+        xmp --> meta
+        exif --> meta
+        listener --> meta
     end
 
-    c2pa --> meta[(sys_file_metadata<br/>tx_ntaimark_*)]
-    xmp --> meta
-    exif --> meta
-    listener --> meta
+    subgraph entscheidung["2 · ENTSCHEIDUNG — was daraus folgt"]
+        decl[AiDeclaration<br/>Wertobjekt] --> rules{{DisclosureRuleService}}
+        settings[Site Set<br/>Einstellungen] --> rules
+        rules --> decision[LabelDecision]
+    end
 
-    meta --> decl[AiDeclaration<br/>Wertobjekt]
-    decl --> rules{{DisclosureRuleService}}
-    settings[Site Set<br/>Einstellungen] --> rules
-    rules --> decision[LabelDecision]
+    subgraph ausgabe["3 · AUSGABE — wie es aussieht"]
+        vh[ViewHelper<br/>aiFigure / aiLabel / hasLabel] --> render[LabelRenderService]
+        icons[IconResolverService<br/>EU-Symbole] --> render
+        contrast[BadgeContrastService<br/>Helligkeit des Bildes] --> render
+        render --> out([Kennzeichnung im Frontend])
+    end
 
-    decision --> vh[ViewHelper<br/>aiFigure / aiLabel / hasLabel]
-    vh --> render[LabelRenderService]
-    icons[IconResolverService<br/>EU-Symbole] --> render
-    contrast[BadgeContrastService<br/>Helligkeit des Bildes] --> render
-    render --> out([Kennzeichnung im Frontend])
+    subgraph nachweis["4 · NACHWEIS — was davon bleibt"]
+        audit[(tx_ntaimark_audit<br/>Protokoll)]
+    end
 
-    meta -.jede Änderung.-> audit[(tx_ntaimark_audit<br/>Protokoll)]
+    meta --> decl
+    decision --> vh
+
+    meta -.jede Änderung.-> audit
     decision -.-> audit
+
+    classDef stufe fill:#f4f6fa,stroke:#9aa6bd,stroke-width:1px
+    class erfassung,entscheidung,ausgabe,nachweis stufe
 ```
 
 Gepunktete Linien sind Nachweisführung: Jede Statusänderung landet im
