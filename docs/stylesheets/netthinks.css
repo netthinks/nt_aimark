@@ -1,0 +1,67 @@
+/*
+ * NET.THINKS-Farben für Material for MkDocs.
+ *
+ * Kopfzeile und Navigation in Anthrazit statt in der Markenfarbe: Weiß auf
+ * #ff4e00 erreicht nur 3,31:1 und wäre als Fläche hinter Text nicht zulässig.
+ * Auf Anthrazit sind es 17,2:1. Das Orange trägt stattdessen die Akzente.
+ *
+ * Für Links im hellen Schema ein abgedunkeltes Orange: #ff4e00 auf Weiß
+ * kommt auf 3,31:1, #cc3f00 auf 4,91:1 und erfüllt damit WCAG AA. Im dunklen
+ * Schema kann das volle Markenorange stehen, dort sind es 5,2:1.
+ */
+
+:root,
+[data-md-color-scheme="default"] {
+    --md-primary-fg-color: #1b1b1b;
+    --md-primary-fg-color--light: #333333;
+    --md-primary-fg-color--dark: #000000;
+    --md-primary-bg-color: #ffffff;
+    --md-primary-bg-color--light: rgba(255, 255, 255, 0.75);
+
+    --md-accent-fg-color: #cc3f00;
+    --md-accent-fg-color--transparent: rgba(204, 63, 0, 0.1);
+    --md-accent-bg-color: #ffffff;
+    --md-accent-bg-color--light: rgba(255, 255, 255, 0.75);
+
+    --md-typeset-a-color: #cc3f00;
+}
+
+[data-md-color-scheme="slate"] {
+    --md-primary-fg-color: #14161a;
+    --md-primary-fg-color--light: #22262d;
+    --md-primary-fg-color--dark: #0d0f12;
+    --md-primary-bg-color: #ffffff;
+
+    --md-accent-fg-color: #ff4e00;
+    --md-accent-fg-color--transparent: rgba(255, 78, 0, 0.14);
+
+    --md-typeset-a-color: #ff4e00;
+}
+
+/* Die aktive Seite in der Navigation trägt die Markenfarbe als Markierung —
+   nicht nur als Textfarbe, damit sie nicht allein über Farbe erkennbar ist. */
+.md-nav__link--active,
+.md-nav__item .md-nav__link--active {
+    font-weight: 600;
+}
+.md-nav--secondary .md-nav__link--active {
+    border-left: 2px solid var(--md-accent-fg-color);
+    margin-left: -2px;
+    padding-left: calc(0.6rem - 2px);
+}
+
+/* Der Reiter der aktuellen Rubrik bekommt eine orange Unterkante. */
+.md-tabs__item--active .md-tabs__link {
+    box-shadow: inset 0 -3px 0 0 #ff4e00;
+    opacity: 1;
+}
+
+/* Zitate und Hinweise: der senkrechte Strich in der Markenfarbe. */
+.md-typeset blockquote {
+    border-left-color: #ff4e00;
+}
+
+/* Auswahl und Fokus bleiben sichtbar an der Marke. */
+::selection {
+    background: rgba(255, 78, 0, 0.22);
+}
