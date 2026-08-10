@@ -45,7 +45,7 @@ Die Kommission stellt seit 10.06.2026 drei offizielle Icons bereit (SVG + PNG, v
 | `generated` — „AI GENERATED“ | Vollständig KI-erzeugt, ohne menschliche Beteiligung außer dem Prompting. |
 | `modified` — „AI MODIFIED“ | Mischform in beide Richtungen. |
 
-**Die Icon-Dateien liegen nicht im Repository und dürfen nicht generiert oder nachgezeichnet werden.** Sie werden vom Betreiber manuell heruntergeladen und nach `Resources/Public/Icons/Eu/` gelegt. Erwartetes Namensschema:
+**Die Icon-Dateien liegen seit 0.9.0 im Repository** (`Resources/Public/Icons/Eu/`, zwölf SVG und zwölf PNG, unveränderte Originale). **Sie dürfen nicht generiert, nachgezeichnet, umgefärbt oder übersetzt werden.** Namensschema:
 
 ```
 Resources/Public/Icons/Eu/
@@ -57,9 +57,9 @@ Resources/Public/Icons/Eu/
 └── ai-modified-black-50.svg    ai-modified-white-50.svg
 ```
 
-Fehlen die Dateien, muss die Extension sauber degradieren: Textlabel statt Icon, plus Hinweis im Systemstatus-Report (`Classes/Report/`). **Kein Fatal Error, kein leeres Bild.**
+Werden sie in einer Installation entfernt, muss die Extension sauber degradieren: Textlabel statt Icon, plus Hinweis im Systemstatus-Report (`Classes/Report/`). **Kein Fatal Error, kein leeres Bild.**
 
-Quelle für den Download: `https://digital-strategy.ec.europa.eu/de/policies/eu-icons-labelling-ai-generated-content`
+Herkunft, Bezugsquellen und Nutzungsbedingungen: `Resources/Public/Icons/Eu/README.md`
 
 ### Absolute Grenzen — bitte streng einhalten
 - **Kein Text, der Rechtskonformität verspricht.** Weder in Code-Kommentaren, noch in Labels, README oder Backend-Modul. Zulässig: „unterstützt bei der Umsetzung“. Unzulässig: „macht Ihre Website rechtssicher“, „garantiert Compliance“.
@@ -438,7 +438,6 @@ Bitte nicht raten, sondern nachfragen bzw. verifizieren:
 
 1. **PHP-Mindestversion von TYPO3 v14** — die CI-Matrix enthält dazu eine Annahme (v14 ohne PHP 8.2). Vor dem ersten Release gegen die tatsächliche Anforderung prüfen und die Matrix korrigieren.
 2. **`LICENSE`** enthält aktuell nur einen Platzhalter; der GPL-2.0-Volltext ist vor dem ersten öffentlichen Push einzufügen.
-3. **EU-Icons** liegen noch nicht im Repo (s. Abschnitt 1). Bis dahin nur Textlabel testen.
-4. **Verfügbarkeit von `c2patool`** in der Zielumgebung — falls unklar, `C2paService` zunächst nur mit Interface und Null-Implementierung bauen.
-5. **Namensraum des Pro-Pakets** — `netthinks/nt-aimark-pro` mit Extension-Key `nt_aimark_pro` ist die Annahme. Falls der Key im TER nicht verfügbar ist, vor dem Anlegen der Erweiterungspunkte klären.
-6. Wenn eine Anforderung in diesem Dokument mit dem TYPO3-Core kollidiert, **halte an und melde es**, statt eine eigene Lösung zu erfinden.
+3. **Verfügbarkeit von `c2patool`** in der Zielumgebung — falls unklar, `C2paService` zunächst nur mit Interface und Null-Implementierung bauen.
+4. **Namensraum des Pro-Pakets** — `netthinks/nt-aimark-pro` mit Extension-Key `nt_aimark_pro` ist die Annahme. Falls der Key im TER nicht verfügbar ist, vor dem Anlegen der Erweiterungspunkte klären.
+5. Wenn eine Anforderung in diesem Dokument mit dem TYPO3-Core kollidiert, **halte an und melde es**, statt eine eigene Lösung zu erfinden.

@@ -36,13 +36,11 @@ composer require netthinks/nt-aimark
 
 Anschließend das Site Set `AI Mark` in Ihrer Site-Konfiguration einbinden.
 
-### EU-Icons ergänzen
+### EU-Symbole
 
-Aus lizenz- und integritätsgründen liegen die offiziellen Icons nicht im Repository. Laden Sie sie kostenfrei von der Europäischen Kommission herunter und legen Sie sie unter `Resources/Public/Icons/Eu/` ab:
+Die zwölf offiziellen Symbole der Europäischen Kommission liegen bei — zwölf SVG für die Ausgabe im Frontend, zwölf PNG für das Einbrennen durch `nt_aimark_pro`. Es ist nichts herunterzuladen.
 
-<https://digital-strategy.ec.europa.eu/de/policies/eu-icons-labelling-ai-generated-content>
-
-Erwartete Dateinamen siehe [`CLAUDE.md`](CLAUDE.md), Abschnitt 1. Fehlen die Dateien, verwendet die Extension automatisch Textlabels.
+Herkunft, Nutzungsbedingungen und das Namensschema stehen in [`Resources/Public/Icons/Eu/README.md`](Resources/Public/Icons/Eu/README.md). Fehlen die Dateien, weil jemand sie entfernt hat, verwendet die Extension automatisch Textlabels und meldet es im Systemstatus.
 
 ---
 

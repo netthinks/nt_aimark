@@ -31,35 +31,26 @@ dependencies:
 Erst damit stehen die Einstellungen aus der
 [Konfiguration](configuration.md) zur Verfügung.
 
-## EU-Icons ergänzen
+## Die EU-Symbole
 
-Die drei offiziellen Symbole der Europäischen Kommission liegen **nicht** im
-Repository. Sie sind kostenfrei und ohne Attributionspflicht nutzbar, dürfen
-aber nicht nachgezeichnet oder generiert werden — nur die Originaldateien sind
-die Originaldateien.
+**Sie liegen bei.** Nichts herunterzuladen, nichts umzubenennen — die zwölf
+offiziellen Symbole der Europäischen Kommission sind Bestandteil des Pakets,
+als SVG für die Ausgabe im Frontend und als PNG für das Einbrennen in
+Bilddateien durch `nt_aimark_pro`.
 
-Bezugsquelle:
-<https://digital-strategy.ec.europa.eu/de/policies/eu-icons-labelling-ai-generated-content>
+Die Kommission stellt sie kostenfrei und ohne Attributionspflicht bereit; sie
+sind fester Bestandteil von Abschnitt 2 des Verhaltenskodex zur Kennzeichnung
+KI-generierter Inhalte. Herkunft und Bedingungen stehen in
+`Resources/Public/Icons/Eu/README.md`.
 
-Legen Sie die SVG-Dateien unter `Resources/Public/Icons/Eu/` ab. Erwartet wird:
+Nachgezeichnet, umgefärbt oder übersetzt werden dürfen sie nicht — und es
+wäre auch unsinnig: Ein Zeichen, das unionsweit gleich aussieht, wird
+wiedererkannt. Eine eigene Fassung wäre ein Nachbau.
 
-```
-ai-basic-black.svg          ai-basic-white.svg
-ai-basic-black-50.svg       ai-basic-white-50.svg
-ai-generated-black.svg      ai-generated-white.svg
-ai-generated-black-50.svg   ai-generated-white-50.svg
-ai-modified-black.svg       ai-modified-white.svg
-ai-modified-black-50.svg    ai-modified-white-50.svg
-```
-
-**Fehlen die Dateien, läuft die Extension weiter** und gibt statt des Symbols
-eine Textkennzeichnung aus („KI-generiert", „KI-bearbeitet", „KI"). Es
-entsteht kein Fehler und kein leeres Bild.
-
-> Bei Installation über Composer liegt das Icon-Verzeichnis unterhalb von
-> `vendor/`. Verwalten Sie die Dateien deshalb außerhalb und kopieren Sie sie
-> im Deployment dorthin, sonst sind sie nach dem nächsten
-> `composer install` weg.
+Sollten die Dateien einmal fehlen, weil jemand sie entfernt hat, **läuft die
+Extension weiter** und gibt statt des Symbols ein Textlabel aus
+(„KI-generiert", „KI-bearbeitet", „KI"). Der Systemstatus im Backend-Modul
+meldet es. Es entsteht kein Fehler und kein leeres Bild.
 
 ## Optional: c2patool für Content Credentials
 

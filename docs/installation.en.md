@@ -31,35 +31,26 @@ dependencies:
 Only then are the settings described under [Configuration](configuration.md)
 available.
 
-## Add the EU icons
+## The EU icons
 
-The three official icons published by the European Commission are **not** part
-of the repository. They are free to use without attribution, but they must not
-be redrawn or generated — only the original files are the original files.
+**They ship with the package.** Nothing to download, nothing to rename — the
+twelve official icons of the European Commission are part of it, as SVG for
+frontend output and as PNG for burning them into image files with
+`nt_aimark_pro`.
 
-Download them from:
-<https://digital-strategy.ec.europa.eu/en/policies/eu-icons-labelling-ai-generated-content>
+The Commission provides them free of charge and without an attribution
+requirement; they are an integral part of Section 2 of the Code of Practice on
+marking and labelling AI-generated content. Origin and terms are recorded in
+`Resources/Public/Icons/Eu/README.md`.
 
-Place the SVG files under `Resources/Public/Icons/Eu/`, named like this:
+They must not be redrawn, recoloured or translated — and it would make no
+sense either: a mark that looks the same across the Union is recognised. A
+version of one's own would be a lookalike.
 
-```
-ai-basic-black.svg          ai-basic-white.svg
-ai-basic-black-50.svg       ai-basic-white-50.svg
-ai-generated-black.svg      ai-generated-white.svg
-ai-generated-black-50.svg   ai-generated-white-50.svg
-ai-modified-black.svg       ai-modified-white.svg
-ai-modified-black-50.svg    ai-modified-white-50.svg
-```
-
-!!! info "Missing icons are not an error"
-    Without the files the extension keeps working and renders a text label
-    instead ("AI generated", "AI modified", "AI"). There is no error and no
-    empty image.
-
-!!! warning "Composer installs overwrite the directory"
-    Installed through Composer, the icon directory sits below `vendor/`. Keep
-    the files somewhere else and copy them in during deployment, or they are
-    gone after the next `composer install`.
+Should the files ever be missing because somebody removed them, **the
+extension carries on** and renders a text label instead of the icon ("AI
+generated", "AI modified", "AI"). The system status in the backend module
+reports it. Nothing errors and no empty image appears.
 
 ## Optional: c2patool for Content Credentials
 
