@@ -31,11 +31,8 @@ jobs:
       matrix:
         php: ['8.2', '8.3', '8.4']
         typo3: ['^13.4', '^14.0']
-        exclude:
-          # TYPO3 v14 setzt eine hoehere PHP-Mindestversion voraus – vor dem
-          # ersten Release gegen die tatsaechliche Anforderung verifizieren.
-          - php: '8.2'
-            typo3: '^14.0'
+        # Keine Ausnahme: typo3/cms-core v14.3.5 verlangt php ^8.2, genau wie
+        # v13.4. Die Matrix laeuft damit vollstaendig.
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -82,6 +79,9 @@ jobs:
           typo3DatabaseName: functional
         run: composer ci:tests:functional
 
+  # Blocking gate: an accessibility violation fails the build. The run works
+  # against a static fixture, which the functional test MarkupFixtureTest keeps
+  # in sync with what LabelRenderService actually emits.
   accessibility:
     name: Accessibility Gate (axe-core)
     runs-on: ubuntu-latest
@@ -90,9 +90,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install Playwright + axe
-        run: |
-          npm ci || npm install
-          npx playwright install --with-deps chromium
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - name: Run accessibility tests
-        run: npx playwright test Tests/Acceptance
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: accessibility-failures
+          path: Tests/Acceptance/_output/
+          retention-days: 7

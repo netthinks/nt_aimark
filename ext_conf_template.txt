@@ -1,0 +1,20 @@
+# cat=detection; type=string; label=Pfad zu c2patool: Leer lassen, wenn das Werkzeug im PATH liegt. Fehlt es, verwendet die Extension nur XMP und EXIF und vermerkt den C2PA-Zustand als "nicht prüfbar".
+c2patoolPath = c2patool
+
+# cat=detection; type=int+; label=Zeitlimit für c2patool (Sekunden): Wird das Limit überschritten, gilt der C2PA-Zustand als "nicht prüfbar". Der Upload läuft weiter.
+c2patoolTimeout = 15
+
+# cat=detection; type=string; label=Zusätzliche EXIF-Signaturen: Kommagetrennt als Suchbegriff=Anbieter, z. B. "mein-tool=Meine GmbH". Ergänzt die mitgelieferte Liste.
+additionalExifSignatures =
+
+# cat=detection; type=boolean; label=XMP in verarbeiteten Bildern wiederherstellen: TYPO3 entfernt beim Skalieren standardmäßig alle Profile, samt XMP. Diese Option schreibt das Paket in die abgeleitete JPEG-Datei zurück. C2PA-Signaturen werden bewusst NICHT übernommen — sie sind nach dem Skalieren gebrochen.
+preserveMetadata = 1
+
+# cat=texts; type=string; label=Zusätzliche Tabellen für Textkennzeichnung: Kommagetrennt, z. B. "tx_news_domain_model_news". pages und tt_content sind immer dabei. Nach einer Änderung Datenbankschema aktualisieren.
+additionalTextTables =
+
+# cat=list; type=boolean; label=Formatvarianten ausblenden: Viele Installationen legen zu jedem Bild automatisch eine WebP- und AVIF-Fassung als eigene Datei an (bild.jpg.webp). Sie zeigen denselben Inhalt wie das Original und blähen Arbeitsliste und Prüfquote auf. Ausschalten, wenn diese Dateien einzeln eingestuft werden sollen.
+hideDerivedFormats = 1
+
+# cat=list; type=string; label=Zu prüfende Dateitypen: Kommagetrennte MIME-Typen, * als Platzhalter erlaubt. Nur diese Dateien erscheinen in der Arbeitsliste und in den Kennzahlen — für ein Stylesheet oder eine YAML-Datei gibt es keine sinnvolle KI-Kennzeichnung. Leer lassen, um alle Dateien zu prüfen.
+reviewedMimeTypes = image/*,audio/*,video/*,application/pdf

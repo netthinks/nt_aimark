@@ -1,0 +1,58 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/docs.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build docs
+        run: mkdocs build --strict
+
+      # Fails loudly rather than deploying nothing: without the secrets the
+      # rsync below would authenticate as nobody and the step could look
+      # like it merely had nothing to do.
+      - name: Verify deployment secrets are set
+        env:
+          SSH_KEY: ${{ secrets.DOCS_SSH_KEY }}
+          SSH_HOST: ${{ secrets.DOCS_SSH_HOST }}
+          SSH_USER: ${{ secrets.DOCS_SSH_USER }}
+        run: |
+          for name in SSH_KEY SSH_HOST SSH_USER; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Secret DOCS_${name#SSH_} is not set."
+              exit 1
+            fi
+          done
+
+      - name: Deploy to server
+        env:
+          SSH_KEY: ${{ secrets.DOCS_SSH_KEY }}
+          SSH_HOST: ${{ secrets.DOCS_SSH_HOST }}
+          SSH_USER: ${{ secrets.DOCS_SSH_USER }}
+        run: |
+          echo "$SSH_KEY" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no \
+            ${SSH_USER}@${SSH_HOST} "mkdir -p html/docs/nt-aimark"
+          rsync -avz --delete \
+            -e "ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no" \
+            site/ \
+            ${SSH_USER}@${SSH_HOST}:html/docs/nt-aimark/
+          rm /tmp/deploy_key

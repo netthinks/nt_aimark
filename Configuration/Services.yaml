@@ -1,0 +1,97 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  NetThinks\NtAimark\:
+    resource: '../Classes/*'
+    exclude:
+      - '../Classes/Domain/Model/*'
+      - '../Classes/Domain/Enum/*'
+      - '../Classes/Domain/AiActCutoff.php'
+      - '../Classes/Domain/DigitalSourceType.php'
+      - '../Classes/Event/*'
+      - '../Classes/Exception/*'
+
+  # ---------------------------------------------------------------------------
+  # Extension points. Everything below is public API — see
+  # Documentation/Integration.md. A second package hooks in here without
+  # patching anything, and without a licence check anywhere in this code base.
+  # ---------------------------------------------------------------------------
+
+  # Services implementing this refine a labelling decision after the rules ran.
+  # The core package registers none; the tag exists for others to use.
+  _instanceof:
+    NetThinks\NtAimark\Service\LabelDecisionModifierInterface:
+      tags: ['nt_aimark.label_decision_modifier']
+
+  NetThinks\NtAimark\Service\DisclosureRuleService:
+    arguments:
+      $modifiers: !tagged_iterator 'nt_aimark.label_decision_modifier'
+
+  # Burning the icon into the pixels: pass-through by default.
+  NetThinks\NtAimark\Service\IconCompositorInterface:
+    alias: NetThinks\NtAimark\Service\NullIconCompositor
+    public: true
+
+  # Post-processing finished HTML: pass-through by default.
+  NetThinks\NtAimark\Service\LabelInjectorInterface:
+    alias: NetThinks\NtAimark\Service\NullLabelInjector
+    public: true
+
+  # Writable from a second package, which is why it is public.
+  NetThinks\NtAimark\Service\AuditService:
+    public: true
+
+  NetThinks\NtAimark\Service\ProcessedFileDeclarationResolver:
+    public: true
+
+  # ---------------------------------------------------------------------------
+
+  NetThinks\NtAimark\Service\BadgeContrastService:
+    arguments:
+      $cache: '@cache.ntaimark'
+
+  # Server-level settings, not site settings — the path to the external tool
+  # describes the machine, so it comes from the extension configuration.
+  NetThinks\NtAimark\Service\C2paService:
+    factory: ['@NetThinks\NtAimark\Service\ServiceFactory', 'createC2paService']
+
+  NetThinks\NtAimark\Service\ExifSignatureService:
+    factory: ['@NetThinks\NtAimark\Service\ServiceFactory', 'createExifSignatureService']
+
+  NetThinks\NtAimark\Service\ServiceFactory:
+    public: true
+
+  cache.ntaimark:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['ntaimark']
+
+  # DataHandler instantiates hooks through makeInstance, which only reaches
+  # services that are public.
+  NetThinks\NtAimark\DataHandling\MetaDataChangeHook:
+    public: true
+
+  # CLI commands.
+  NetThinks\NtAimark\Command\ScanCommand:
+    tags:
+      - name: 'console.command'
+        command: 'aimark:scan'
+        description: 'Examines stored files for AI provenance data and records what it finds as a suggestion.'
+        schedulable: true
+
+  NetThinks\NtAimark\Command\ReportCommand:
+    tags:
+      - name: 'console.command'
+        command: 'aimark:report'
+        description: 'Reports files whose AI involvement has not been decided yet.'
+        schedulable: true
+
+  NetThinks\NtAimark\Command\VerifyCommand:
+    tags:
+      - name: 'console.command'
+        command: 'aimark:verify'
+        description: 'Re-validates the C2PA signatures of files that carry one.'
+        schedulable: true

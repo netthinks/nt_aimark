@@ -1,0 +1,278 @@
+/*
+ * AI disclosure label.
+ *
+ * Two constraints drive this file:
+ * - The badge must never move the image (no layout shift), hence absolute
+ *   positioning inside a figure that establishes the containing block.
+ * - Contrast must hold over any image, hence the opaque plate behind the icon
+ *   rather than relying on the picture underneath.
+ */
+
+.nt-aimark {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin: 0;
+}
+
+/*
+ * The badge positions against this, not against the figure. The figure also
+ * holds the toggle and the detail panel, so "bottom right" measured from it
+ * put the badge below the picture — on the page background, where the
+ * black-or-white choice made from the picture no longer holds.
+ */
+.nt-aimark__frame {
+  position: relative;
+  display: block;
+  max-width: 100%;
+}
+
+.nt-aimark img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.nt-aimark__badge {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.3em 0.5em;
+  border-radius: 0.25em;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+/*
+ * Default: opaque plate. Contrast then no longer depends on the image, which
+ * is the guarantee the extension makes when the picture cannot be measured.
+ */
+.nt-aimark__badge--plate {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+/*
+ * The plate only comes off when the area behind the badge was measured and
+ * the chosen icon colour clears 4.5:1 against every sample taken there.
+ */
+.nt-aimark__badge--plain {
+  background: transparent;
+  border: 0;
+}
+
+.nt-aimark__badge--icon-dark {
+  color: #000000;
+}
+
+.nt-aimark__badge--icon-white {
+  color: #ffffff;
+}
+
+.nt-aimark__badge--top-left {
+  top: 0.25rem;
+  left: 0.25rem;
+}
+
+.nt-aimark__badge--top-right {
+  top: 0.25rem;
+  right: 0.25rem;
+}
+
+.nt-aimark__badge--bottom-left {
+  bottom: 0.25rem;
+  left: 0.25rem;
+}
+
+.nt-aimark__badge--bottom-right {
+  bottom: 0.25rem;
+  right: 0.25rem;
+}
+
+.nt-aimark__badge--small {
+  font-size: 0.75rem;
+}
+
+.nt-aimark__badge--large {
+  font-size: 0.9375rem;
+}
+
+.nt-aimark__badge-icon {
+  display: inline-flex;
+}
+
+.nt-aimark__icon {
+  display: block;
+  width: auto;
+  /*
+   * Measured, not chosen: the wordmark occupies 129 of the 566.93 viewBox
+   * units, i.e. 23 % of the icon's height. At the previous 1.5em the letters
+   * came out 4.4 px tall next to 13 px body text — a smudge rather than a
+   * mark. 2.75em puts them at roughly 8 px, which is where "clearly
+   * perceivable" starts.
+   */
+  height: 2.75em;
+  /*
+   * Deliberately no `fill`. The official icons are two-tone — a filled disc
+   * with the wordmark knocked out of it — and only the knocked-out part
+   * declares a colour. `fill: currentColor` therefore left the disc taking on
+   * whatever colour the surrounding text happened to have, which is exactly
+   * what IconResolverService picks black or white to prevent. The artwork
+   * carries its own colours; leaving fill alone is what keeps the measured
+   * contrast the one that actually renders.
+   */
+}
+
+.nt-aimark__badge--small .nt-aimark__icon {
+  height: 2.25em;
+}
+
+.nt-aimark__badge--large .nt-aimark__icon {
+  height: 3.5em;
+}
+
+/* Shown when the official icon files have not been downloaded. */
+.nt-aimark__badge-fallback,
+.nt-aimark__badge-text {
+  font-weight: 600;
+}
+
+/*
+ * The wording beside the icon gets a ground of its own.
+ *
+ * The icon is a filled disc and brings its own contrast; the text does not.
+ * BadgeContrastService samples the small area behind the icon, and the text
+ * reaches beyond it — over pixels nobody measured. Without this the label
+ * would be legible on the sample and possibly not where it actually sits.
+ * On a badge that already has a plate the plate does the job.
+ */
+.nt-aimark__badge--plain .nt-aimark__badge-text {
+  padding: 0.1em 0.4em;
+  border-radius: 0.2em;
+}
+
+/*
+ * The wording must not grow out of the picture.
+ *
+ * Measured: with the wording beside it the badge is around 180 px wide, so on
+ * anything narrower than roughly 200 px it used to hang over the edge — at 80 px
+ * it was more than twice the width of the image. A caption entered by hand
+ * ("Stimmen erzeugt mit künstlicher Intelligenz", 413 px) missed every ordinary
+ * content image.
+ *
+ * A container query would be the obvious tool and is not usable here: the frame
+ * shrink-wraps the picture, and `container-type: inline-size` cuts exactly that
+ * off — the figure then collapses to a fraction of the image. So the badge is
+ * capped at the frame instead and wraps inside it.
+ */
+.nt-aimark__badge {
+  max-width: calc(100% - 1rem);
+  flex-wrap: wrap;
+}
+
+.nt-aimark__badge-fallback,
+.nt-aimark__badge-text {
+  overflow-wrap: anywhere;
+}
+
+.nt-aimark__badge--plain.nt-aimark__badge--icon-white .nt-aimark__badge-text {
+  background: #111111;
+  color: #ffffff;
+}
+
+.nt-aimark__badge--plain.nt-aimark__badge--icon-dark .nt-aimark__badge-text {
+  background: #ffffff;
+  color: #111111;
+}
+
+/*
+ * The badge doubles as the control for the detail panel, so it has to shed the
+ * browser's button styling without losing a visible focus ring.
+ */
+.nt-aimark__badge--interactive {
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.nt-aimark__badge--interactive.nt-aimark__badge--plain {
+  background: transparent;
+  border: 0;
+}
+
+.nt-aimark__badge--interactive:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #111111;
+}
+
+.nt-aimark__badge--interactive.nt-aimark__badge--icon-dark:focus-visible {
+  outline-color: #111111;
+  box-shadow: 0 0 0 5px #ffffff;
+}
+
+.nt-aimark__detail {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+}
+
+.nt-aimark__detail[hidden] {
+  display: none;
+}
+
+.nt-aimark__detail-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.75rem;
+  margin: 0;
+}
+
+.nt-aimark__detail-list dt {
+  font-weight: 600;
+}
+
+.nt-aimark__detail-list dd {
+  margin: 0;
+}
+
+@media (prefers-contrast: more) {
+  .nt-aimark__badge {
+    border-width: 2px;
+    border-color: #000000;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nt-aimark__detail {
+    transition: opacity 120ms ease-in-out;
+  }
+}
+
+/*
+ * Text disclosure. Running text rather than an icon: for a text, a sentence is
+ * what makes the disclosure understandable at first contact.
+ */
+.nt-aimark-notice {
+  margin: 1rem 0;
+  padding: 0.65rem 0.85rem;
+  border-left: 4px solid currentColor;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 0.875rem;
+}
+
+.nt-aimark-notice__text {
+  margin: 0;
+}
+
+@media (prefers-contrast: more) {
+  .nt-aimark-notice {
+    border-left-width: 6px;
+    background: transparent;
+    outline: 1px solid currentColor;
+  }
+}

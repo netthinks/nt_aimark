@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2026-08-08T12:00:00Z" product-name="nt_aimark">
+		<header/>
+		<body>
+			<trans-unit id="badge.aria.basic" resname="badge.aria.basic">
+				<source>Image created with the involvement of artificial intelligence</source>
+				<target>Unter Beteiligung künstlicher Intelligenz entstandenes Bild</target>
+			</trans-unit>
+			<trans-unit id="badge.aria.generated" resname="badge.aria.generated">
+				<source>Image generated with artificial intelligence</source>
+				<target>Mit künstlicher Intelligenz erzeugtes Bild</target>
+			</trans-unit>
+			<trans-unit id="badge.aria.modified" resname="badge.aria.modified">
+				<source>Image modified with artificial intelligence</source>
+				<target>Mit künstlicher Intelligenz bearbeitetes Bild</target>
+			</trans-unit>
+
+			<trans-unit id="badge.text.basic" resname="badge.text.basic">
+				<source>AI</source>
+				<target>KI</target>
+			</trans-unit>
+			<trans-unit id="badge.text.generated" resname="badge.text.generated">
+				<source>AI generated</source>
+				<target>KI-generiert</target>
+			</trans-unit>
+			<trans-unit id="badge.text.modified" resname="badge.text.modified">
+				<source>AI modified</source>
+				<target>KI-bearbeitet</target>
+			</trans-unit>
+
+			<trans-unit id="detail.toggle" resname="detail.toggle">
+				<source>Details on AI use</source>
+				<target>Details zur KI-Nutzung</target>
+			</trans-unit>
+			<trans-unit id="detail.system" resname="detail.system">
+				<source>Created with</source>
+				<target>Erzeugt mit</target>
+			</trans-unit>
+			<trans-unit id="detail.createdAt" resname="detail.createdAt">
+				<source>Created on</source>
+				<target>Erzeugt am</target>
+			</trans-unit>
+
+			<trans-unit id="text.notice.heading" resname="text.notice.heading">
+				<source>Note on AI use</source>
+				<target>Hinweis zur KI-Nutzung</target>
+			</trans-unit>
+			<trans-unit id="text.notice.generated" resname="text.notice.generated">
+				<source>This text was generated with artificial intelligence.</source>
+				<target>Dieser Text wurde mit künstlicher Intelligenz erzeugt.</target>
+			</trans-unit>
+			<trans-unit id="text.notice.draftRevised" resname="text.notice.draftRevised">
+				<source>This text was drafted with artificial intelligence and revised editorially.</source>
+				<target>Dieser Text wurde mit künstlicher Intelligenz entworfen und redaktionell überarbeitet.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

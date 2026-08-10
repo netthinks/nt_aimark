@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beispielseite mit gekennzeichneten Bildern</title>
+<link rel="stylesheet" href="../../../Resources/Public/Css/aimark.css">
+<style>
+  /* Only what the surrounding page would provide anyway. */
+  body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 60rem; color: #111; background: #fff; }
+  .placeholder { display: block; width: 320px; height: 200px; }
+</style>
+</head>
+<body>
+
+<h1>Gekennzeichnete Bilder</h1>
+
+<!--
+  The badge markup below is produced by LabelRenderService and kept in sync by
+  Tests/Functional/Service/MarkupFixtureTest.php. Edit the Fluid template, not
+  this file — the functional test fails when the two drift apart.
+-->
+
+<h2>Kennzeichnung mit Textlabel, ohne EU-Icon — Symbol öffnet die Detailebene</h2>
+<figure class="nt-aimark" data-ai-status="generated">
+    <svg class="placeholder" role="img" aria-label="Beispielbild: heller Farbverlauf" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200"><rect width="320" height="200" fill="#dfe6ee"/></svg>
+    <button type="button"
+                    class="nt-aimark__badge nt-aimark__badge--bottom-right nt-aimark__badge--medium nt-aimark__badge--generated nt-aimark__badge--plate nt-aimark__badge--icon-dark nt-aimark__badge--interactive"
+                    data-ai-variant="generated"
+                    aria-expanded="false"
+                    aria-controls="aimark-detail-42-1"
+                    aria-label="Mit künstlicher Intelligenz erzeugtes Bild — Details zur KI-Nutzung"><span class="nt-aimark__badge-fallback">KI-generiert</span></button><div id="aimark-detail-42-1" class="nt-aimark__detail" hidden="hidden"><dl class="nt-aimark__detail-list"><dt>Erzeugt mit</dt><dd>
+                        DALL·E 3 (OpenAI)
+                    </dd><dt>Erzeugt am</dt><dd>
+                        03.08.2026
+                    </dd></dl></div>
+</figure>
+
+<h2>Kennzeichnung ohne Plakette, heller Bildbereich</h2>
+<figure class="nt-aimark" data-ai-status="modified">
+    <svg class="placeholder" role="img" aria-label="Beispielbild: weiße Fläche" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200"><rect width="320" height="200" fill="#ffffff" stroke="#c8d0d8"/></svg>
+    <button type="button"
+                    class="nt-aimark__badge nt-aimark__badge--top-left nt-aimark__badge--small nt-aimark__badge--modified nt-aimark__badge--plain nt-aimark__badge--icon-dark nt-aimark__badge--interactive"
+                    data-ai-variant="modified"
+                    aria-expanded="false"
+                    aria-controls="aimark-detail-43-1"
+                    aria-label="Mit künstlicher Intelligenz bearbeitetes Bild — Details zur KI-Nutzung"><span class="nt-aimark__badge-fallback">KI-bearbeitet</span><span class="nt-aimark__badge-text">Stimmen erzeugt mit KI</span></button><div id="aimark-detail-43-1" class="nt-aimark__detail" hidden="hidden"><dl class="nt-aimark__detail-list"><dt>Erzeugt mit</dt><dd>
+                        Firefly (Adobe)
+                    </dd></dl></div>
+</figure>
+
+<h2>Kennzeichnung ohne Plakette, dunkler Bildbereich</h2>
+<figure class="nt-aimark" data-ai-status="basic">
+    <svg class="placeholder" role="img" aria-label="Beispielbild: dunkle Fläche" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200"><rect width="320" height="200" fill="#101010"/></svg>
+    <span class="nt-aimark__badge nt-aimark__badge--bottom-right nt-aimark__badge--large nt-aimark__badge--basic nt-aimark__badge--plain nt-aimark__badge--icon-white"
+          data-ai-variant="basic"><span class="nt-aimark__badge-fallback">KI</span></span>
+</figure>
+
+<h2>Nicht gekennzeichnetes Bild</h2>
+<img class="placeholder" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMjAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMzIwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==" alt="Beispielbild ohne KI-Beteiligung">
+
+<script type="module" src="../../../Resources/Public/JavaScript/aimark-details.js"></script>
+</body>
+</html>

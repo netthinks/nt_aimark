@@ -6,7 +6,9 @@
 
 Erfassen, kennzeichnen und dokumentieren Sie KI-generierte Inhalte in TYPO3 — passend zu den Transparenzpflichten aus Art. 50 der EU-KI-Verordnung (VO (EU) 2024/1689), die seit dem 2. August 2026 gelten.
 
-> **Status:** In Entwicklung (`alpha`). Noch nicht für den Produktiveinsatz geeignet.
+> **Status:** `0.9.0`, Beta. Funktional vollständig und durchgehend getestet;
+> die Schnittstellen gelten ab hier als stabil. Bis zur 1.0 kann sich noch
+> Feinschliff ändern.
 
 ---
 
@@ -79,6 +81,24 @@ Alternativ übernimmt der mitgelieferte FileRenderer die Kennzeichnung automatis
 Sind `nt_ai` oder `nt_lingua` installiert, übernimmt `nt_aimark` die Provenienzdaten automatisch — KI-generierte Inhalte sind ohne redaktionellen Zusatzaufwand erfasst.
 
 ---
+
+## Freies Kernpaket
+
+Dieses Repository ist vollständig und eigenständig nutzbar: kein
+Lizenzschlüssel, keine Domainbindung, keine ausgegrauten Funktionen.
+Zusatzfunktionen erscheinen als eigenes Composer-Paket und klinken sich über
+dokumentierte Erweiterungspunkte ein — siehe
+[Integration](Documentation/Integration.md).
+
+## Dokumentation
+
+| | |
+|---|---|
+| Vollständige Doku (MkDocs, zweisprachig) | [`docs/`](docs/) — `mkdocs serve` |
+| TYPO3-Dokumentation | [`Documentation/`](Documentation/) |
+
+Beide Fassungen werden parallel gepflegt: `Documentation/` folgt der
+TYPO3-Konvention, `docs/` baut die Website unter docs.netthinks.com.
 
 ## Mitwirken
 

@@ -1,0 +1,60 @@
+settings:
+  ntAimark.labelUnknownOrigin:
+    label: 'Assets mit unbekannter Herkunft kennzeichnen'
+    description: >-
+      Standardmäßig aus. „Herkunft unbekannt" ist eine andere Aussage als
+      „KI war beteiligt" — ein Label würde die zweite behaupten.
+    type: bool
+    default: false
+
+  ntAimark.useFileRenderer:
+    label: 'Audio und Video automatisch kennzeichnen'
+    description: >-
+      Kennzeichnet Audio- und Videoausgaben ohne Template-Anpassung.
+      Ausschalten, wenn die Kennzeichnung bereits über die ViewHelper im
+      eigenen Template gesetzt wird — sonst erscheint sie doppelt.
+    type: bool
+    default: true
+
+  ntAimark.showDetails:
+    label: 'Aufklappbare Detailebene anbieten'
+    description: >-
+      Macht das Symbol anklickbar und klappt darunter Angaben zum eingesetzten
+      System und zum Erzeugungsdatum auf. Standardmäßig aus: Art. 50 Abs. 4
+      verlangt die Offenlegung, dass KI beteiligt war — nicht das System, den
+      Anbieter oder das Datum. Diese Angaben sind eine freiwillige Zugabe.
+    type: bool
+    default: false
+
+  ntAimark.badgePosition:
+    label: 'Position des Symbols im Bild'
+    type: string
+    enum:
+      top-left: 'Oben links'
+      top-right: 'Oben rechts'
+      bottom-left: 'Unten links'
+      bottom-right: 'Unten rechts'
+    default: 'bottom-right'
+
+  ntAimark.badgeSize:
+    label: 'Größe des Symbols'
+    type: string
+    enum:
+      small: 'Klein'
+      medium: 'Mittel'
+      large: 'Groß'
+    default: 'medium'
+
+  ntAimark.showTextLabel:
+    label: 'Beschriftung neben dem Symbol anzeigen'
+    description: >-
+      Die offiziellen EU-Symbole tragen den Schriftzug „AI GENERATED" bzw.
+      „AI MODIFIED" und sind ausdrücklich nicht übersetzbar — sie sind die
+      Fassung der Kommission und gelten EU-weit unverändert. Diese Option
+      stellt daneben die Bezeichnung in der Sprache der Website
+      („KI-generiert", „KI-bearbeitet"). Die Kommission empfiehlt eine solche
+      Begleitbeschriftung in einfacher Sprache. Eine eigene Beschriftung an
+      der Datei hat Vorrang. Standardmäßig aus — das Symbol allein ist die
+      unauffälligere und EU-weit einheitliche Form.
+    type: bool
+    default: false

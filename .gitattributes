@@ -1,0 +1,33 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Nicht Teil des Distributionspakets
+/.github export-ignore
+/Build export-ignore
+/Tests export-ignore
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/CLAUDE.md export-ignore
+
+# Werkzeuge und Erzeugnisse der Entwicklung. Betrifft die Quell-Archive von
+# GitHub; fuer das TER-Archiv ist Build/ExcludeFromPackaging.php zustaendig,
+# denn Tailor liest diese Datei hier nicht.
+/node_modules export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/playwright.config.js export-ignore
+/var export-ignore
+/.Build export-ignore
+
+# Die MkDocs-Quellen erscheinen als gerenderte Seite unter docs.netthinks.com.
+/docs export-ignore
+/mkdocs.yml export-ignore
+/requirements.txt export-ignore
+/site export-ignore

@@ -1,0 +1,148 @@
+name: Publish to TER
+
+# Runs when a release tag is pushed. Publishing is deliberately not part of the
+# regular CI: a tag is the explicit signal that a version is meant to go out.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish, e.g. 1.0.0'
+        required: true
+
+# The token is only needed by the publishing step, which sets it explicitly.
+permissions:
+  contents: read
+
+env:
+  EXTENSION_KEY: nt_aimark
+
+jobs:
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-progress --prefer-dist
+      - run: composer ci:php:cs
+      - run: composer ci:php:stan
+      - run: composer ci:tests:unit
+
+  publish:
+    name: Publish
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, xml, zip
+          coverage: none
+          tools: composer:v2
+
+      # Workflow inputs reach the shell through the environment, never through
+      # ${{ }} interpolation into the script body, and are checked against the
+      # expected shape before anything else uses them.
+      - name: Determine version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ -n "${INPUT_VERSION}" ]; then
+            VERSION="${INPUT_VERSION}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          if ! printf '%s' "${VERSION}" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::'${VERSION}' is not a valid version number."
+            exit 1
+          fi
+          echo "number=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Publishing ${EXTENSION_KEY} ${VERSION}"
+
+      # The version lives in ext_emconf.php as well as in the tag. A mismatch
+      # would publish an archive that reports a different version than the one
+      # it was tagged as, so it stops the release instead.
+      - name: Verify ext_emconf.php matches the tag
+        env:
+          VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          EMCONF_VERSION=$(php -r '$_EXTKEY = getenv("EXTENSION_KEY"); include "ext_emconf.php"; echo $EM_CONF[$_EXTKEY]["version"];')
+          if [ "${EMCONF_VERSION}" != "${VERSION}" ]; then
+            echo "::error::ext_emconf.php says ${EMCONF_VERSION}, release says ${VERSION}."
+            exit 1
+          fi
+
+      - name: Verify CHANGELOG mentions the version
+        env:
+          VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          if [ -f CHANGELOG.md ] && ! grep -qF "[${VERSION}]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for ${VERSION}."
+            exit 1
+          fi
+
+      - name: Install tailor
+        run: composer global require typo3/tailor --prefer-dist --no-progress
+
+      # Tailor packt nach einer eigenen Ausschlussliste und liest
+      # .gitattributes NICHT. Ohne diese Variable landet der komplette
+      # node_modules-Baum im Archiv — gemessen 6,1 MB statt 824 kB.
+      - name: Verify the archive stays lean
+        env:
+          TYPO3_EXCLUDE_FROM_PACKAGING: Build/ExcludeFromPackaging.php
+          VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          php ~/.composer/vendor/bin/tailor create-artefact "${VERSION}"
+          ARCHIVE="tailor-version-artefact/${EXTENSION_KEY}_${VERSION}.zip"
+          SIZE=$(stat -c%s "${ARCHIVE}")
+          echo "Archive: $((SIZE / 1024)) kB"
+          if unzip -l "${ARCHIVE}" | grep -qE ' (node_modules|docs|var)/'; then
+            echo "::error::Development files ended up in the release archive."
+            unzip -l "${ARCHIVE}" | grep -E ' (node_modules|docs|var)/' | head
+            exit 1
+          fi
+          if [ "${SIZE}" -gt 3145728 ]; then
+            echo "::error::Archive is larger than 3 MB — something is in it that does not belong."
+            exit 1
+          fi
+          rm -rf tailor-version-artefact
+
+      - name: Publish to TER
+        env:
+          TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+          TYPO3_EXCLUDE_FROM_PACKAGING: Build/ExcludeFromPackaging.php
+          VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          if [ -z "${TYPO3_API_TOKEN}" ]; then
+            echo "::error::Secret TYPO3_API_TOKEN is not set."
+            exit 1
+          fi
+          php ~/.composer/vendor/bin/tailor ter:publish \
+            --comment "Released from ${GITHUB_REF_NAME}" \
+            "${VERSION}"
+
+      # Titel, Beschreibung, Zustand und Autor zieht das TER aus der
+      # ext_emconf.php des hochgeladenen Archivs. Composer-Name, Repository,
+      # Handbuch und Schlagworte gehoeren dagegen zur Extension selbst und
+      # muessen eigens gesetzt werden — sonst bleibt die Seite ohne
+      # Installationsbefehl und ohne Verweis auf die Dokumentation.
+      - name: Update extension meta data
+        env:
+          TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+        run: |
+          php ~/.composer/vendor/bin/tailor ter:update \
+            --composer "netthinks/nt-aimark" \
+            --repository "https://github.com/netthinks/nt_aimark" \
+            --issues "https://github.com/netthinks/nt_aimark/issues" \
+            --manual "https://docs.netthinks.com/nt-aimark/" \
+            --tags "ai,ai-act,transparency,accessibility,compliance,metadata"

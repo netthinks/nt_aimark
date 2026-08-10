@@ -1,0 +1,347 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<f:variable name="ll">LLL:EXT:nt_aimark/Resources/Private/Language/locallang_mod.xlf:</f:variable>
+
+<div class="nt-aimark-module p-3 p-xl-4">
+
+    <div class="callout callout-info mb-4" role="note">
+        <div class="callout-body"><f:translate key="{ll}disclaimer" /></div>
+    </div>
+
+    <f:if condition="{totals.total} > 0">
+        <div class="row g-4 mb-4">
+            <div class="col-xl-4">
+                <div class="card h-100">
+                    <div class="card-header"><f:translate key="{ll}chart.progress" /></div>
+                    <div class="card-body d-flex align-items-center gap-4">
+                        <f:render section="Ring" arguments="{
+                            segments: {0: {percent: totals.reviewedPercent, dashArray: '{totals.reviewedPercent} {totals.openPercent}', dashOffset: '25', colour: '#2f9e5f'}},
+                            centre: '{totals.reviewedPercent} %',
+                            label: '{f:translate(key: \'{ll}chart.progressAria\', arguments: {0: totals.reviewed, 1: totals.total})}'
+                        }" />
+                        <div>
+                            <div class="fs-5 fw-semibold">{totals.reviewed} / {totals.total}</div>
+                            <div class="text-body-secondary"><f:translate key="{ll}overview.reviewed" /></div>
+                            <div class="mt-2">
+                                <span class="badge bg-warning">{totals.open}</span>
+                                <span class="text-body-secondary"><f:translate key="{ll}overview.open" /></span>
+                            </div>
+                            <f:if condition="{totals.brokenC2pa} > 0">
+                                <div class="mt-1">
+                                    <span class="badge bg-danger">{totals.brokenC2pa}</span>
+                                    <span class="text-body-secondary"><f:translate key="{ll}overview.brokenC2pa" /></span>
+                                </div>
+                            </f:if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8">
+                <div class="card h-100">
+                    <div class="card-header"><f:translate key="{ll}chart.distribution" /></div>
+                    <div class="card-body d-flex align-items-center gap-4 flex-wrap">
+                        <f:render section="Ring" arguments="{
+                            segments: segments,
+                            centre: '{totals.total}',
+                            label: '{f:translate(key: \'{ll}chart.distribution\')}'
+                        }" />
+                        <ul class="list-unstyled mb-0 flex-grow-1">
+                            <f:for each="{segments}" as="segment">
+                                <li class="d-flex align-items-baseline gap-2 mb-1">
+                                    <svg width="12" height="12" aria-hidden="true" focusable="false" class="flex-shrink-0">
+                                        <rect width="12" height="12" rx="2" fill="{segment.colour}"></rect>
+                                    </svg>
+                                    <span class="flex-grow-1"><f:translate key="{segment.labelKey}" /></span>
+                                    <span class="fw-semibold">{segment.value}</span>
+                                    <span class="text-body-secondary small">{segment.percentLabel} %</span>
+                                </li>
+                            </f:for>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </f:if>
+
+    <div class="row g-4 mb-4">
+        <div class="col-xl-7">
+            <div class="card h-100">
+                <div class="card-header"><f:translate key="{ll}overview.heading" /></div>
+                <f:if condition="{summaries}">
+                    <f:then>
+                        <div class="table-fit mb-0">
+                            <table class="table table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th><f:translate key="{ll}overview.storage" /></th>
+                                        <th class="text-end"><f:translate key="{ll}overview.total" /></th>
+                                        <th class="text-end"><f:translate key="{ll}overview.reviewed" /></th>
+                                        <th class="text-end"><f:translate key="{ll}overview.open" /></th>
+                                        <th class="text-end"><f:translate key="{ll}overview.brokenC2pa" /></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <f:for each="{summaries}" as="summary">
+                                        <tr>
+                                            <td>{summary.storageName}</td>
+                                            <td class="text-end">{summary.total}</td>
+                                            <td class="text-end">
+                                                {summary.reviewed}
+                                                <span class="text-body-secondary">({summary.reviewedPercent} %)</span>
+                                            </td>
+                                            <td class="text-end">
+                                                <f:if condition="{summary.open} > 0">
+                                                    <f:then><span class="badge bg-warning">{summary.open}</span></f:then>
+                                                    <f:else><span class="text-body-secondary">0</span></f:else>
+                                                </f:if>
+                                            </td>
+                                            <td class="text-end">
+                                                <f:if condition="{summary.brokenC2pa} > 0">
+                                                    <f:then><span class="badge bg-danger">{summary.brokenC2pa}</span></f:then>
+                                                    <f:else><span class="text-body-secondary">0</span></f:else>
+                                                </f:if>
+                                            </td>
+                                        </tr>
+                                    </f:for>
+                                </tbody>
+                            </table>
+                        </div>
+                    </f:then>
+                    <f:else>
+                        <div class="card-body text-body-secondary"><f:translate key="{ll}overview.empty" /></div>
+                    </f:else>
+                </f:if>
+            </div>
+        </div>
+
+        <div class="col-xl-5">
+            <div class="card h-100">
+                <div class="card-header"><f:translate key="{ll}status.heading" /></div>
+                <ul class="list-group list-group-flush">
+                    <f:for each="{findings}" as="finding">
+                        <li class="list-group-item d-flex gap-2 align-items-baseline">
+                            <f:if condition="{finding.severity} == 'ok'">
+                                <f:then>
+                                    <span class="badge bg-success flex-shrink-0"><f:translate key="{ll}status.ok" /></span>
+                                </f:then>
+                                <f:else>
+                                    <span class="badge bg-warning flex-shrink-0">!</span>
+                                </f:else>
+                            </f:if>
+                            <span>
+                                <strong><f:translate key="{finding.titleKey}" /></strong>
+                                <f:if condition="{finding.detailKey}">
+                                    <span class="d-block text-body-secondary small">
+                                        <f:translate key="{finding.detailKey}" />
+                                        <f:if condition="{finding.detail}"><code>{finding.detail}</code></f:if>
+                                    </span>
+                                </f:if>
+                            </span>
+                        </li>
+                    </f:for>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <span><f:translate key="{ll}list.heading" /></span>
+            <span class="badge bg-secondary"><f:translate key="{ll}list.count" arguments="{0: total}" /></span>
+        </div>
+
+        <div class="card-body border-bottom">
+            <form method="get">
+                <input type="hidden" name="token" value="{moduleToken}">
+                <f:render section="Filter" arguments="{_all}" />
+            </form>
+        </div>
+
+        <f:if condition="{assets}">
+            <f:then>
+                <form method="post" action="{bulkUri}">
+                    <div class="table-fit mb-0">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 2rem"><input type="checkbox" class="form-check-input" data-nt-aimark-select-all
+                                               aria-label="{f:translate(key: '{ll}bulk.selectAll')}"></th>
+                                    <th><f:translate key="{ll}list.file" /></th>
+                                    <th><f:translate key="{ll}list.status" /></th>
+                                    <th><f:translate key="{ll}list.system" /></th>
+                                    <th><f:translate key="{ll}list.createdAt" /></th>
+                                    <th class="text-end"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <f:for each="{assets}" as="asset">
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="form-check-input" name="uids[]" value="{asset.uid}"
+                                                   aria-label="{asset.name}">
+                                        </td>
+                                        <td>
+                                            <span class="fw-semibold">{asset.name}</span>
+                                            <span class="d-block text-body-secondary small">{asset.identifier}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge {asset.statusBadgeClass}">
+                                                <f:translate key="{asset.statusLabelKey}" />
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <f:if condition="{asset.tx_ntaimark_system}">
+                                                <f:then>{asset.tx_ntaimark_system}</f:then>
+                                                <f:else><span class="text-body-secondary">—</span></f:else>
+                                            </f:if>
+                                        </td>
+                                        <td>
+                                            <f:if condition="{asset.tx_ntaimark_created_at} > 0">
+                                                <f:then><f:format.date format="d.m.Y">@{asset.tx_ntaimark_created_at}</f:format.date></f:then>
+                                                <f:else><span class="text-body-secondary">—</span></f:else>
+                                            </f:if>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{asset.editUri}" class="btn btn-sm btn-default">
+                                                <f:translate key="{ll}list.edit" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </f:for>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card-body border-top d-flex justify-content-between align-items-end gap-3 flex-wrap">
+                        <fieldset class="mb-0">
+                            <legend class="form-label mb-1"><f:translate key="{ll}bulk.heading" /></legend>
+                            <div class="d-flex gap-2 align-items-center flex-wrap">
+                                <label class="visually-hidden" for="nt-aimark-bulk-status">
+                                    <f:translate key="{ll}bulk.heading" />
+                                </label>
+                                <select name="status" id="nt-aimark-bulk-status" class="form-select w-auto">
+                                    <f:for each="{statusItems}" as="item">
+                                        <option value="{item.value}"><f:translate key="{item.labelKey}" /></option>
+                                    </f:for>
+                                </select>
+                                <button type="submit" class="btn btn-primary">
+                                    <f:translate key="{ll}bulk.apply" />
+                                </button>
+                            </div>
+                        </fieldset>
+
+                        <f:if condition="{pagination.pages} > 1">
+                            <nav aria-label="{f:translate(key: '{ll}list.heading')}">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <f:if condition="{pagination.previousUri}">
+                                        <f:then><a class="btn btn-sm btn-default" href="{pagination.previousUri}">&larr;</a></f:then>
+                                        <f:else><span class="btn btn-sm btn-default disabled" aria-hidden="true">&larr;</span></f:else>
+                                    </f:if>
+                                    <span class="text-body-secondary small">
+                                        <f:translate key="{ll}list.page" arguments="{0: pagination.current, 1: pagination.pages}" />
+                                    </span>
+                                    <f:if condition="{pagination.nextUri}">
+                                        <f:then><a class="btn btn-sm btn-default" href="{pagination.nextUri}">&rarr;</a></f:then>
+                                        <f:else><span class="btn btn-sm btn-default disabled" aria-hidden="true">&rarr;</span></f:else>
+                                    </f:if>
+                                </div>
+                            </nav>
+                        </f:if>
+                    </div>
+                </form>
+            </f:then>
+            <f:else>
+                <div class="card-body text-body-secondary"><f:translate key="{ll}list.empty" /></div>
+            </f:else>
+        </f:if>
+    </div>
+
+</div>
+
+<f:section name="Ring">
+    <!--
+        Radius 15.9155 gives a circumference of exactly 100, so a percentage is
+        also a dash length. Colours and geometry are presentation attributes,
+        never inline CSS: a Content Security Policy with a nonce for
+        style-src-elem drops inline styles silently, and a chart that quietly
+        turns into a black disc is worse than no chart.
+    -->
+    <svg viewBox="0 0 42 42" width="120" height="120" class="flex-shrink-0"
+         role="img" aria-label="{label}">
+        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#dee2e6" stroke-width="4"></circle>
+        <f:for each="{segments}" as="segment">
+            <circle cx="21" cy="21" r="15.9155" fill="none"
+                    stroke="{segment.colour}" stroke-width="4"
+                    stroke-dasharray="{segment.dashArray}"
+                    stroke-dashoffset="{segment.dashOffset}"></circle>
+        </f:for>
+        <text x="21" y="21" text-anchor="middle" dominant-baseline="central"
+              font-size="7" font-weight="600" fill="currentColor">{centre}</text>
+    </svg>
+</f:section>
+
+<f:section name="Filter">
+    <fieldset class="mb-3">
+        <legend class="form-label mb-2"><f:translate key="{ll}filter.status" /></legend>
+        <div class="d-flex flex-wrap gap-3">
+            <f:for each="{statusItems}" as="item">
+                <div class="form-check">
+                    <f:if condition="{item.selected}">
+                        <f:then>
+                            <input class="form-check-input" type="checkbox" name="status[]" value="{item.value}"
+                                   id="nt-aimark-filter-status-{item.value}" checked="checked">
+                        </f:then>
+                        <f:else>
+                            <input class="form-check-input" type="checkbox" name="status[]" value="{item.value}"
+                                   id="nt-aimark-filter-status-{item.value}">
+                        </f:else>
+                    </f:if>
+                    <label class="form-check-label" for="nt-aimark-filter-status-{item.value}">
+                        <f:translate key="{item.labelKey}" />
+                    </label>
+                </div>
+            </f:for>
+        </div>
+    </fieldset>
+
+    <div class="row g-3 align-items-end">
+        <div class="col-sm-6 col-lg-4">
+            <label class="form-label" for="nt-aimark-filter-storage">
+                <f:translate key="{ll}filter.storage" />
+            </label>
+            <select name="storage" id="nt-aimark-filter-storage" class="form-select">
+                <f:if condition="{filterValues.storage} < 0">
+                    <f:then><option value="-1" selected="selected"><f:translate key="{ll}filter.allStorages" /></option></f:then>
+                    <f:else><option value="-1"><f:translate key="{ll}filter.allStorages" /></option></f:else>
+                </f:if>
+                <f:for each="{storageItems}" as="item">
+                    <f:if condition="{item.selected}">
+                        <f:then><option value="{item.value}" selected="selected">{item.label}</option></f:then>
+                        <f:else><option value="{item.value}">{item.label}</option></f:else>
+                    </f:if>
+                </f:for>
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <label class="form-label" for="nt-aimark-filter-after">
+                <f:translate key="{ll}filter.createdAfter" />
+            </label>
+            <input type="date" name="createdAfter" id="nt-aimark-filter-after" class="form-control"
+                   value="{filterValues.createdAfter}">
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <label class="form-label" for="nt-aimark-filter-before">
+                <f:translate key="{ll}filter.createdBefore" />
+            </label>
+            <input type="date" name="createdBefore" id="nt-aimark-filter-before" class="form-control"
+                   value="{filterValues.createdBefore}">
+        </div>
+        <div class="col-lg-2 d-flex gap-2">
+            <button type="submit" class="btn btn-default"><f:translate key="{ll}filter.apply" /></button>
+            <a href="{resetUri}" class="btn btn-link"><f:translate key="{ll}filter.reset" /></a>
+        </div>
+    </div>
+</f:section>
+
+</html>

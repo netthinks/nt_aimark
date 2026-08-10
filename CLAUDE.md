@@ -10,6 +10,7 @@ Baue eine TYPO3-Extension, mit der Redaktionen den KI-Anteil an Medien und Texte
 
 **Extension-Key:** `nt_aimark`
 **Composer:** `netthinks/nt-aimark`
+**Vertriebsmodell:** Dieses Repository ist das **freie Kernpaket** (TER, Packagist). Kostenpflichtige Zusatzfunktionen erscheinen später als **eigenes Composer-Paket** `netthinks/nt-aimark-pro` über ein privates Satis-Repository. Was daraus für die Umsetzung folgt, steht in Abschnitt 2a — bitte vor Beginn lesen.
 **PHP-Namespace:** `NetThinks\NtAimark\`
 **Zielversionen:** TYPO3 13.4 LTS und 14 LTS, PHP 8.2–8.4
 **Lizenz:** GPL-2.0-or-later
@@ -90,6 +91,7 @@ nt_aimark/
 │   │   ├── AfterFileReplacedListener
 │   │   ├── AfterFileProcessingListener
 │   │   └── AiContentGeneratedListener
+│   ├── Middleware/          (Andockpunkt fuer nt-aimark-pro)
 │   ├── Resource/Rendering/  MarkedImageRenderer
 │   ├── ViewHelpers/         AiLabelViewHelper, AiFigureViewHelper, HasLabelViewHelper
 │   ├── Backend/
@@ -123,6 +125,32 @@ nt_aimark/
 - Alle Services über Symfony DI in `Services.yaml`, `autowire: true`, `autoconfigure: true`, `public: false` — Ausnahmen nur, wo TYPO3 es erzwingt.
 - Strict types in jeder Datei. Readonly-Klassen und Enums nutzen, wo sinnvoll.
 - **Kein Fatal Error bei fehlenden optionalen Abhängigkeiten** (c2patool, exiftool, EU-Icons, nt_ai). Immer degradieren und im Systemstatus melden.
+
+---
+
+## 2a. Zwei Pakete — was das für den Code bedeutet
+
+Beide Pakete sind GPL-2.0-or-later. Der Unterschied liegt ausschließlich im Vertriebsweg, nicht in einer technischen Sperre.
+
+| Paket | Vertrieb | Inhalt |
+|---|---|---|
+| `netthinks/nt-aimark` — **dieses Repo** | TER, Packagist, öffentlich | Vollständiger Kernfunktionsumfang, eigenständig nutzbar |
+| `netthinks/nt-aimark-pro` — später, eigenes Repo | privates Satis, tokengeschützt | Middleware-Fallback, Icon-Einbrennung, Audit-Ansicht und Export, Transparenzerklärung, Anbindung an einen gehosteten Dienst |
+
+### Verbindliche Regeln
+
+1. **Baue keinerlei Lizenz-, Aktivierungs- oder Domainprüfung ein.** Kein Lizenzschlüsselfeld, keine Freischaltlogik, kein „Pro-Feature gesperrt“-Hinweis, kein Phone-Home. Auch nicht vorbereitend, auch nicht auskommentiert. Ein Runtime-Check wäre bei GPL-Code rechtlich angreifbar — und für ein Produkt, das mit Rechtskonformität wirbt, wäre das die falsche Grundlage.
+2. **Das Kernpaket muss ohne das Pro-Paket vollständig sinnvoll sein.** Keine Funktion darf halbfertig wirken oder auf ein „Upgrade“ verweisen. Wer nur das freie Paket installiert, bekommt ein rundes Produkt.
+3. **Erweiterungspunkte statt Platzhalter.** Wo in diesem Dokument steht „vorbereiten, nicht implementieren“, ist damit gemeint: ein sauberes Interface, ein Event oder ein DI-Service-Alias, über den sich ein zweites Paket einklinken kann — **ohne** Patch, ohne Vererbung von Klassen, die dafür nicht gedacht sind, ohne Reflection.
+4. **Erweiterungspunkte sind öffentliche API.** Alles, woran `nt-aimark-pro` andockt, wird mit `@api` annotiert, in `Documentation/Integration.md` dokumentiert und darf innerhalb einer Major-Version nicht brechen. Konkret betrifft das mindestens:
+   - `IconCompositorInterface` — Einbrennen des Icons in die Prozessdatei
+   - `LabelDecisionModifierInterface` — nachgelagerte Beeinflussung der Kennzeichnungsentscheidung
+   - `AuditService` — muss `public: true` sein, damit ein zweites Paket schreiben kann
+   - PSR-14-Events rund um Labelentscheidung und Statusänderung
+   - Ein registrierbarer Punkt in der Middleware-Kette für den späteren HTML-Fallback
+5. **Konfigurationsschlüssel des Pro-Pakets** liegen im eigenen Namensraum (`aimarkPro.*`) und tauchen im Kernpaket nicht auf.
+
+Wenn im Verlauf der Umsetzung ein weiterer Erweiterungspunkt nötig erscheint: anlegen, `@api` annotieren, dokumentieren — lieber einer zu viel als ein späterer Patch am Kernpaket.
 
 ---
 
@@ -266,11 +294,15 @@ Vier Wege, bewusst redundant. **In v1.0 sind Weg 1 und 2 Pflicht, Weg 3 und 4 si
 ### 7.2 FileRenderer
 `MarkedImageRenderer implements FileRendererInterface`, Priorität knapp über dem Core-Renderer. Delegiert an den Core und umschließt das Ergebnis. Per Site-Setting abschaltbar, damit Projekte mit eigenen Templates nicht doppelt labeln.
 
-### 7.3 Middleware-Fallback *(vorbereiten, nicht implementieren)*
-Interface und Konfigurationspunkt anlegen, Implementierung folgt in der Pro-Version.
+### 7.3 Middleware-Fallback *(nur Erweiterungspunkt)*
+Post-Processing des HTML-Outputs, das `<img>`-Tags über den Prozessdatei-Pfad auf markierte Assets zurückführt. Rettet Altprojekte mit gewachsenen Templates ohne Refactoring.
 
-### 7.4 Icon-Einbrennung in die Bilddatei *(vorbereiten, nicht implementieren)*
-`IconCompositorService` als Interface definieren. Implementierung folgt in der Pro-Version.
+**Hier nur den Andockpunkt schaffen:** eine benannte Position in der Middleware-Kette plus ein Service, der zu einem Prozessdatei-Pfad die zugehörige `AiDeclaration` auflöst. Die Implementierung selbst kommt aus `nt-aimark-pro`.
+
+### 7.4 Icon-Einbrennung in die Bilddatei *(nur Erweiterungspunkt)*
+Das EU-Icon wird serverseitig per ImageMagick in die Prozessdatei komponiert. Überlebt Rechtsklick/Speichern, Hotlinking und Weitergabe über soziale Netze.
+
+**Hier nur:** `IconCompositorInterface` definieren, mit `@api` annotieren und eine No-Op-Standardimplementierung registrieren, die unverändert durchreicht. Kein Hinweis im Backend, dass hier etwas fehlt.
 
 ### 7.5 Markup
 
@@ -325,7 +357,7 @@ Registrierung über `Configuration/Backend/Modules.php`, Parent-Modul zur Laufze
 - Massenbearbeitung: Status für mehrere Assets gleichzeitig setzen — mit Auditeintrag je Asset
 - Hinweisbereich mit dem Disclaimer aus Abschnitt 1 („unterstützt bei der Umsetzung, ersetzt keine rechtliche Prüfung“)
 
-**Für die Pro-Version vorbereiten, aber nicht bauen:** Audit-Log-Ansicht, CSV-/PDF-Export, Veröffentlichungssperre.
+**Nicht hier bauen, sondern als Erweiterungspunkt anlegen:** Audit-Log-Ansicht, CSV-/PDF-Export, Veröffentlichungssperre. Der `AuditService` schreibt im Kernpaket bereits vollständig — nur die Auswertungsansicht kommt aus `nt-aimark-pro`. Das Modul muss ohne diese Ansicht vollständig wirken; kein ausgegrauter Menüpunkt, kein Upgrade-Hinweis.
 
 ---
 
@@ -395,7 +427,7 @@ Bitte in dieser Reihenfolge arbeiten und nach jedem Schritt committen.
 10. **Backend-Modul** + `SystemStatusCheck`.
 11. **CLI-Befehle.**
 12. **Audit-Service** durchgängig verdrahten.
-13. **Event-Schnittstelle** für `nt_ai`/`nt_lingua` + `Documentation/Integration.md`.
+13. **Event- und Erweiterungsschnittstellen** für `nt_ai`, `nt_lingua` und `nt-aimark-pro` — alle mit `@api`, dokumentiert in `Documentation/Integration.md`.
 14. **Dokumentation** — README (deutsch), `Documentation/` mit Installation, Konfiguration, Redaktionsleitfaden, Metadata-Befund, Integration.
 
 ---
@@ -408,4 +440,5 @@ Bitte nicht raten, sondern nachfragen bzw. verifizieren:
 2. **`LICENSE`** enthält aktuell nur einen Platzhalter; der GPL-2.0-Volltext ist vor dem ersten öffentlichen Push einzufügen.
 3. **EU-Icons** liegen noch nicht im Repo (s. Abschnitt 1). Bis dahin nur Textlabel testen.
 4. **Verfügbarkeit von `c2patool`** in der Zielumgebung — falls unklar, `C2paService` zunächst nur mit Interface und Null-Implementierung bauen.
-5. Wenn eine Anforderung in diesem Dokument mit dem TYPO3-Core kollidiert, **halte an und melde es**, statt eine eigene Lösung zu erfinden.
+5. **Namensraum des Pro-Pakets** — `netthinks/nt-aimark-pro` mit Extension-Key `nt_aimark_pro` ist die Annahme. Falls der Key im TER nicht verfügbar ist, vor dem Anlegen der Erweiterungspunkte klären.
+6. Wenn eine Anforderung in diesem Dokument mit dem TYPO3-Core kollidiert, **halte an und melde es**, statt eine eigene Lösung zu erfinden.
