@@ -13,12 +13,12 @@ use TYPO3\CMS\Core\View\ViewFactoryInterface;
 /**
  * Renders with an icon directory the test controls.
  *
- * The EU icon files are not in the repository — each installation downloads
- * them. Taking the service straight from the container therefore renders one
- * way on a machine where they have been downloaded and another way in CI,
- * which is how a test claiming to check the icon-less fallback came to pass
- * while actually rendering icons. Anything asserting on the presence or
- * absence of the graphic pins the directory instead of hoping.
+ * The EU icon files ship with the package, but an installation can lose them
+ * — that fallback is what several tests are about. Taking the service straight
+ * from the container would render whatever happens to lie in the package
+ * directory, which is how a test claiming to check the icon-less fallback once
+ * came to pass while actually rendering icons. Anything asserting on the
+ * presence or absence of the graphic pins the directory instead of hoping.
  */
 trait IconDirectoryTrait
 {

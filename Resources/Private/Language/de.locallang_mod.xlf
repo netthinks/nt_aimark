@@ -162,8 +162,8 @@
 				<target>Offizielle EU-Symbole</target>
 			</trans-unit>
 			<trans-unit id="status.icons.detail" resname="status.icons.detail">
-				<source>Missing, so labels are rendered as text. Add the files under Resources/Public/Icons/Eu/.</source>
-				<target>Fehlen, deshalb wird als Text gekennzeichnet. Dateien unter Resources/Public/Icons/Eu/ ablegen.</target>
+				<source>Missing although they ship with the package, so labels are rendered as text. composer install restores them under Resources/Public/Icons/Eu/.</source>
+				<target>Fehlen, obwohl sie dem Paket beiliegen — deshalb wird als Text gekennzeichnet. composer install stellt sie unter Resources/Public/Icons/Eu/ wieder her.</target>
 			</trans-unit>
 			<trans-unit id="status.c2patool" resname="status.c2patool">
 				<source>c2patool</source>

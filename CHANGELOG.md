@@ -132,11 +132,15 @@ als stabil.
   sinnvolle KI-Kennzeichnung.
 - **Architekturdokumentation** mit sieben Diagrammen, zweisprachig, dazu
   Screenshots aus einer laufenden Installation.
+- **Die offiziellen EU-Symbole liegen jetzt bei** — zwölf SVG für die Ausgabe
+  und zwölf PNG für das Einbrennen durch das Zusatzpaket. Bisher mussten sie
+  von Hand heruntergeladen, umbenannt und abgelegt werden; bis dahin zeigte die
+  Extension nur Textlabel. Herkunft und Nutzungsbedingungen stehen in
+  `Resources/Public/Icons/Eu/README.md`. Die Dateien sind unveränderte
+  Originale, lediglich nach einem einheitlichen Schema benannt.
 
 ### Bekannte Einschränkungen
 
-- Die offiziellen EU-Icons liegen aus lizenz- und integritätsgründen nicht im
-  Repository und müssen manuell ergänzt werden.
 
 - Der Metadaten-Erhalt deckt nur JPEG ab; PNG und WebP verlieren ihr
   XMP-Paket bei der Verarbeitung.

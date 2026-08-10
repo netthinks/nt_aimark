@@ -31,6 +31,27 @@ dependencies:
 Erst damit stehen die Einstellungen aus der
 [Konfiguration](Konfiguration.md) zur Verfügung.
 
+## Die EU-Symbole
+
+**Sie liegen bei.** Nichts herunterzuladen, nichts umzubenennen — die zwölf
+offiziellen Symbole der Europäischen Kommission sind Bestandteil des Pakets,
+als SVG für die Ausgabe im Frontend und als PNG für das Einbrennen in
+Bilddateien durch `nt_aimark_pro`.
+
+Die Kommission stellt sie kostenfrei und ohne Attributionspflicht bereit; sie
+sind fester Bestandteil von Abschnitt 2 des Verhaltenskodex zur Kennzeichnung
+KI-generierter Inhalte. Herkunft und Bedingungen stehen in
+`Resources/Public/Icons/Eu/README.md`.
+
+Nachgezeichnet, umgefärbt oder übersetzt werden dürfen sie nicht — und es
+wäre auch unsinnig: Ein Zeichen, das unionsweit gleich aussieht, wird
+wiedererkannt. Eine eigene Fassung wäre ein Nachbau.
+
+Sollten die Dateien einmal fehlen, weil jemand sie entfernt hat, **läuft die
+Extension weiter** und gibt statt des Symbols ein Textlabel aus
+(„KI-generiert", „KI-bearbeitet", „KI"). Der Systemstatus im Backend-Modul
+meldet es. Es entsteht kein Fehler und kein leeres Bild.
+
 ## EU-Icons ergänzen
 
 Die drei offiziellen Symbole der Europäischen Kommission liegen **nicht** im

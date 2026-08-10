@@ -14,8 +14,3 @@
 
 # Interne Geschaeftsunterlagen, nicht Teil der oeffentlichen Extension
 /Documentation/Intern/
-
-# EU-Icons: die Originaldateien der Kommission werden pro Installation
-# heruntergeladen (siehe Resources/Public/Icons/Eu/README.md) und liegen
-# bewusst nicht im Repository.
-/Resources/Public/Icons/Eu/*.svg

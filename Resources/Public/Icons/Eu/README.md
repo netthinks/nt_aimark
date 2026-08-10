@@ -1,65 +1,95 @@
-# EU-Icons
+# EU-Symbole
 
-Die offiziellen Icons der Europäischen Kommission zur Kennzeichnung
-KI-generierter Inhalte liegen bewusst **nicht** im Repository — die
-Originaldateien der Kommission sind die maßgebliche Fassung, eine mitgelieferte
-Kopie würde daran vorbeialtern. Sie sind kostenfrei und ohne
-Attributionspflicht nutzbar.
+Die offiziellen Symbole der Europäischen Kommission zur Kennzeichnung
+KI-generierter Inhalte. **Sie liegen diesem Paket bei** — es ist nichts
+herunterzuladen.
 
-## Bezug
+## Herkunft und Nutzungsbedingungen
 
-Übersichtsseite:
-<https://digital-strategy.ec.europa.eu/de/policies/eu-icons-labelling-ai-generated-content>
-
-Die Download-Links stehen nur in der **englischen** Fassung der Seite; die
-deutsche ist eine maschinelle eTranslation-Übersetzung, in der sie fehlen.
-Direkt:
-
-| Format | ZIP |
+| | |
 |---|---|
-| SVG (für diese Extension) | <https://ec.europa.eu/newsroom/dae/redirection/document/129546> |
-| PNG | <https://ec.europa.eu/newsroom/dae/redirection/document/129547> |
+| Herausgeber | Europäische Kommission |
+| Seite | <https://digital-strategy.ec.europa.eu/de/policies/eu-icons-labelling-ai-generated-content> |
+| Bezug SVG | <https://ec.europa.eu/newsroom/dae/redirection/document/129546> |
+| Bezug PNG | <https://ec.europa.eu/newsroom/dae/redirection/document/129547> |
+| Nutzung | kostenfrei, ohne Attributionspflicht |
+| Stand | August 2026 |
 
-Das SVG-Archiv enthält genau die zwölf benötigten Dateien: drei Varianten in
-je vier Farbfassungen (schwarz, weiß, beide zusätzlich mit 50 % Transparenz).
+Die Symbole sind fester Bestandteil von Abschnitt 2 des Verhaltenskodex zur
+Kennzeichnung KI-generierter Inhalte. Die Kommission stellt sie ausdrücklich
+für diesen Zweck bereit.
 
-## Umbenennen
+Die Dateien in diesem Verzeichnis sind **unveränderte Originale**, lediglich
+umbenannt (siehe unten). Nachzeichnen, Umfärben oder Übersetzen des
+Schriftzugs ist nicht zulässig und wäre auch nicht sinnvoll: Ein Zeichen, das
+unionsweit gleich aussieht, wird wiedererkannt — eine eigene Fassung wäre ein
+Nachbau, kein offizielles Symbol.
 
-Die Dateinamen im Archiv folgen einem anderen Schema und müssen zugeordnet
-werden. **Achtung:** Eine Datei ist im Archiv der Kommission falsch geschrieben
-(`MOFIFIED` statt `MODIFIED`).
+## Warum sie beiliegen
+
+Ohne sie zeigt die Extension nur Textlabel. Sie erst herunterladen, zwölf
+Dateien umbenennen und ablegen zu lassen, hieße: Die Kernfunktion läuft nicht
+ab Werk, und der häufigste Fehler wäre ein falsch benanntes Symbol.
+
+## Namensschema
+
+Zwölf Dateien je Format: drei Varianten in vier Farbfassungen.
+
+```
+ai-basic-black.svg          ai-basic-white.svg
+ai-basic-black-50.svg       ai-basic-white-50.svg
+ai-generated-black.svg      ai-generated-white.svg
+ai-generated-black-50.svg   ai-generated-white-50.svg
+ai-modified-black.svg       ai-modified-white.svg
+ai-modified-black-50.svg    ai-modified-white-50.svg
+```
+
+Dazu dieselben zwölf als `.png`. Das Frontend arbeitet mit den SVG-Dateien;
+die PNG-Fassung braucht `nt_aimark_pro` zum Einbrennen in die Bilddatei, weil
+ImageMagick SVG nur mit zusätzlichen Delegates verarbeiten kann.
+
+`-50` ist die halbtransparente Fassung.
+
+## Selbst aktualisieren
+
+Sollte die Kommission die Symbole ändern, bevor eine neue Version dieses
+Pakets erscheint: Archiv herunterladen (Links oben), entpacken und nach obigem
+Schema benennen. **Achtung:** Eine Datei ist im Archiv der Kommission falsch
+geschrieben — `LABEL_AI MOFIFIED_black` statt `MODIFIED`.
 
 | Datei im Archiv | Zielname hier |
 |---|---|
-| `LABEL_AI_black.svg` | `ai-basic-black.svg` |
-| `LABEL_AI_black transparent.svg` | `ai-basic-black-50.svg` |
-| `LABEL_AI_white.svg` | `ai-basic-white.svg` |
-| `LABEL_AI_white transparent.svg` | `ai-basic-white-50.svg` |
-| `LABEL_AI GENERATED_black.svg` | `ai-generated-black.svg` |
-| `LABEL_AI GENERATED_black transparent.svg` | `ai-generated-black-50.svg` |
-| `LABEL_AI GENERATED_white.svg` | `ai-generated-white.svg` |
-| `LABEL_AI GENERATED_white transparent.svg` | `ai-generated-white-50.svg` |
-| `LABEL_AI MOFIFIED_black.svg` ← *(Schreibfehler im Original)* | `ai-modified-black.svg` |
-| `LABEL_AI MODIFIED_black transparent.svg` | `ai-modified-black-50.svg` |
-| `LABEL_AI MODIFIED_white.svg` | `ai-modified-white.svg` |
-| `LABEL_AI MODIFIED_white transparent.svg` | `ai-modified-white-50.svg` |
+| `LABEL_AI_black` | `ai-basic-black` |
+| `LABEL_AI_black transparent` | `ai-basic-black-50` |
+| `LABEL_AI_white` | `ai-basic-white` |
+| `LABEL_AI_white transparent` | `ai-basic-white-50` |
+| `LABEL_AI GENERATED_black` | `ai-generated-black` |
+| `LABEL_AI GENERATED_black transparent` | `ai-generated-black-50` |
+| `LABEL_AI GENERATED_white` | `ai-generated-white` |
+| `LABEL_AI GENERATED_white transparent` | `ai-generated-white-50` |
+| `LABEL_AI MOFIFIED_black` ← *(Schreibfehler im Original)* | `ai-modified-black` |
+| `LABEL_AI MODIFIED_black transparent` | `ai-modified-black-50` |
+| `LABEL_AI MODIFIED_white` | `ai-modified-white` |
+| `LABEL_AI MODIFIED_white transparent` | `ai-modified-white-50` |
 
-Fehlen die Dateien, verwendet die Extension automatisch Textlabels und meldet
-den fehlenden Icon-Satz im Systemstatus-Bericht. Es entsteht kein Fehler.
+Bei Composer-Installation liegt dieses Verzeichnis unterhalb von `vendor/`.
+Eigene Änderungen dort sind nach dem nächsten `composer install` weg — was in
+diesem Fall kein Verlust ist, denn dann liegen die mitgelieferten Dateien
+wieder da.
 
-## Was die Extension mit den Dateien macht — und was nicht
+## Was die Extension damit macht
 
-Die Icons dürfen nicht nachgezeichnet oder generiert werden. Die Extension
-verändert die Grafik auch nicht; sie nimmt vor dem Einbinden nur zwei
-Eingriffe am Markup vor, die technisch nötig sind:
+Die Grafik selbst wird nicht verändert. Vor dem Einbinden ins Seitenmarkup
+geschehen zwei Dinge, die technisch nötig sind:
 
-- **Sanitising.** Die Dateien kommen per manuellem Download ins System, an
-  TYPOs Upload-Prüfung vorbei, und werden unescaped in die Seite eingebettet.
-- **Eindeutige Klassennamen und IDs.** Alle zwölf Dateien deklarieren
-  dieselben `.cls-1`/`.cls-2` und dieselbe `id="Calque_1"`. Ohne Umbenennung
-  würde auf einer Seite mit zwei Icons das zweite `<style>`-Element das erste
-  Icon umfärben.
+- **Sanitising.** Die Dateien werden unescaped in die Seite eingebettet.
+- **Farben als Attribute statt `<style>`.** Alle zwölf tragen ihre Farben in
+  einem Stylesheet im SVG. Eine Content Security Policy mit Nonce für
+  `style-src-elem` — in TYPO3 v14 der Standard — verwirft das kommentarlos,
+  und aus dem Symbol würde eine schwarze Fläche. Die Deklarationen werden
+  deshalb auf die Elemente geschrieben. Nebenbei entfällt damit die Kollision
+  der generischen Klassennamen, die alle zwölf Dateien teilen.
 
-Die Icons sind **zweifarbig** (gefüllte Scheibe, Schriftzug ausgespart). Eine
-Einfärbung per `fill: currentColor` ist deshalb ausdrücklich nicht vorgesehen —
-die Kontrastwahl erfolgt über die Dateivariante (schwarz/weiß), nicht über CSS.
+Fehlen die Dateien trotzdem einmal — etwa weil jemand sie gelöscht hat —,
+gibt die Extension ein Textlabel aus und meldet es im Systemstatus. Es
+entsteht kein Fehler.
