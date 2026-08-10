@@ -9,14 +9,14 @@ theme:
   name: material
   palette:
     - scheme: default
-      primary: indigo
-      accent: indigo
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -35,6 +35,9 @@ theme:
     - content.tabs.link
   icon:
     repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/netthinks.css
 
 nav:
   - Home: index.md
