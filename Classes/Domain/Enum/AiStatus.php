@@ -48,20 +48,25 @@ enum AiStatus: int
     }
 
     /**
-     * Bootstrap contextual class for the badge in the backend list.
+     * Badge variant for the backend list.
      *
      * The distinction the colour carries is "does this still need someone" —
      * not "is AI involved". A confirmed AI use is a finished, correct state
      * and is not coloured as a problem.
+     *
+     * These are the backend's own badge variants, not Bootstrap's `bg-*`
+     * helpers: `bg-*` paints the background and leaves `--typo3-badge-color`
+     * at the default dark foreground, which put black lettering on green. The
+     * `badge-*` variants set both, and they follow the light and dark backend.
      */
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Unreviewed => 'bg-secondary',
-            self::Suggested => 'bg-warning',
-            self::NoAi => 'bg-success',
-            self::Generated, self::Modified => 'bg-info',
-            self::UnknownOrigin => 'bg-light text-dark',
+            self::Unreviewed => 'badge-secondary',
+            self::Suggested => 'badge-warning',
+            self::NoAi => 'badge-success',
+            self::Generated, self::Modified => 'badge-info',
+            self::UnknownOrigin => 'badge-default',
         };
     }
 

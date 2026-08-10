@@ -11,6 +11,8 @@ use NetThinks\NtAimark\Service\ExtensionSettings;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 
 /**
  * Reads the state of the review for the backend module.
@@ -38,9 +40,12 @@ final readonly class TransparencyRepository
      */
     private const ORIGINAL_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff'];
 
+    private const LL = 'LLL:EXT:nt_aimark/Resources/Private/Language/locallang_mod.xlf:';
+
     public function __construct(
         private ConnectionPool $connectionPool,
         private ExtensionSettings $settings,
+        private LanguageServiceFactory $languageServiceFactory,
     ) {}
 
     /**
@@ -134,7 +139,7 @@ final readonly class TransparencyRepository
             $storageUid = (int) $row['storage'];
             $summaries[] = new StorageSummary(
                 storageUid: $storageUid,
-                storageName: $names[$storageUid] ?? sprintf('Storage %d', $storageUid),
+                storageName: $this->storageLabel($storageUid, $names[$storageUid] ?? ''),
                 total: (int) $row['total'],
                 unreviewed: (int) $row['unreviewed'],
                 suggested: (int) $row['suggested'],
@@ -402,6 +407,40 @@ final readonly class TransparencyRepository
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * A name an operator recognises.
+     *
+     * Storage 0 has no record in `sys_file_storage`: it is where TYPO3 files
+     * everything that lies outside a configured storage. "Storage 0" says
+     * nothing to whoever has to act on the row, so it is named by what it
+     * holds. Named storages keep their own name.
+     */
+    private function storageLabel(int $storageUid, string $name): string
+    {
+        if ($name !== '') {
+            return $name;
+        }
+
+        $language = $this->language();
+
+        if ($storageUid === 0) {
+            return $language->sL(self::LL . 'storage.fallback');
+        }
+
+        return sprintf($language->sL(self::LL . 'storage.unnamed'), $storageUid);
+    }
+
+    private function language(): LanguageService
+    {
+        // Runs in the module as well as on the CLI, where there is no backend
+        // user to take a language from.
+        $backendUser = $GLOBALS['BE_USER'] ?? null;
+
+        return $backendUser instanceof \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication
+            ? $this->languageServiceFactory->createFromUserPreferences($backendUser)
+            : $this->languageServiceFactory->create('default');
     }
 
     /**

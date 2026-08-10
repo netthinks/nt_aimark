@@ -27,7 +27,15 @@
 			</trans-unit>
 			<trans-unit id="overview.storage" resname="overview.storage">
 				<source>Storage</source>
-				<target>Speicher</target>
+				<target>Dateiablage</target>
+			</trans-unit>
+			<trans-unit id="storage.fallback" resname="storage.fallback">
+				<source>Files outside the file storages</source>
+				<target>Dateien außerhalb der Dateiablagen</target>
+			</trans-unit>
+			<trans-unit id="storage.unnamed" resname="storage.unnamed">
+				<source>File storage %d</source>
+				<target>Dateiablage %d</target>
 			</trans-unit>
 			<trans-unit id="overview.total" resname="overview.total">
 				<source>Files</source>
@@ -93,7 +101,7 @@
 			</trans-unit>
 			<trans-unit id="filter.storage" resname="filter.storage">
 				<source>Storage</source>
-				<target>Speicher</target>
+				<target>Dateiablage</target>
 			</trans-unit>
 			<trans-unit id="filter.createdAfter" resname="filter.createdAfter">
 				<source>Created from</source>
@@ -125,7 +133,7 @@
 			</trans-unit>
 			<trans-unit id="filter.allStorages" resname="filter.allStorages">
 				<source>All storages</source>
-				<target>Alle Speicher</target>
+				<target>Alle Dateiablagen</target>
 			</trans-unit>
 			<trans-unit id="list.page" resname="list.page">
 				<source>Page %1$s of %2$s</source>

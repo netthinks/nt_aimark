@@ -138,6 +138,18 @@ als stabil.
   Extension nur Textlabel. Herkunft und Nutzungsbedingungen stehen in
   `Resources/Public/Icons/Eu/README.md`. Die Dateien sind unveränderte
   Originale, lediglich nach einem einheitlichen Schema benannt.
+- **Backend-Modul lesbarer.** Die Plaketten verwendeten Bootstraps `bg-*`,
+  das nur den Hintergrund faerbt und die Schriftfarbe auf dem dunklen
+  Standardwert laesst — schwarze Schrift auf Gruen. Jetzt die
+  Backend-eigenen `badge-*`-Varianten, die Vorder- und Hintergrund gemeinsam
+  setzen und dem hellen wie dem dunklen Backend folgen (gemessen 5,5:1 bis
+  9,4:1 statt darunter). Die Kartenueberschriften sind echte Ueberschriften
+  mit `card-title` statt Fließtext.
+- **Speicher heissen jetzt nach ihrem Inhalt.** „Storage 0" ist der Ort, an
+  dem TYPO3 alles ablegt, was ausserhalb einer eingerichteten Dateiablage
+  liegt — der Name sagte niemandem etwas, der die Zeile abarbeiten soll. Er
+  heisst jetzt „Dateien ausserhalb der Dateiablagen"; unbenannte Ablagen
+  heissen „Dateiablage <uid>".
 
 ### Bekannte Einschränkungen
 
