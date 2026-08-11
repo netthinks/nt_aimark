@@ -94,6 +94,10 @@ plugins:
         - locale: de
           name: Deutsch
           build: true
+          # Die Startseite von docs.netthinks.com liest die Kartentexte aus dem
+          # Description-Meta der jeweiligen index.html. Ohne diese Zeile trüge
+          # auch die deutsche Fassung die englische Beschreibung.
+          site_description: KI-Transparenz für TYPO3 — KI-Anteil erfassen, im Frontend kennzeichnen und die Entscheidungen dokumentieren, passend zu Art. 50 der EU-KI-Verordnung
           nav_translations:
             Home: Startseite
             Installation: Installation
