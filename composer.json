@@ -17,10 +17,10 @@
     "license": "GPL-2.0-or-later",
     "authors": [
         {
-            "name": "Dietmar Engler",
+            "name": "NET.THINKS",
             "email": "info@netthinks.com",
             "homepage": "https://www.netthinks.com",
-            "role": "Developer"
+            "role": "Vendor"
         }
     ],
     "support": {

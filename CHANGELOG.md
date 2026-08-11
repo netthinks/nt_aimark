@@ -4,6 +4,14 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.6] – 2026-08-11
+
+### Geändert
+
+- **Autor ist NET.THINKS, nicht die Privatperson.** Das TER zeigt das Feld
+  `author`, nicht `author_company` — dort stand der Name des Entwicklers
+  zwischen lauter Firmeneinträgen. Ebenso in `composer.json` für Packagist.
+
 ## [0.9.5] – 2026-08-11
 
 ### Geändert
