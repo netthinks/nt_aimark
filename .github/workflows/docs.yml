@@ -7,6 +7,11 @@ on:
       - 'docs/**'
       - 'mkdocs.yml'
       - '.github/workflows/docs.yml'
+      # Die Changelog-Seite bindet diese Datei per Snippet ein. Ohne sie hier
+      # wuerde ein Release die Doku nicht anstossen — und die veroeffentlichte
+      # Fassung liefe der echten wieder hinterher, genau wie zuvor mit der
+      # Handabschrift.
+      - 'CHANGELOG.md'
 
 jobs:
   deploy:

@@ -80,6 +80,25 @@ RUN curl -fsSL "https://github.com/contentauth/c2pa-rs/releases/download/c2patoo
 If the tool is not on the `PATH`, set its path in the extension settings under
 *Detection*.
 
+### When `c2patool` cannot be installed
+
+On managed hosting it often fails regardless of the path: the tool is linked
+against glibc and needs the dynamic loader under `/lib64`, which such
+environments do not provide. No setting changes that.
+
+Three ways are open then:
+
+1. **Do nothing.** Labelling works in full. One of three detection sources
+   drops out and the signature state stays "not verifiable". For many
+   libraries that is no practical loss — C2PA is not yet widespread.
+2. **Own server or container.** Where you may install things yourself, it
+   takes minutes (see above).
+3. **Hand the check over.** The add-on package `nt_aimark_pro` can delegate
+   signature checking to a hosted service, so nothing needs installing on
+   your server. Media files then leave your server — that is processing on
+   your behalf and needs a contract. We describe it at
+   [netthinks.com](https://www.netthinks.com/leistungen/websites/ki-kennzeichnung-typo3/).
+
 ## Bring the label into your templates
 
 In the Fluid template of a page or content element:

@@ -70,3 +70,25 @@ Danach das Site Set `AI Mark` einbinden — siehe [Installation](installation.md
 
 Sind `nt_ai` oder `nt_lingua` installiert, können sie ihre Erzeugnisse melden
 — siehe [Integration](integration.md).
+
+## Wer dahintersteht
+
+`nt_aimark` entsteht bei **NET.THINKS**, einer TYPO3-Agentur aus
+Villingen-Schwenningen. Das Kernpaket ist frei (GPL-2.0-or-later) und
+vollständig — es ist kein Probeexemplar von etwas Größerem.
+
+Darüber hinaus gibt es zwei Dinge, die manche brauchen und viele nicht:
+
+**Das Zusatzpaket `nt_aimark_pro`** klinkt sich über die dokumentierten
+[Erweiterungspunkte](integration.md) ein und bringt Funktionen, die im freien
+Paket bewusst fehlen, weil sie nicht jeder braucht: das Einbrennen des Symbols
+in die Bilddatei, Nachbearbeitung des fertigen HTML für gewachsene Templates,
+Auswertung und Export des Protokolls, eine Transparenzerklärung und die
+Anbindung an einen gehosteten Prüfdienst für Content Credentials.
+
+**Unterstützung bei der Umsetzung** — Bestandsaufnahme, Einordnung der
+Inhalte, Einrichtung. Wer die Extension selbst einrichten will, findet in
+dieser Dokumentation alles Nötige; das ist ausdrücklich der Regelfall.
+
+- Website: <https://www.netthinks.com/leistungen/websites/ki-kennzeichnung-typo3/>
+- Fragen, Fehler, Wünsche: <https://github.com/netthinks/nt_aimark/issues>

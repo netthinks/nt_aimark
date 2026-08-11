@@ -80,6 +80,29 @@ RUN curl -fsSL "https://github.com/contentauth/c2pa-rs/releases/download/c2patoo
 Liegt das Werkzeug nicht im `PATH`, tragen Sie den Pfad in den
 Extension-Einstellungen unter *Erkennung* ein.
 
+### Wenn sich `c2patool` nicht installieren lässt
+
+Auf gemanagten Hostings scheitert es häufig unabhängig vom Pfad: Das Werkzeug
+ist gegen glibc gebunden und braucht den dynamischen Loader unter `/lib64`,
+den solche Umgebungen nicht bereitstellen. Daran ändert keine Einstellung
+etwas.
+
+Drei Wege stehen dann offen:
+
+1. **Nichts tun.** Die Kennzeichnung funktioniert vollständig. Es entfällt
+   eine von drei Erkennungsquellen, und der Signaturzustand bleibt „nicht
+   prüfbar". Für viele Bestände ist das kein praktischer Verlust — C2PA ist
+   noch wenig verbreitet.
+2. **Eigener Server oder Container.** Wo Sie selbst installieren dürfen, ist
+   es in Minuten erledigt (siehe oben).
+3. **Prüfung auslagern.** Das Zusatzpaket `nt_aimark_pro` kann die
+   Signaturprüfung an einen gehosteten Dienst abgeben, sodass auf Ihrem
+   Server nichts installiert werden muss. Dabei verlassen Mediendateien Ihren
+   Server — das ist eine Auftragsverarbeitung und will vertraglich geregelt
+   sein. Wir haben das unter
+   [netthinks.com](https://www.netthinks.com/leistungen/websites/ki-kennzeichnung-typo3/)
+   beschrieben.
+
 ## Kennzeichnung ins Template bringen
 
 Im Fluid-Template der Seite oder des Inhaltselements:
