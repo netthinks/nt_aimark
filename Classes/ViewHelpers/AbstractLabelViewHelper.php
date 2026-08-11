@@ -12,6 +12,7 @@ use NetThinks\NtAimark\Service\AiMarkSettingsFactory;
 use NetThinks\NtAimark\Service\DisclosureRuleService;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -30,6 +31,8 @@ abstract class AbstractLabelViewHelper extends AbstractViewHelper
      */
     protected function decide(mixed $file): ?array
     {
+        $file = $this->unwrap($file);
+
         if (!$file instanceof FileInterface) {
             return null;
         }
@@ -38,6 +41,26 @@ abstract class AbstractLabelViewHelper extends AbstractViewHelper
         $decision = $this->disclosureRuleService->resolve($declaration, $this->settings());
 
         return [$declaration, $decision];
+    }
+
+    /**
+     * Holt die Kerndatei aus einer Extbase-Dateireferenz.
+     *
+     * Extbase-Extensions — Blog, News und viele andere — liefern in ihren
+     * Templates `\TYPO3\CMS\Extbase\Domain\Model\FileReference`. Die
+     * implementiert `FileInterface` nicht, weshalb die Kennzeichnung in solchen
+     * Listen stillschweigend ausblieb: Der ViewHelper gab die Kinder
+     * unverändert zurück, das Bild erschien ohne Symbol, und nichts wies darauf
+     * hin. Wer den ViewHelper einbaut, soll ihn nicht erst mit
+     * `{bild.originalResource}` überreden müssen.
+     */
+    private function unwrap(mixed $file): mixed
+    {
+        if ($file instanceof ExtbaseFileReference) {
+            return $file->getOriginalResource();
+        }
+
+        return $file;
     }
 
     protected function settings(): AiMarkSettings
