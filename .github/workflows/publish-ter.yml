@@ -14,7 +14,10 @@ on:
 
 # The token is only needed by the publishing step, which sets it explicitly.
 permissions:
-  contents: read
+  # Schreibrecht, weil der Lauf am Ende ein GitHub-Release anlegt. Ohne das
+  # scheitert der letzte Schritt — und zwar erst, nachdem im TER bereits
+  # veroeffentlicht wurde.
+  contents: write
 
 env:
   EXTENSION_KEY: nt_aimark
@@ -117,6 +120,42 @@ jobs:
           fi
           rm -rf tailor-version-artefact
 
+      # Der Kommentar stand bisher auf "Released from v0.9.x". Das ist keine
+      # Information, sondern eine Tautologie — im TER steht daneben ohnehin die
+      # Versionsnummer. Der Changelog-Abschnitt dieser Fassung sagt dagegen,
+      # was sich geaendert hat, und genau danach sucht jemand, der vor einem
+      # Update steht.
+      - name: Extract the changelog section
+        id: notes
+        env:
+          VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          NOTES=$(awk -v v="## [${VERSION}]" '
+            index($0, v) == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md | awk 'NF { leer = 0; ausgabe = ausgabe puffer $0 "\n"; puffer = ""; next } { puffer = puffer "\n" }
+             END { printf "%s", ausgabe }')
+
+          if [ -z "${NOTES}" ]; then
+            echo "::error::CHANGELOG.md has no section for ${VERSION}."
+            exit 1
+          fi
+
+          {
+            echo 'text<<CHANGELOG_EOF'
+            echo "${NOTES}"
+            echo 'CHANGELOG_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+          # Das TER nimmt einen einzeiligen Kommentar. Aufzaehlungszeichen und
+          # Zeilenumbrueche werden deshalb zu einem Fliesstext zusammengezogen
+          # und auf eine lesbare Laenge gekuerzt.
+          EINZEILER=$(echo "${NOTES}" \
+            | sed -E 's/^### /Kategorie: /; s/^- /• /; s/\*\*//g; s/`//g' \
+            | tr '\n' ' ' | tr -s ' ' | cut -c1-900)
+          echo "oneline=${EINZEILER}" >> "$GITHUB_OUTPUT"
+
       - name: Publish to TER
         env:
           TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
@@ -128,8 +167,33 @@ jobs:
             exit 1
           fi
           php ~/.composer/vendor/bin/tailor ter:publish \
-            --comment "Released from ${GITHUB_REF_NAME}" \
+            --comment "${{ steps.notes.outputs.oneline }}" \
             "${VERSION}"
+
+      # Ein Tag allein sagt niemandem etwas. Wer auf der Releases-Seite steht,
+      # sieht bisher nur eine Versionsnummer und muss selbst im Changelog
+      # nachschlagen — also genau die Arbeit, die eine Release-Notiz abnimmt.
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.number }}
+          NOTES: ${{ steps.notes.outputs.text }}
+        run: |
+          {
+            echo "${NOTES}"
+            echo
+            echo '---'
+            echo
+            echo "**Installation:** \`composer require netthinks/nt-aimark:^${VERSION}\`"
+            echo
+            echo "[Im TER](https://extensions.typo3.org/extension/nt_aimark) · [Dokumentation](https://docs.netthinks.com/nt-aimark/de/) · [Vollständiger Changelog](https://github.com/netthinks/nt_aimark/blob/main/CHANGELOG.md)"
+          } > /tmp/release-notes.md
+
+          gh release create "v${VERSION}" \
+            --title "${VERSION}" \
+            --notes-file /tmp/release-notes.md \
+            --verify-tag \
+            || gh release edit "v${VERSION}" --notes-file /tmp/release-notes.md
 
       # Titel, Beschreibung, Zustand und Autor zieht das TER aus der
       # ext_emconf.php des hochgeladenen Archivs. Composer-Name, Repository,
