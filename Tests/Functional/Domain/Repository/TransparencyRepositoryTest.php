@@ -252,6 +252,47 @@ final class TransparencyRepositoryTest extends FunctionalTestCase
         }
     }
 
+    /**
+     * A file is counted once, however many languages describe it.
+     *
+     * `sys_file_metadata` holds one record per language, and a site that
+     * translates its file metadata gets a second, third, fourth record for the
+     * same picture. Counting records instead of files put 587 entries in front
+     * of an editor who has 365 files, with the same picture up for review
+     * several times over.
+     *
+     * Provenance is not a property of a language: a picture is AI-generated or
+     * it is not, whatever it is called in the English overlay.
+     */
+    #[Test]
+    public function aTranslatedFileIsStillOneFile(): void
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $vorher = $this->subject->countAssets();
+
+        foreach ([1, 2] as $language) {
+            $connectionPool->getConnectionForTable('sys_file_metadata')->insert('sys_file_metadata', [
+                'pid' => 0,
+                'file' => 4,
+                'sys_language_uid' => $language,
+                'l10n_parent' => 4,
+                'tx_ntaimark_status' => AiStatus::Generated->value,
+            ]);
+        }
+
+        self::assertSame($vorher, $this->subject->countAssets());
+        self::assertCount(1, array_filter(
+            $this->subject->findAssets(),
+            static fn(array $row): bool => (int) $row['file'] === 4,
+        ));
+
+        $summary = $this->subject->storageSummaries()[0];
+        self::assertSame(6, $summary->total);
+        self::assertSame(1, $summary->brokenC2pa);
+        self::assertSame($vorher, array_sum($this->subject->statusDistribution()));
+        self::assertCount(2, $this->subject->findWithC2paState());
+    }
+
     private function givenFile(int $uid, string $identifier, string $mimeType = 'image/webp'): void
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);

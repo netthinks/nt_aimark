@@ -18,3 +18,6 @@ hideDerivedFormats = 1
 
 # cat=list; type=string; label=Zu prüfende Dateitypen: Kommagetrennte MIME-Typen, * als Platzhalter erlaubt. Nur diese Dateien erscheinen in der Arbeitsliste und in den Kennzahlen — für ein Stylesheet oder eine YAML-Datei gibt es keine sinnvolle KI-Kennzeichnung. Leer lassen, um alle Dateien zu prüfen.
 reviewedMimeTypes = image/*,audio/*,video/*,application/pdf
+
+# cat=addon; type=string; label=Infoseite zu Zusatzmodulen: Adresse, auf die das Modul hinweist, wenn eine Funktion einen gehosteten Dienst oder ein Zusatzpaket voraussetzt — etwa die C2PA-Prüfung ohne c2patool auf dem Server. Leer lassen, um jeden solchen Hinweis abzuschalten.
+addOnInfoUrl = https://www.netthinks.com/leistungen/websites/ki-kennzeichnung-typo3/

@@ -110,6 +110,13 @@ RUN curl -fsSL "https://github.com/contentauth/c2pa-rs/releases/download/c2patoo
 Liegt das Werkzeug nicht im `PATH`, tragen Sie den Pfad in den
 Extension-Einstellungen unter *Erkennung* ein.
 
+Auf gemanagten Hostings scheitert die Installation häufig unabhängig vom
+Pfad: `c2patool` braucht den dynamischen Loader unter `/lib64`, den solche
+Umgebungen nicht bereitstellen. Die Extension läuft dann ohne C2PA-Auswertung
+weiter und stützt die Erkennung auf XMP und EXIF; im Systemstatus steht ein
+Hinweis samt Adresse aus der Einstellung `addOnInfoUrl`. Wer keinen Hinweis
+möchte, leert das Feld.
+
 ## Kennzeichnung ins Template bringen
 
 Im Fluid-Template der Seite oder des Inhaltselements:

@@ -31,6 +31,24 @@ final readonly class ExtensionSettings
     }
 
     /**
+     * Where the module points when a capability needs something this package
+     * does not carry — a hosted service, an add-on.
+     *
+     * Only a link. There is no licence field, no activation, no check against
+     * a server: the extension never asks anyone whether it may run. An empty
+     * value switches every such hint off, which is why it is a setting rather
+     * than a constant.
+     */
+    public function addOnInfoUrl(): string
+    {
+        $url = trim($this->get('addOnInfoUrl', ''));
+
+        // Anything that is not plainly an https address is dropped rather than
+        // rendered: this string ends up in an href in the backend.
+        return preg_match('#^https://[^\s"\'<>]+$#', $url) === 1 ? $url : '';
+    }
+
+    /**
      * Comma-separated list of further tables that carry the text fields.
      */
     public function additionalTextTables(): string

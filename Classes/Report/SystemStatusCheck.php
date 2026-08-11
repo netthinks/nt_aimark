@@ -35,7 +35,7 @@ final readonly class SystemStatusCheck
     ) {}
 
     /**
-     * @return list<array{severity: string, titleKey: string, detailKey: string, detail: string}>
+     * @return list<array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string}>
      */
     public function findings(): array
     {
@@ -81,7 +81,16 @@ final readonly class SystemStatusCheck
     }
 
     /**
-     * @return array{severity: string, titleKey: string, detailKey: string, detail: string}
+     * The most common finding on shared hosting, and the one an operator can
+     * do least about.
+     *
+     * c2patool is a static Rust binary that still needs a glibc loader under
+     * /lib64. Plenty of managed hosts do not have one, and no setting fixes
+     * that — so the notice carries the way out with it instead of leaving the
+     * reader with "not available". The link is a plain hint; the extension
+     * works on without it, and an empty addOnInfoUrl removes it.
+     *
+     * @return array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string}
      */
     private function c2patool(): array
     {
@@ -89,12 +98,21 @@ final readonly class SystemStatusCheck
             return $this->ok('status.c2patool');
         }
 
-        return [
+        $finding = [
             'severity' => self::SEVERITY_NOTICE,
             'titleKey' => self::LL . 'status.c2patool',
             'detailKey' => self::LL . 'status.c2patool.detail',
             'detail' => $this->settings->c2patoolPath(),
         ];
+
+        $url = $this->settings->addOnInfoUrl();
+
+        if ($url !== '') {
+            $finding['hintKey'] = self::LL . 'status.c2patool.hint';
+            $finding['hintUrl'] = $url;
+        }
+
+        return $finding;
     }
 
     /**

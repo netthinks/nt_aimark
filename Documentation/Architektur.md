@@ -231,9 +231,18 @@ Das Repository nimmt automatisch erzeugte Formatvarianten
 denselben Inhalt wie das Original und würden Arbeitsliste wie Prüfquote
 verzerren. Abschaltbar über die Einstellung `hideDerivedFormats`.
 
+Gezählt werden **Dateien, nicht Metadatensätze**: `sys_file_metadata` führt je
+Sprache einen Satz, und eine Website mit übersetzten Datei-Metadaten hätte
+jedes Bild mehrfach in der Liste. Die Herkunft eines Bildes hängt nicht von
+der Sprache ab, deshalb arbeitet das Modul auf dem Satz der Standardsprache.
+
 `SystemStatusCheck` prüft, was zur Laufzeit fehlen kann: EU-Symbole,
 `c2patool`, die PHP-Erweiterung `exif` und eine GFX-Konfiguration, die
-Metadaten zerstört.
+Metadaten zerstört. Zu einem Befund kann ein Hinweis mit
+weiterführender Adresse gehören (`addOnInfoUrl`) — etwa bei `c2patool`, das
+sich auf vielen gemanagten Hostings nicht installieren lässt. Der Hinweis ist
+ein Link und sonst nichts: keine Lizenzprüfung, keine Freischaltung, kein
+Rückkanal. Eine leere Adresse schaltet ihn ab.
 
 ## Erweiterungspunkte
 

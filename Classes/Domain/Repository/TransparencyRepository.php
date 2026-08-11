@@ -68,6 +68,7 @@ final readonly class TransparencyRepository
             ->join('m', 'sys_file', 'f', $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('m.file')))
             ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
 
+        $this->restrictToDefaultLanguage($queryBuilder);
         $this->excludeDerivedFormats($queryBuilder);
         $this->restrictToReviewedTypes($queryBuilder);
 
@@ -123,6 +124,7 @@ final readonly class TransparencyRepository
             ->join('m', 'sys_file', 'f', $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('m.file')))
             ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
 
+        $this->restrictToDefaultLanguage($queryBuilder);
         $this->excludeDerivedFormats($queryBuilder);
         $this->restrictToReviewedTypes($queryBuilder);
 
@@ -282,6 +284,10 @@ final readonly class TransparencyRepository
                     'm.tx_ntaimark_c2pa_state',
                     $queryBuilder->createNamedParameter(C2paState::None->value, Connection::PARAM_INT),
                 ),
+                $queryBuilder->expr()->eq(
+                    'm.sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
+                ),
             )
             ->orderBy('f.name')
             ->executeQuery()
@@ -332,6 +338,27 @@ final readonly class TransparencyRepository
         $queryBuilder->andWhere($queryBuilder->expr()->or(...$conditions));
     }
 
+    /**
+     * Counts files, not metadata records.
+     *
+     * A file's provenance does not depend on the language it is described in:
+     * a picture is AI-generated or it is not, whatever an editor called it in
+     * the English overlay. `sys_file_metadata` however carries one record per
+     * language, so an installation with translated metadata listed every file
+     * as often as it had translations — one live site showed 587 entries for
+     * 365 files, and the same file appeared twice in the work list.
+     *
+     * The review therefore runs on the default-language record, which is the
+     * one the TCA fields belong to.
+     */
+    private function restrictToDefaultLanguage(QueryBuilder $queryBuilder, string $alias = 'm'): void
+    {
+        $queryBuilder->andWhere($queryBuilder->expr()->eq(
+            $alias . '.sys_language_uid',
+            $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
+        ));
+    }
+
     private function excludeDerivedFormats(QueryBuilder $queryBuilder): void
     {
         if (!$this->settings->hideDerivedFormats()) {
@@ -360,6 +387,7 @@ final readonly class TransparencyRepository
             ->join('m', 'sys_file', 'f', $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('m.file')))
             ->where($queryBuilder->expr()->eq('f.missing', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
 
+        $this->restrictToDefaultLanguage($queryBuilder);
         $this->excludeDerivedFormats($queryBuilder);
         $this->restrictToReviewedTypes($queryBuilder);
 

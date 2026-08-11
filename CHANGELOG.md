@@ -4,6 +4,33 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.1] – 2026-08-11
+
+### Behoben
+
+- **Arbeitsliste zählt Dateien statt Metadatensätze.** `sys_file_metadata`
+  führt je Sprache einen Satz; auf einer Website mit übersetzten
+  Datei-Metadaten erschien deshalb jedes Bild mehrfach — in einer
+  Installation 587 Einträge für 365 Dateien. Kennzahlen, Arbeitsliste,
+  Scan und C2PA-Revalidierung arbeiten jetzt auf der Standardsprache.
+- **Größe der Kennzeichnung.** Seit dem engeren Symbolrahmen (0.9.0) füllte
+  der Schriftzug 39 statt 23 Prozent der Symbolhöhe; dieselbe Höhenangabe
+  rendert ihn dadurch 1,7-fach größer als gemessen. Höhen neu abgeleitet.
+- **Kennzeichnung in Extbase-Listen.** `nt:aiFigure` und `nt:aiLabel`
+  bekamen aus Templates von Blog, News und ähnlichen Extensions eine
+  Extbase-Dateireferenz und gaben ihren Inhalt unverändert zurück — ohne
+  Symbol und ohne Fehlermeldung. Solche Referenzen werden jetzt ausgepackt.
+- **Abstände in der Arbeitsliste.** Filterzeile und Statusgruppe standen
+  bündig an der Dateiliste bzw. aneinander.
+
+### Hinzugefügt
+
+- Einstellung **`addOnInfoUrl`**: Adresse, auf die das Modul hinweist, wenn
+  eine Funktion mehr voraussetzt als das Paket mitbringt — derzeit bei
+  fehlendem `c2patool`, das sich auf vielen gemanagten Hostings nicht
+  installieren lässt. Nur ein Link: keine Lizenzprüfung, keine
+  Freischaltung, kein Rückkanal. Leeres Feld schaltet den Hinweis ab.
+
 ## [0.9.0] – 2026-08-09
 
 Erste Veröffentlichung. Funktional vollständig: Erfassung, automatische

@@ -138,6 +138,12 @@
 			<trans-unit id="status.c2patool.detail" resname="status.c2patool.detail">
 				<source>Not available, so Content Credentials are not evaluated. Detection falls back to XMP and EXIF.</source>
 			</trans-unit>
+			<trans-unit id="status.c2patool.hint" resname="status.c2patool.hint">
+				<source>On many managed hosts the tool cannot be installed. A hosted check is one way around it</source>
+			</trans-unit>
+			<trans-unit id="status.hint.link" resname="status.hint.link">
+				<source>More on this</source>
+			</trans-unit>
 			<trans-unit id="status.metadata" resname="status.metadata">
 				<source>Metadata in processed images</source>
 			</trans-unit>

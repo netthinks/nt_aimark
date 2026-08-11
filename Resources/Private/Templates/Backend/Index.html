@@ -145,6 +145,21 @@
                                         <f:if condition="{finding.detail}"><code>{finding.detail}</code></f:if>
                                     </span>
                                 </f:if>
+                                <f:if condition="{finding.hintUrl}">
+                                    <span class="d-block text-body-secondary small mt-1">
+                                        <f:translate key="{finding.hintKey}" /> —
+                                        <!--
+                                            Underlined, not coloured: inside the
+                                            muted status text the backend forces
+                                            the link to the surrounding colour,
+                                            so nothing would mark it as a link.
+                                        -->
+                                        <a href="{finding.hintUrl}" target="_blank" rel="noreferrer"
+                                           class="text-decoration-underline">
+                                            <f:translate key="{ll}status.hint.link" />
+                                        </a>
+                                    </span>
+                                </f:if>
                             </span>
                         </li>
                     </f:for>
@@ -290,30 +305,42 @@
 </f:section>
 
 <f:section name="Filter">
-    <fieldset class="mb-3">
-        <legend class="form-label mb-2"><f:translate key="{ll}filter.status" /></legend>
-        <div class="d-flex flex-wrap gap-3">
-            <f:for each="{statusItems}" as="item">
-                <div class="form-check">
-                    <f:if condition="{item.selected}">
-                        <f:then>
-                            <input class="form-check-input" type="checkbox" name="status[]" value="{item.value}"
-                                   id="nt-aimark-filter-status-{item.value}" checked="checked">
-                        </f:then>
-                        <f:else>
-                            <input class="form-check-input" type="checkbox" name="status[]" value="{item.value}"
-                                   id="nt-aimark-filter-status-{item.value}">
-                        </f:else>
-                    </f:if>
-                    <label class="form-check-label" for="nt-aimark-filter-status-{item.value}">
-                        <f:translate key="{item.labelKey}" />
-                    </label>
-                </div>
-            </f:for>
-        </div>
-    </fieldset>
+    <!--
+        Status group and filter fields share one row, and the row carries the
+        gap to the list below it.
 
-    <div class="row g-3 align-items-end">
+        The backend gives every .card-body padding-bottom: 0 and expects the
+        last element inside to bring its own bottom margin. A Bootstrap .row
+        brings none, and additionally pulls itself up by the gutter — so the
+        filters ended up flush against the file list, and the status group
+        flush against the labels beneath it. Inside one row the gutter spaces
+        both instead of eating the spacing.
+    -->
+    <div class="row g-3 align-items-end mb-3">
+        <div class="col-12">
+            <fieldset>
+                <legend class="form-label mb-2"><f:translate key="{ll}filter.status" /></legend>
+                <div class="d-flex flex-wrap gap-3">
+                    <f:for each="{statusItems}" as="item">
+                        <div class="form-check">
+                            <f:if condition="{item.selected}">
+                                <f:then>
+                                    <input class="form-check-input" type="checkbox" name="status[]" value="{item.value}"
+                                           id="nt-aimark-filter-status-{item.value}" checked="checked">
+                                </f:then>
+                                <f:else>
+                                    <input class="form-check-input" type="checkbox" name="status[]" value="{item.value}"
+                                           id="nt-aimark-filter-status-{item.value}">
+                                </f:else>
+                            </f:if>
+                            <label class="form-check-label" for="nt-aimark-filter-status-{item.value}">
+                                <f:translate key="{item.labelKey}" />
+                            </label>
+                        </div>
+                    </f:for>
+                </div>
+            </fieldset>
+        </div>
         <div class="col-sm-6 col-lg-4">
             <label class="form-label" for="nt-aimark-filter-storage">
                 <f:translate key="{ll}filter.storage" />
