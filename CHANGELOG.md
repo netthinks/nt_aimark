@@ -4,6 +4,33 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.4] – 2026-08-11
+
+### Hinzugefügt
+
+- **`C2paInspectorProbeInterface`** (`@api`) und eine Erreichbarkeitsanzeige
+  im Systemstatus: „✓ Erreichbar (vor 12 s geprüft)" samt Schaltfläche
+  **Jetzt prüfen**.
+
+  Eingerichtet zu sein und zu antworten sind zwei verschiedene Dinge, und nur
+  das zweite hilft. Schlägt die Probe fehl, wird der Befund zur Warnung.
+
+  Die Probe ist **fünf Minuten zwischengespeichert**. Eine Anfrage je
+  Modulaufruf würde das Backend an einen fremden Server hängen — bei fünf
+  Redakteuren fünffach, und bei einer Zeitüberschreitung mit sekundenlangem
+  Warten. So kostet es höchstens zwölf Anfragen in der Stunde, gleich wie
+  viele Leute hinsehen. Wer eine belastbare Antwort will, drückt die
+  Schaltfläche.
+
+  `isAvailable()` bleibt unverändert ohne Netzzugriff.
+
+### Sonstiges
+
+- Wöchentlicher **TER-Abgleich**: prüft, ob der neueste Tag auch
+  veröffentlicht wurde, und legt sonst ein Issue an. Geprüft wird das
+  Ergebnis, nicht die Voraussetzung — das deckt abgelaufene Token,
+  fehlgeschlagene Workflows und vergessene Tags gleichermaßen ab.
+
 ## [0.9.3] – 2026-08-11
 
 ### Hinzugefügt

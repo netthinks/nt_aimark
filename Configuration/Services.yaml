@@ -53,6 +53,12 @@ services:
     arguments:
       $cache: '@cache.ntaimark'
 
+  # Die Erreichbarkeitsprobe wird zwischengespeichert; ohne Cache unterbleibt
+  # sie ganz, statt das Backend an einen fremden Server zu haengen.
+  NetThinks\NtAimark\Report\SystemStatusCheck:
+    arguments:
+      $cache: '@cache.ntaimark'
+
   # Server-level settings, not site settings — the path to the external tool
   # describes the machine, so it comes from the extension configuration.
   NetThinks\NtAimark\Service\C2paService:

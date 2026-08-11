@@ -147,6 +147,18 @@
 			<trans-unit id="status.hint.link" resname="status.hint.link">
 				<source>More on this</source>
 			</trans-unit>
+			<trans-unit id="status.probe.ok" resname="status.probe.ok">
+				<source>Reachable</source>
+			</trans-unit>
+			<trans-unit id="status.probe.failed" resname="status.probe.failed">
+				<source>Not answering</source>
+			</trans-unit>
+			<trans-unit id="status.probe.age" resname="status.probe.age">
+				<source>checked %s s ago</source>
+			</trans-unit>
+			<trans-unit id="status.probe.again" resname="status.probe.again">
+				<source>Check now</source>
+			</trans-unit>
 			<trans-unit id="status.metadata" resname="status.metadata">
 				<source>Metadata in processed images</source>
 			</trans-unit>

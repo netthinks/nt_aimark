@@ -49,6 +49,19 @@ final readonly class TransparencyModuleController
     public function indexAction(ServerRequestInterface $request): ResponseInterface
     {
         $parameters = $request->getQueryParams();
+
+        // "Jetzt prüfen": Die gespeicherte Probe verwerfen und ohne den
+        // Parameter zurückschicken. Sonst löste jedes Neuladen der Seite eine
+        // weitere Anfrage aus — und ein weitergegebener Link erst recht.
+        if (($parameters['pruefeVerbindung'] ?? '') !== '') {
+            $this->systemStatusCheck->forgetProbe();
+            unset($parameters['pruefeVerbindung']);
+
+            return new RedirectResponse(
+                $this->uriBuilder->buildUriFromRoute('content_ntaimark_transparency', $parameters),
+            );
+        }
+
         $filter = $this->filterFrom($parameters);
         $page = max(1, (int) ($parameters['page'] ?? 1));
 
@@ -89,6 +102,10 @@ final readonly class TransparencyModuleController
             ],
             'storageItems' => $this->storageItems($summaries, $filter['storage']),
             'resetUri' => $resetUri,
+            'probeUri' => (string) $this->uriBuilder->buildUriFromRoute(
+                'content_ntaimark_transparency',
+                $parameters + ['pruefeVerbindung' => 1],
+            ),
             // Ein GET-Formular ersetzt beim Absenden die gesamte Query der
             // Zieladresse — das Token der Modul-Route ginge damit verloren,
             // und die Antwort wäre die komplette Backend-Oberfläche im

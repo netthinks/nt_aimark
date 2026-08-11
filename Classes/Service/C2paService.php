@@ -23,7 +23,7 @@ use Symfony\Component\Process\Process;
  * A second package can replace or decorate it where the binary cannot be
  * installed.
  */
-final readonly class C2paService implements C2paInspectorInterface, C2paInspectorDescriptionInterface
+final readonly class C2paService implements C2paInspectorInterface, C2paInspectorDescriptionInterface, C2paInspectorProbeInterface
 {
     /** The spec caps the stored manifest at 64 kB. */
     public const MANIFEST_LIMIT = 65536;
@@ -36,6 +36,15 @@ final readonly class C2paService implements C2paInspectorInterface, C2paInspecto
     public function isAvailable(): bool
     {
         return $this->run(['--version'])['exitCode'] === 0;
+    }
+
+    /**
+     * Für das lokale Werkzeug ist die Probe dieselbe Frage wie die
+     * Verfügbarkeit: ein Aufruf ohne Netz, der nichts kostet.
+     */
+    public function probeReachable(): bool
+    {
+        return $this->isAvailable();
     }
 
     /**

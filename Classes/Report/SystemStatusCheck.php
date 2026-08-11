@@ -7,8 +7,10 @@ namespace NetThinks\NtAimark\Report;
 use NetThinks\NtAimark\Domain\Enum\IconVariant;
 use NetThinks\NtAimark\Service\C2paInspectorDescriptionInterface;
 use NetThinks\NtAimark\Service\C2paInspectorInterface;
+use NetThinks\NtAimark\Service\C2paInspectorProbeInterface;
 use NetThinks\NtAimark\Service\ExtensionSettings;
 use NetThinks\NtAimark\Service\IconResolverService;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
 /**
  * Tells the operator what is missing before anything silently degrades.
@@ -29,14 +31,35 @@ final readonly class SystemStatusCheck
 
     private const LL = 'LLL:EXT:nt_aimark/Resources/Private/Language/locallang_mod.xlf:';
 
+    /**
+     * Wie lange eine Erreichbarkeitsprobe gilt.
+     *
+     * Fünf Minuten sind der Ausgleich zwischen zwei Fehlern: Eine Probe je
+     * Modulaufruf hinge das Backend an einen fremden Server — bei fünf
+     * Redakteuren fünffach. Eine Probe je Tag wäre so alt, dass niemand ihr
+     * glaubt. So kostet es höchstens zwölf Anfragen in der Stunde, ganz gleich
+     * wie viele Leute hinsehen.
+     */
+    private const PROBE_LIFETIME = 300;
+
     public function __construct(
         private IconResolverService $iconResolver,
         private C2paInspectorInterface $c2paService,
         private ExtensionSettings $settings,
+        private ?FrontendInterface $cache = null,
     ) {}
 
     /**
-     * @return list<array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string}>
+     * Verwirft die gespeicherte Probe, damit die nächste Abfrage wirklich
+     * nachsieht. Für die Schaltfläche „Jetzt prüfen".
+     */
+    public function forgetProbe(): void
+    {
+        $this->cache?->remove('c2pa-probe');
+    }
+
+    /**
+     * @return list<array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string, probeDone?: bool, probeOk?: bool, probeAge?: int}>
      */
     public function findings(): array
     {
@@ -91,7 +114,7 @@ final readonly class SystemStatusCheck
      * reader with "not available". The link is a plain hint; the extension
      * works on without it, and an empty addOnInfoUrl removes it.
      *
-     * @return array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string}
+     * @return array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string, probeDone?: bool, probeOk?: bool, probeAge?: int}
      */
     private function c2patool(): array
     {
@@ -106,6 +129,25 @@ final readonly class SystemStatusCheck
             if ($this->c2paService instanceof C2paInspectorDescriptionInterface) {
                 $befund['detailKey'] = self::LL . 'status.c2patool.where';
                 $befund['detail'] = $this->c2paService->describeInspection();
+            }
+
+            $probe = $this->probe();
+
+            if ($probe !== null) {
+                // Eigenes Merkmal statt einer Prüfung auf das Alter: Eine
+                // frische Probe ist null Sekunden alt, und Fluid hält 0 für
+                // falsch — die Anzeige wäre ausgerechnet direkt nach dem
+                // Prüfen verschwunden.
+                $befund['probeDone'] = true;
+                $befund['probeOk'] = $probe['ok'];
+                $befund['probeAge'] = max(0, time() - $probe['time']);
+
+                // Eine fehlgeschlagene Probe wiegt schwerer als die
+                // Konfiguration: Eingerichtet zu sein und zu antworten sind
+                // zwei verschiedene Dinge, und nur das zweite hilft.
+                if (!$probe['ok']) {
+                    $befund['severity'] = self::SEVERITY_WARNING;
+                }
             }
 
             return $befund;
@@ -126,6 +168,32 @@ final readonly class SystemStatusCheck
         }
 
         return $finding;
+    }
+
+    /**
+     * Die zwischengespeicherte Erreichbarkeitsprobe.
+     *
+     * Ohne Cache wird nicht geprüft: Eine ungepufferte Netzanfrage bei jedem
+     * Modulaufruf ist genau das, was hier vermieden werden soll.
+     *
+     * @return array{ok: bool, time: int}|null
+     */
+    private function probe(): ?array
+    {
+        if (!$this->c2paService instanceof C2paInspectorProbeInterface || $this->cache === null) {
+            return null;
+        }
+
+        $gespeichert = $this->cache->get('c2pa-probe');
+
+        if (is_array($gespeichert) && isset($gespeichert['ok'], $gespeichert['time'])) {
+            return ['ok' => (bool) $gespeichert['ok'], 'time' => (int) $gespeichert['time']];
+        }
+
+        $ergebnis = ['ok' => $this->c2paService->probeReachable(), 'time' => time()];
+        $this->cache->set('c2pa-probe', $ergebnis, [], self::PROBE_LIFETIME);
+
+        return $ergebnis;
     }
 
     /**

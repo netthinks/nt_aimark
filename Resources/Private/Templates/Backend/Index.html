@@ -145,6 +145,18 @@
                                         <f:if condition="{finding.detail}"><code>{finding.detail}</code></f:if>
                                     </span>
                                 </f:if>
+                                <f:if condition="{finding.probeDone}">
+                                    <span class="d-block small mt-1">
+                                        <f:if condition="{finding.probeOk}">
+                                            <f:then><span class="text-success">✓ <f:translate key="{ll}status.probe.ok" /></span></f:then>
+                                            <f:else><span class="text-danger">✗ <f:translate key="{ll}status.probe.failed" /></span></f:else>
+                                        </f:if>
+                                        <span class="text-body-secondary">
+                                            (<f:translate key="{ll}status.probe.age" arguments="{0: finding.probeAge}" />)
+                                        </span>
+                                        <a href="{probeUri}" class="text-decoration-underline ms-1"><f:translate key="{ll}status.probe.again" /></a>
+                                    </span>
+                                </f:if>
                                 <f:if condition="{finding.hintUrl}">
                                     <span class="d-block text-body-secondary small mt-1">
                                         <f:translate key="{finding.hintKey}" /> —
