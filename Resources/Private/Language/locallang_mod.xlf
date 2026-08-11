@@ -116,6 +116,9 @@
 			<trans-unit id="bulk.selectAll" resname="bulk.selectAll">
 				<source>Select all</source>
 			</trans-unit>
+			<trans-unit id="bulk.forbidden" resname="bulk.forbidden">
+				<source>Your account has no permission to modify file metadata.</source>
+			</trans-unit>
 			<trans-unit id="bulk.done" resname="bulk.done">
 				<source>%d files updated. Every change was recorded.</source>
 			</trans-unit>

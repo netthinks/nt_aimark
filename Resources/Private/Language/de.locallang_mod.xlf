@@ -152,6 +152,10 @@
 				<source>Select all</source>
 				<target>Alle auswählen</target>
 			</trans-unit>
+			<trans-unit id="bulk.forbidden" resname="bulk.forbidden">
+				<source>Your account has no permission to modify file metadata.</source>
+				<target>Ihr Konto hat kein Recht, Dateimetadaten zu ändern.</target>
+			</trans-unit>
 			<trans-unit id="bulk.done" resname="bulk.done">
 				<source>%d files updated. Every change was recorded.</source>
 				<target>%d Dateien aktualisiert. Jede Änderung wurde protokolliert.</target>

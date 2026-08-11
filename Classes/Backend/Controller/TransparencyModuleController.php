@@ -134,6 +134,21 @@ final readonly class TransparencyModuleController
         $parameters = $request->getParsedBody();
         $parameters = is_array($parameters) ? $parameters : [];
 
+        // Der Schreibweg laeuft ueber die FAL-Metadaten und damit an der
+        // Rechtepruefung des DataHandler vorbei. Der Modulzugriff allein sagt
+        // aber nur "darf die Uebersicht sehen" — ob jemand Dateimetadaten
+        // aendern darf, steht in seinen Tabellenrechten, und die werden hier
+        // deshalb selbst geprueft. Ohne das koennte ein Redakteur mit
+        // Modulzugriff, aber ohne Schreibrecht auf sys_file_metadata, den
+        // Status jeder Datei setzen.
+        $backendUser = $this->backendUser();
+
+        if ($backendUser === null || !$backendUser->check('tables_modify', 'sys_file_metadata')) {
+            $this->addMessage(self::LL . 'bulk.forbidden', ContextualFeedbackSeverity::ERROR);
+
+            return new RedirectResponse($this->uriBuilder->buildUriFromRoute('content_ntaimark_transparency'));
+        }
+
         $uids = array_values(array_map(intval(...), (array) ($parameters['uids'] ?? [])));
         $status = AiStatus::tryFrom((int) ($parameters['status'] ?? -1));
 

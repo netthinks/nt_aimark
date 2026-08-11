@@ -6,6 +6,27 @@ die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
 <!-- --8<-- [start:eintraege] -->
 
+## [0.9.8] – 2026-08-11
+
+### Sicherheit
+
+- **Massenbearbeitung prüft jetzt das Tabellenrecht.** Der Schreibweg läuft
+  über die FAL-Metadaten und damit an der Rechteprüfung des DataHandler
+  vorbei. Der Modulzugriff allein besagt nur „darf die Übersicht sehen"; ob
+  jemand Dateimetadaten ändern darf, steht in seinen Tabellenrechten. Vorher
+  hätte ein Redakteur mit Modulzugriff, aber ohne Schreibrecht auf
+  `sys_file_metadata`, den KI-Status jeder Datei setzen können. Administratoren
+  sind wie immer ausgenommen.
+
+Weitere Punkte aus einer gezielten Durchsicht waren bereits in Ordnung und
+werden hier nur der Vollständigkeit halber genannt: alle Datenbankzugriffe
+laufen über den QueryBuilder mit gebundenen Parametern; das inline
+eingebundene EU-Symbol stammt aus einem Enum-gesteuerten Dateinamen und läuft
+durch den TYPO3-SvgSanitizer; die Detailebene gibt Redakteursfelder escaped
+aus; der CSV-Export im Zusatzpaket entschärft Formel-Präfixe; das XMP-Lesen
+verbietet Netzwerkzugriffe (`LIBXML_NONET`); `c2patool` wird nur mit einer
+Argumentliste aufgerufen, nie über eine Shell.
+
 ## [0.9.7] – 2026-08-11
 
 ### Behoben
