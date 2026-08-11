@@ -28,6 +28,35 @@ final class IconResolverService
      *
      * @var list<string>
      */
+    /**
+     * Die tatsächlich bezeichnete Fläche je Variante, in Einheiten des
+     * mitgelieferten viewBox.
+     *
+     * Die offiziellen Dateien setzen die Zeichnung mit reichlich Rand auf eine
+     * größere Leinwand: Beim Zeichen „AI GENERATED" belegt sie 1384 × 266 von
+     * 1790 × 567 Einheiten, also nur 47 % der Höhe. Eingebettet ergibt das
+     * eine Plakette, die zur Hälfte aus Leerraum besteht.
+     *
+     * Die Werte stammen aus `getBBox()` über die ausgelieferten Dateien, nicht
+     * aus Schätzung. Die Grafik selbst bleibt unangetastet — es wird nur der
+     * sichtbare Ausschnitt enger gefasst, was den Vorgaben zur Verwendung
+     * nicht widerspricht: Nachzeichnen, Umfärben und Übersetzen wären
+     * unzulässig, ein engerer Rahmen ist keines davon.
+     *
+     * @var array<string, array{0: float, 1: float, 2: float, 3: float}>
+     */
+    private const ARTWORK_BOUNDS = [
+        'ai-basic' => [89.28, 100.72, 365.49, 365.49],
+        'ai-generated' => [207.3, 144.36, 1384.24, 266.41],
+        'ai-modified' => [231.11, 144.36, 1230.56, 266.41],
+    ];
+
+    /**
+     * Luft um die Zeichnung, als Anteil ihrer Höhe. Ohne sie stößt das Zeichen
+     * an den Rand der Plakette.
+     */
+    private const ARTWORK_MARGIN = 0.12;
+
     private const PRESENTATION_ATTRIBUTES = [
         'fill', 'fill-rule', 'fill-opacity',
         'stroke', 'stroke-width', 'stroke-opacity', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray',
@@ -100,11 +129,61 @@ final class IconResolverService
             return null;
         }
 
-        $prepared = $this->prepareForInlineUse($svg);
+        $prepared = $this->tightenViewBox($this->prepareForInlineUse($svg), $fileName);
 
         // Sanitising can empty the file out entirely. Falling back to the text
         // label is the right outcome then, not emitting a broken fragment.
         return str_contains($prepared, '<svg') ? $prepared : null;
+    }
+
+    /**
+     * Narrows the visible area to the drawing itself.
+     *
+     * The official files place the mark on a canvas with a wide margin — for
+     * "AI GENERATED" the drawing covers 47 % of the height. Embedded as it
+     * comes, the badge is half empty space, and the mark next to it looks
+     * smaller than it is.
+     *
+     * Only the frame changes. The artwork is not redrawn, recoloured or
+     * altered in any way; a file whose bounds are not known keeps its original
+     * viewBox.
+     */
+    private function tightenViewBox(string $svg, string $fileName): string
+    {
+        $variant = null;
+        foreach (array_keys(self::ARTWORK_BOUNDS) as $kandidat) {
+            if (str_starts_with($fileName, $kandidat . '-')) {
+                $variant = $kandidat;
+                break;
+            }
+        }
+
+        if ($variant === null || !preg_match('/<svg\b[^>]*\bviewBox="([^"]+)"/i', $svg)) {
+            return $svg;
+        }
+
+        [$x, $y, $breite, $hoehe] = self::ARTWORK_BOUNDS[$variant];
+        $luft = $hoehe * self::ARTWORK_MARGIN;
+
+        $viewBox = sprintf(
+            '%s %s %s %s',
+            $this->zahl($x - $luft),
+            $this->zahl($y - $luft),
+            $this->zahl($breite + 2 * $luft),
+            $this->zahl($hoehe + 2 * $luft),
+        );
+
+        return (string) preg_replace(
+            '/(<svg\b[^>]*\bviewBox=")[^"]+(")/i',
+            '${1}' . $viewBox . '${2}',
+            $svg,
+            1,
+        );
+    }
+
+    private function zahl(float $wert): string
+    {
+        return rtrim(rtrim(number_format($wert, 2, '.', ''), '0'), '.');
     }
 
     /**

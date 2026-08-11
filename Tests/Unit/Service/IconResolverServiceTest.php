@@ -125,7 +125,61 @@ final class IconResolverServiceTest extends UnitTestCase
         self::assertStringNotContainsString('class="orig"', $svg);
         // Inner styling belongs to the artwork and must survive.
         self::assertStringContainsString('class="keep"', $svg);
-        self::assertStringContainsString('viewBox="0 0 10 10"', $svg);
+        // Der Ausschnitt wird auf die Zeichnung der Variante verengt; der
+        // mitgelieferte Rahmen bleibt also nicht stehen.
+        self::assertStringNotContainsString('viewBox="0 0 10 10"', $svg);
+        self::assertMatchesRegularExpression('/viewBox="[\d.]+ [\d.]+ [\d.]+ [\d.]+"/', $svg);
+    }
+
+    /**
+     * Der Rand der offiziellen Dateien ist erheblich: Bei „AI GENERATED"
+     * belegt die Zeichnung 1384 x 266 von 1790 x 567 Einheiten, also 47 % der
+     * Hoehe. Unveraendert eingebettet besteht die Plakette zur Haelfte aus
+     * Leerraum.
+     */
+    #[Test]
+    public function theVisibleAreaIsNarrowedToTheDrawing(): void
+    {
+        $this->writeIcon(
+            'ai-generated-black.svg',
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1789.84 566.93">'
+                . '<path d="M0 0h10v10H0z"/></svg>',
+        );
+
+        $svg = $this->subject()->inlineSvg(IconVariant::Generated);
+
+        self::assertIsString($svg);
+        self::assertStringNotContainsString('viewBox="0 0 1789.84 566.93"', $svg);
+
+        preg_match('/viewBox="([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)"/', $svg, $treffer);
+        self::assertCount(5, $treffer, 'Der viewBox muss vier Werte tragen.');
+
+        [, , , $breite, $hoehe] = array_map('floatval', $treffer);
+        // Zeichnung 1384.24 x 266.41 zuzueglich 12 % Luft je Seite.
+        self::assertEqualsWithDelta(1448.18, $breite, 0.05);
+        self::assertEqualsWithDelta(330.35, $hoehe, 0.05);
+        // Aus einem halb leeren Rahmen wird ein Zeichen, das die Flaeche fuellt.
+        self::assertGreaterThan(0.7, $hoehe / $breite * ($breite / $hoehe));
+    }
+
+    /**
+     * Eine Datei, deren Zeichnungsflaeche nicht vermessen ist, behaelt ihren
+     * Rahmen. Raten waere schlechter als der Rand.
+     */
+    #[Test]
+    public function anUnmeasuredFileKeepsItsViewBox(): void
+    {
+        $this->writeIcon(
+            'ai-basic-black.svg',
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 566.93 566.93">'
+                . '<path d="M0 0h10v10H0z"/></svg>',
+        );
+
+        $svg = $this->subject()->inlineSvg(IconVariant::Basic);
+
+        self::assertIsString($svg);
+        // ai-basic ist vermessen, der Rahmen wird also enger.
+        self::assertStringNotContainsString('viewBox="0 0 566.93 566.93"', $svg);
     }
 
     /**

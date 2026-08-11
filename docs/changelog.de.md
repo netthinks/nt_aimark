@@ -150,6 +150,19 @@ als stabil.
   liegt — der Name sagte niemandem etwas, der die Zeile abarbeiten soll. Er
   heisst jetzt „Dateien ausserhalb der Dateiablagen"; unbenannte Ablagen
   heissen „Dateiablage <uid>".
+- **Die Plakette bestand zur Hälfte aus Leerraum.** Die offiziellen Dateien
+  setzen die Zeichnung mit breitem Rand auf eine größere Leinwand: Bei
+  „AI GENERATED" belegt sie 1384 × 266 von 1790 × 567 Einheiten, also 47 % der
+  Höhe. Unverändert eingebettet wirkte das Zeichen kleiner, als es ist. Der
+  sichtbare Ausschnitt wird jetzt auf die Zeichnung verengt — vermessen mit
+  `getBBox()` über die ausgelieferten Dateien, nicht geschätzt. Die Grafik
+  selbst bleibt unangetastet; eine Datei ohne vermessene Fläche behält ihren
+  Rahmen.
+- **Kennzeichnung blieb in Extbase-Listen stumm aus.** Blog, News und
+  vergleichbare Extensions liefern in ihren Templates eine Extbase-Dateireferenz.
+  Die implementiert `FileInterface` nicht, weshalb der ViewHelper die Kinder
+  unverändert zurückgab: kein Symbol, kein Fehler, kein Hinweis. Er packt
+  solche Referenzen jetzt selbst aus.
 
 ### Bekannte Einschränkungen
 
