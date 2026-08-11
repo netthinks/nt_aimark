@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NetThinks\NtAimark\Report;
 
 use NetThinks\NtAimark\Domain\Enum\IconVariant;
+use NetThinks\NtAimark\Service\C2paInspectorDescriptionInterface;
 use NetThinks\NtAimark\Service\C2paInspectorInterface;
 use NetThinks\NtAimark\Service\ExtensionSettings;
 use NetThinks\NtAimark\Service\IconResolverService;
@@ -95,7 +96,19 @@ final readonly class SystemStatusCheck
     private function c2patool(): array
     {
         if ($this->c2paService->isAvailable()) {
-            return $this->ok('status.c2patool');
+            $befund = $this->ok('status.c2patool');
+
+            // "In Ordnung" allein deckt zwei Faelle ab, die ein Betreiber
+            // auseinanderhalten koennen muss: Die Datei wird auf dem eigenen
+            // Server gelesen — oder sie wird dafuer woanders hingeschickt. Bei
+            // einer Extension, deren Gegenstand Transparenz ist, waere das
+            // Verschweigen die falsche Art von Stille.
+            if ($this->c2paService instanceof C2paInspectorDescriptionInterface) {
+                $befund['detailKey'] = self::LL . 'status.c2patool.where';
+                $befund['detail'] = $this->c2paService->describeInspection();
+            }
+
+            return $befund;
         }
 
         $finding = [

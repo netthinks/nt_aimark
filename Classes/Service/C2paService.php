@@ -23,7 +23,7 @@ use Symfony\Component\Process\Process;
  * A second package can replace or decorate it where the binary cannot be
  * installed.
  */
-final readonly class C2paService implements C2paInspectorInterface
+final readonly class C2paService implements C2paInspectorInterface, C2paInspectorDescriptionInterface
 {
     /** The spec caps the stored manifest at 64 kB. */
     public const MANIFEST_LIMIT = 65536;
@@ -36,6 +36,16 @@ final readonly class C2paService implements C2paInspectorInterface
     public function isAvailable(): bool
     {
         return $this->run(['--version'])['exitCode'] === 0;
+    }
+
+    /**
+     * Names the place, not a sentence: the status panel frames it, and a bare
+     * path needs no translation — the same way the other findings show
+     * `ext-exif` or a configuration key.
+     */
+    public function describeInspection(): string
+    {
+        return $this->binaryPath . ' (lokal)';
     }
 
     public function inspect(string $absolutePath): ProvenanceResult

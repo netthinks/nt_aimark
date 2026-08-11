@@ -181,6 +181,10 @@
 				<source>Not available, so Content Credentials are not evaluated. Detection falls back to XMP and EXIF.</source>
 				<target>Nicht verfügbar, deshalb werden Content Credentials nicht ausgewertet. Die Erkennung stützt sich auf XMP und EXIF.</target>
 			</trans-unit>
+			<trans-unit id="status.c2patool.where" resname="status.c2patool.where">
+				<source>The check runs through</source>
+				<target>Die Prüfung erfolgt über</target>
+			</trans-unit>
 			<trans-unit id="status.c2patool.hint" resname="status.c2patool.hint">
 				<source>On many managed hosts the tool cannot be installed. A hosted check is one way around it</source>
 				<target>Auf vielen gemanagten Hostings lässt sich das Werkzeug nicht installieren. Eine gehostete Prüfung ist ein Weg daran vorbei</target>

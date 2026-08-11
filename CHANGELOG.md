@@ -4,6 +4,25 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.3] – 2026-08-11
+
+### Hinzugefügt
+
+- **`C2paInspectorDescriptionInterface`** (`@api`): Optionaler Begleiter zu
+  `C2paInspectorInterface`. Der Systemstatus nennt damit den **Ort** der
+  Prüfung statt nur ihre Möglichkeit.
+
+  „In Ordnung" deckte bisher zwei Fälle ab, die ein Betreiber
+  auseinanderhalten können muss: Die Datei wird auf dem eigenen Server
+  gelesen — oder sie wird dafür woanders hingeschickt. Bei einer Extension,
+  deren Gegenstand Transparenz ist, wäre das Verschweigen die falsche Art
+  von Stille.
+
+  Der Systemstatus zeigt jetzt „Die Prüfung erfolgt über: c2patool (lokal)"
+  bzw. den Namen des Dienstes samt Hinweis, dass Dateien den Server
+  verlassen. Implementierungen ohne diese Schnittstelle verhalten sich
+  unverändert.
+
 ## [0.9.2] – 2026-08-11
 
 ### Hinzugefügt
