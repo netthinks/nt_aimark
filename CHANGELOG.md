@@ -4,6 +4,8 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+<!-- --8<-- [start:eintraege] -->
+
 ## [0.9.7] – 2026-08-11
 
 ### Behoben
@@ -301,3 +303,5 @@ als stabil.
   nicht.
 - Unterhalb von rund 180 px Bildbreite passt die Begleitbeschriftung nicht mehr
   neben das Symbol. Für Vorschaubilder `showTextLabel="false"` am Aufruf setzen.
+
+<!-- --8<-- [end:eintraege] -->

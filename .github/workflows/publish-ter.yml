@@ -133,6 +133,9 @@ jobs:
           NOTES=$(awk -v v="## [${VERSION}]" '
             index($0, v) == 1 { found = 1; next }
             found && /^## \[/ { exit }
+            # Die Snippet-Marken der Doku sind Kommentare und gehoeren nicht
+            # in eine Release-Notiz.
+            found && /^<!--/ { next }
             found { print }
           ' CHANGELOG.md | awk 'NF { leer = 0; ausgabe = ausgabe puffer $0 "\n"; puffer = ""; next } { puffer = puffer "\n" }
              END { printf "%s", ausgabe }')
