@@ -18,8 +18,12 @@ use Symfony\Component\Process\Process;
  *
  * Reading and verifying needs no signing certificate; only writing manifests
  * would, and this extension never writes any.
+ *
+ * The implementation of {@see C2paInspectorInterface} that ships with the core.
+ * A second package can replace or decorate it where the binary cannot be
+ * installed.
  */
-final readonly class C2paService
+final readonly class C2paService implements C2paInspectorInterface
 {
     /** The spec caps the stored manifest at 64 kB. */
     public const MANIFEST_LIMIT = 65536;

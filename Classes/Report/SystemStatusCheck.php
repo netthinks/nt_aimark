@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NetThinks\NtAimark\Report;
 
 use NetThinks\NtAimark\Domain\Enum\IconVariant;
-use NetThinks\NtAimark\Service\C2paService;
+use NetThinks\NtAimark\Service\C2paInspectorInterface;
 use NetThinks\NtAimark\Service\ExtensionSettings;
 use NetThinks\NtAimark\Service\IconResolverService;
 
@@ -30,7 +30,7 @@ final readonly class SystemStatusCheck
 
     public function __construct(
         private IconResolverService $iconResolver,
-        private C2paService $c2paService,
+        private C2paInspectorInterface $c2paService,
         private ExtensionSettings $settings,
     ) {}
 

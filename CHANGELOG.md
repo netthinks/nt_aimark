@@ -4,6 +4,17 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.2] – 2026-08-11
+
+### Hinzugefügt
+
+- **`C2paInspectorInterface`** (`@api`): Naht vor dem Auslesen der
+  C2PA-Signatur. `C2paService` implementiert sie, alle Aufrufer im Kernpaket
+  fragen die Schnittstelle. Ein zweites Paket kann den Alias dekorieren und
+  die Prüfung anderswo erledigen — nötig, weil `c2patool` einen Loader unter
+  `/lib64` braucht, den viele gemanagte Hostings nicht haben. Dokumentiert in
+  `Documentation/Integration.md`.
+
 ## [0.9.1] – 2026-08-11
 
 ### Behoben

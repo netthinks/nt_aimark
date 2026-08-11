@@ -7,7 +7,7 @@ namespace NetThinks\NtAimark\Command;
 use NetThinks\NtAimark\Domain\Enum\C2paState;
 use NetThinks\NtAimark\Domain\Repository\TransparencyRepository;
 use NetThinks\NtAimark\Service\AuditService;
-use NetThinks\NtAimark\Service\C2paService;
+use NetThinks\NtAimark\Service\C2paInspectorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,7 +26,7 @@ final class VerifyCommand extends Command
 {
     public function __construct(
         private readonly TransparencyRepository $repository,
-        private readonly C2paService $c2paService,
+        private readonly C2paInspectorInterface $c2paService,
         private readonly ResourceFactory $resourceFactory,
         private readonly AuditService $auditService,
     ) {

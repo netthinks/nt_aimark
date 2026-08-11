@@ -58,6 +58,12 @@ services:
   NetThinks\NtAimark\Service\C2paService:
     factory: ['@NetThinks\NtAimark\Service\ServiceFactory', 'createC2paService']
 
+  # The seam for reading Content Credentials. Everything in the core asks for
+  # the interface, so a second package can decorate this alias without any
+  # class here having to know about it.
+  NetThinks\NtAimark\Service\C2paInspectorInterface:
+    alias: NetThinks\NtAimark\Service\C2paService
+
   NetThinks\NtAimark\Service\ExifSignatureService:
     factory: ['@NetThinks\NtAimark\Service\ServiceFactory', 'createExifSignatureService']
 

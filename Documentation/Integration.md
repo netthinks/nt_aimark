@@ -147,6 +147,44 @@ mit vielen Bildern entsprechend oft. Listener schlank halten.
 durch (`NullIconCompositor`). Ein zweites Paket überschreibt den Service-Alias
 und übernimmt.
 
+## Content Credentials anders auslesen
+
+`C2paInspectorInterface` ist die Naht vor dem Auslesen der C2PA-Signatur. Das
+Kernpaket belegt sie mit `C2paService`, der das lokale `c2patool` aufruft.
+
+Der Grund für diese Naht ist handfest: Das Werkzeug ist gegen glibc gebunden
+und braucht den dynamischen Loader unter `/lib64`. Auf gemanagten Hostings
+fehlt er häufig, und keine Einstellung ändert daran etwas — die Signatur
+bliebe dort schlicht ungelesen. Ein zweites Paket kann den Alias deshalb
+dekorieren und die Prüfung anderswo erledigen:
+
+```yaml
+MeinPaket\Service\EigenerPruefer:
+    decorates: NetThinks\NtAimark\Service\C2paInspectorInterface
+    arguments:
+        $local: '@.inner'
+```
+
+Dekoration statt Ersetzung ist der empfohlene Weg: So bleibt die lokale
+Prüfung erreichbar, und die eigene Implementierung tritt nur an, wo sie
+gebraucht wird.
+
+Zwei Pflichten gehören dazu:
+
+- **Keine Ausnahme nach außen.** Alles, was schiefgehen kann — fehlendes
+  Werkzeug, Zeitüberschreitung, unerreichbarer Dienst, unsinnige Antwort —
+  endet in `C2paState::NotVerifiable`. Ein Upload darf nicht daran scheitern,
+  dass eine Signatur nicht geprüft werden konnte.
+- **Nie mehr behaupten als geprüft wurde.** Ein Ergebnis darf einen Status
+  *vorschlagen*; ob daraus eine Aussage über den Inhalt wird, bleibt eine
+  menschliche Entscheidung. Bei gebrochener Signatur wird kein Status
+  vorgeschlagen — was das Manifest über den Inhalt sagt, ist nicht mehr
+  belastbar, sobald die Datei nicht mehr dazu passt.
+
+`isAvailable()` wird bei jedem Aufruf des Backend-Moduls für den Systemstatus
+gelesen. Es sollte ohne Nebenwirkungen und schnell antworten; wer einen
+entfernten Dienst anspricht, schickt dafür keine Datei los.
+
 ## Fertiges HTML nachbearbeiten
 
 Für Altprojekte mit gewachsenen Templates, in denen die ViewHelper nicht

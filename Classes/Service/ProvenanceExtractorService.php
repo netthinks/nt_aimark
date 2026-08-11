@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Resource\File;
 final readonly class ProvenanceExtractorService
 {
     public function __construct(
-        private C2paService $c2paService,
+        private C2paInspectorInterface $c2paService,
         private XmpReaderService $xmpReaderService,
         private ExifSignatureService $exifSignatureService,
         private AuditService $auditService,
