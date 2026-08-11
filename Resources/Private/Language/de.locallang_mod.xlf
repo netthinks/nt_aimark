@@ -201,9 +201,25 @@
 				<source>Not answering</source>
 				<target>Antwortet nicht</target>
 			</trans-unit>
-			<trans-unit id="status.probe.age" resname="status.probe.age">
-				<source>checked %s s ago</source>
-				<target>vor %s s geprüft</target>
+			<trans-unit id="status.probe.age.now" resname="status.probe.age.now">
+				<source>checked just now</source>
+				<target>gerade geprüft</target>
+			</trans-unit>
+			<trans-unit id="status.probe.age.minute" resname="status.probe.age.minute">
+				<source>checked %s minute ago</source>
+				<target>vor %s Minute geprüft</target>
+			</trans-unit>
+			<trans-unit id="status.probe.age.minutes" resname="status.probe.age.minutes">
+				<source>checked %s minutes ago</source>
+				<target>vor %s Minuten geprüft</target>
+			</trans-unit>
+			<trans-unit id="status.probe.age.hour" resname="status.probe.age.hour">
+				<source>checked %s hour ago</source>
+				<target>vor %s Stunde geprüft</target>
+			</trans-unit>
+			<trans-unit id="status.probe.age.hours" resname="status.probe.age.hours">
+				<source>checked %s hours ago</source>
+				<target>vor %s Stunden geprüft</target>
 			</trans-unit>
 			<trans-unit id="status.probe.again" resname="status.probe.again">
 				<source>Check now</source>

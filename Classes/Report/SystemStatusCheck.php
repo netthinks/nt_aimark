@@ -59,7 +59,7 @@ final readonly class SystemStatusCheck
     }
 
     /**
-     * @return list<array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string, probeDone?: bool, probeOk?: bool, probeAge?: int}>
+     * @return list<array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string, probeDone?: bool, probeOk?: bool, probeAgeKey?: string, probeAgeValue?: string}>
      */
     public function findings(): array
     {
@@ -114,7 +114,7 @@ final readonly class SystemStatusCheck
      * reader with "not available". The link is a plain hint; the extension
      * works on without it, and an empty addOnInfoUrl removes it.
      *
-     * @return array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string, probeDone?: bool, probeOk?: bool, probeAge?: int}
+     * @return array{severity: string, titleKey: string, detailKey: string, detail: string, hintKey?: string, hintUrl?: string, probeDone?: bool, probeOk?: bool, probeAgeKey?: string, probeAgeValue?: string}
      */
     private function c2patool(): array
     {
@@ -140,7 +140,10 @@ final readonly class SystemStatusCheck
                 // Prüfen verschwunden.
                 $befund['probeDone'] = true;
                 $befund['probeOk'] = $probe['ok'];
-                $befund['probeAge'] = max(0, time() - $probe['time']);
+
+                [$schluessel, $wert] = $this->alterInWorten(max(0, time() - $probe['time']));
+                $befund['probeAgeKey'] = self::LL . $schluessel;
+                $befund['probeAgeValue'] = $wert;
 
                 // Eine fehlgeschlagene Probe wiegt schwerer als die
                 // Konfiguration: Eingerichtet zu sein und zu antworten sind
@@ -171,6 +174,40 @@ final readonly class SystemStatusCheck
     }
 
     /**
+     * Sekunden in etwas, das ein Mensch lesen mag.
+     *
+     * „vor 13746 s" ist keine Angabe, sondern eine Zumutung — niemand rechnet
+     * im Kopf in Stunden um. Die Einzahl bekommt einen eigenen Schlüssel, weil
+     * „vor 1 Minuten" falsch ist und nicht mit einem Platzhalter zu retten.
+     *
+     * Stunden sind nach der Reparatur der Verfallszeit eigentlich nicht mehr
+     * erreichbar — sie bleiben als Sicherung, falls jemand PROBE_LIFETIME
+     * heraufsetzt.
+     *
+     * @return array{0: string, 1: string}
+     */
+    private function alterInWorten(int $sekunden): array
+    {
+        if ($sekunden < 60) {
+            return ['status.probe.age.now', ''];
+        }
+
+        $minuten = intdiv($sekunden, 60);
+
+        if ($minuten < 60) {
+            return $minuten === 1
+                ? ['status.probe.age.minute', '1']
+                : ['status.probe.age.minutes', (string) $minuten];
+        }
+
+        $stunden = intdiv($minuten, 60);
+
+        return $stunden === 1
+            ? ['status.probe.age.hour', '1']
+            : ['status.probe.age.hours', (string) $stunden];
+    }
+
+    /**
      * Die zwischengespeicherte Erreichbarkeitsprobe.
      *
      * Ohne Cache wird nicht geprüft: Eine ungepufferte Netzanfrage bei jedem
@@ -186,8 +223,18 @@ final readonly class SystemStatusCheck
 
         $gespeichert = $this->cache->get('c2pa-probe');
 
+        // Das Alter wird hier geprüft und nicht dem Cache überlassen: Die
+        // Voreinstellung nutzt SimpleFileBackend, und das kennt keine
+        // Verfallszeit. Die beim Schreiben angegebene Lebensdauer wurde
+        // stillschweigend ignoriert, die Probe blieb stundenlang stehen. So
+        // hängt die Auffrischung nicht daran, welches Backend jemand
+        // konfiguriert hat.
         if (is_array($gespeichert) && isset($gespeichert['ok'], $gespeichert['time'])) {
-            return ['ok' => (bool) $gespeichert['ok'], 'time' => (int) $gespeichert['time']];
+            $alter = time() - (int) $gespeichert['time'];
+
+            if ($alter >= 0 && $alter < self::PROBE_LIFETIME) {
+                return ['ok' => (bool) $gespeichert['ok'], 'time' => (int) $gespeichert['time']];
+            }
         }
 
         $ergebnis = ['ok' => $this->c2paService->probeReachable(), 'time' => time()];

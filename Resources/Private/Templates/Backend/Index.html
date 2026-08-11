@@ -152,7 +152,7 @@
                                             <f:else><span class="text-danger">✗ <f:translate key="{ll}status.probe.failed" /></span></f:else>
                                         </f:if>
                                         <span class="text-body-secondary">
-                                            (<f:translate key="{ll}status.probe.age" arguments="{0: finding.probeAge}" />)
+                                            (<f:translate key="{finding.probeAgeKey}" arguments="{0: finding.probeAgeValue}" />)
                                         </span>
                                         <a href="{probeUri}" class="text-decoration-underline ms-1"><f:translate key="{ll}status.probe.again" /></a>
                                     </span>

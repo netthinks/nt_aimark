@@ -153,8 +153,20 @@
 			<trans-unit id="status.probe.failed" resname="status.probe.failed">
 				<source>Not answering</source>
 			</trans-unit>
-			<trans-unit id="status.probe.age" resname="status.probe.age">
-				<source>checked %s s ago</source>
+			<trans-unit id="status.probe.age.now" resname="status.probe.age.now">
+				<source>checked just now</source>
+			</trans-unit>
+			<trans-unit id="status.probe.age.minute" resname="status.probe.age.minute">
+				<source>checked %s minute ago</source>
+			</trans-unit>
+			<trans-unit id="status.probe.age.minutes" resname="status.probe.age.minutes">
+				<source>checked %s minutes ago</source>
+			</trans-unit>
+			<trans-unit id="status.probe.age.hour" resname="status.probe.age.hour">
+				<source>checked %s hour ago</source>
+			</trans-unit>
+			<trans-unit id="status.probe.age.hours" resname="status.probe.age.hours">
+				<source>checked %s hours ago</source>
 			</trans-unit>
 			<trans-unit id="status.probe.again" resname="status.probe.again">
 				<source>Check now</source>

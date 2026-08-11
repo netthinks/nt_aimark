@@ -4,6 +4,24 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.7] – 2026-08-11
+
+### Behoben
+
+- **Die Verfallszeit der Erreichbarkeitsprobe wirkte nicht.** Die
+  Voreinstellung nutzt `SimpleFileBackend`, und das kennt keine Lebensdauer —
+  die beim Schreiben angegebenen fünf Minuten wurden stillschweigend
+  ignoriert. Die Probe blieb stehen, bis jemand „Jetzt prüfen" drückte; im
+  Betrieb standen dort Stunden. Das Alter wird jetzt im Code geprüft und
+  hängt damit nicht mehr daran, welches Backend jemand konfiguriert hat.
+
+### Geändert
+
+- **Lesbare Zeitangabe** statt roher Sekunden: „gerade geprüft" oder „vor 3
+  Minuten geprüft" statt „vor 13746 s". Die Einzahl hat einen eigenen
+  Schlüssel, weil „vor 1 Minuten" falsch ist und sich nicht mit einem
+  Platzhalter retten lässt.
+
 ## [0.9.6] – 2026-08-11
 
 ### Geändert
