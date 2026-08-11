@@ -109,13 +109,19 @@
   display: block;
   width: auto;
   /*
-   * Measured, not chosen: the wordmark occupies 129 of the 566.93 viewBox
-   * units, i.e. 23 % of the icon's height. At the previous 1.5em the letters
-   * came out 4.4 px tall next to 13 px body text — a smudge rather than a
-   * mark. 2.75em puts them at roughly 8 px, which is where "clearly
-   * perceivable" starts.
+   * Measured, not chosen. The wordmark is 129 viewBox units tall, and the
+   * share it takes of the icon depends on how the file is framed:
+   *
+   *   original frame (566.93 units)   129/566.93 = 23 %
+   *   tightened frame (330.35 units)  129/330.35 = 39 %
+   *
+   * IconResolverService narrows the frame to the drawing, so the same height
+   * now renders the lettering 1.7x larger — 14 px instead of the 8 px this
+   * value was once derived for, which made the badge dominate the picture.
+   * 1.6em restores roughly 8 px next to 13 px body text, the point where the
+   * mark stays clearly perceivable without taking over.
    */
-  height: 2.75em;
+  height: 1.6em;
   /*
    * Deliberately no `fill`. The official icons are two-tone — a filled disc
    * with the wordmark knocked out of it — and only the knocked-out part
@@ -128,11 +134,11 @@
 }
 
 .nt-aimark__badge--small .nt-aimark__icon {
-  height: 2.25em;
+  height: 1.3em;
 }
 
 .nt-aimark__badge--large .nt-aimark__icon {
-  height: 3.5em;
+  height: 2.05em;
 }
 
 /* Shown when the official icon files have not been downloaded. */
