@@ -1,14 +1,14 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'AI Mark – KI-Kennzeichnung (EU AI Act)',
-    'description' => 'Erfassung, Kennzeichnung und Nachweis KI-generierter Inhalte nach Art. 50 der EU-KI-Verordnung. Barrierefreie Frontend-Labels mit den offiziellen EU-Icons, Auslesen von C2PA-/IPTC-Provenienzdaten, Erhalt der Metadaten über die Bildverarbeitung hinweg und ein Backend-Modul zur Nachweisführung.',
+    'title' => 'AI Mark – AI transparency (EU AI Act)',
+    'description' => 'Record, label and document AI-generated content under Art. 50 of the EU AI Act. Accessible frontend labels with the official EU icons, C2PA and IPTC provenance detection, metadata preserved through image processing, and a backend module for the audit trail. German and English labels and documentation.',
     'category' => 'module',
     'author' => 'Dietmar Engler',
     'author_email' => 'info@netthinks.com',
     'author_company' => 'NET.THINKS',
     'state' => 'beta',
-    'version' => '0.9.4',
+    'version' => '0.9.5',
     'constraints' => [
         'depends' => [
             'php' => '8.2.0-8.4.99',

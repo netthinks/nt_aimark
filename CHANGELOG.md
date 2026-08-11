@@ -4,6 +4,15 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.5] – 2026-08-11
+
+### Geändert
+
+- **Titel und Beschreibung auf Englisch** in `ext_emconf.php` und
+  `composer.json`. Das TER und Packagist sind internationale Kataloge; dort
+  stand der Eintrag als einziger auf Deutsch zwischen englischen Nachbarn.
+  Labels und Dokumentation der Extension bleiben zweisprachig wie bisher.
+
 ## [0.9.4] – 2026-08-11
 
 ### Hinzugefügt

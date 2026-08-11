@@ -1,17 +1,17 @@
 {
     "name": "netthinks/nt-aimark",
     "type": "typo3-cms-extension",
-    "description": "KI-Transparenz für TYPO3: Erfassung, Kennzeichnung und Nachweis KI-generierter Inhalte nach Art. 50 der EU-KI-Verordnung (VO (EU) 2024/1689).",
+    "description": "AI transparency for TYPO3: record, label and document AI-generated content under Art. 50 of the EU AI Act (Regulation (EU) 2024/1689).",
     "keywords": [
         "TYPO3",
         "AI Act",
-        "KI-Verordnung",
-        "Transparenz",
-        "Kennzeichnung",
+        "AI transparency",
+        "labelling",
         "C2PA",
         "Content Credentials",
-        "Compliance",
-        "Barrierefreiheit"
+        "provenance",
+        "accessibility",
+        "compliance"
     ],
     "homepage": "https://www.netthinks.com/leistungen/ki-kennzeichnung-typo3/",
     "license": "GPL-2.0-or-later",
