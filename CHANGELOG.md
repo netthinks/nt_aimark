@@ -12,7 +12,7 @@ die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
 - **Massenbearbeitung prüft jetzt das Tabellenrecht.** Der Schreibweg läuft
   über die FAL-Metadaten und damit an der Rechteprüfung des DataHandler
-  vorbei. Der Modulzugriff allein besagt nur „darf die Übersicht sehen"; ob
+  vorbei. Der Modulzugriff allein besagt nur „darf die Übersicht sehen“; ob
   jemand Dateimetadaten ändern darf, steht in seinen Tabellenrechten. Vorher
   hätte ein Redakteur mit Modulzugriff, aber ohne Schreibrecht auf
   `sys_file_metadata`, den KI-Status jeder Datei setzen können. Administratoren
@@ -34,15 +34,15 @@ Argumentliste aufgerufen, nie über eine Shell.
 - **Die Verfallszeit der Erreichbarkeitsprobe wirkte nicht.** Die
   Voreinstellung nutzt `SimpleFileBackend`, und das kennt keine Lebensdauer —
   die beim Schreiben angegebenen fünf Minuten wurden stillschweigend
-  ignoriert. Die Probe blieb stehen, bis jemand „Jetzt prüfen" drückte; im
+  ignoriert. Die Probe blieb stehen, bis jemand „Jetzt prüfen“ drückte; im
   Betrieb standen dort Stunden. Das Alter wird jetzt im Code geprüft und
   hängt damit nicht mehr daran, welches Backend jemand konfiguriert hat.
 
 ### Geändert
 
-- **Lesbare Zeitangabe** statt roher Sekunden: „gerade geprüft" oder „vor 3
-  Minuten geprüft" statt „vor 13746 s". Die Einzahl hat einen eigenen
-  Schlüssel, weil „vor 1 Minuten" falsch ist und sich nicht mit einem
+- **Lesbare Zeitangabe** statt roher Sekunden: „gerade geprüft“ oder „vor 3
+  Minuten geprüft“ statt „vor 13746 s“. Die Einzahl hat einen eigenen
+  Schlüssel, weil „vor 1 Minuten“ falsch ist und sich nicht mit einem
   Platzhalter retten lässt.
 
 ## [0.9.6] – 2026-08-11
@@ -67,7 +67,7 @@ Argumentliste aufgerufen, nie über eine Shell.
 ### Hinzugefügt
 
 - **`C2paInspectorProbeInterface`** (`@api`) und eine Erreichbarkeitsanzeige
-  im Systemstatus: „✓ Erreichbar (vor 12 s geprüft)" samt Schaltfläche
+  im Systemstatus: „✓ Erreichbar (vor 12 s geprüft)“ samt Schaltfläche
   **Jetzt prüfen**.
 
   Eingerichtet zu sein und zu antworten sind zwei verschiedene Dinge, und nur
@@ -97,13 +97,13 @@ Argumentliste aufgerufen, nie über eine Shell.
   `C2paInspectorInterface`. Der Systemstatus nennt damit den **Ort** der
   Prüfung statt nur ihre Möglichkeit.
 
-  „In Ordnung" deckte bisher zwei Fälle ab, die ein Betreiber
+  „In Ordnung“ deckte bisher zwei Fälle ab, die ein Betreiber
   auseinanderhalten können muss: Die Datei wird auf dem eigenen Server
   gelesen — oder sie wird dafür woanders hingeschickt. Bei einer Extension,
   deren Gegenstand Transparenz ist, wäre das Verschweigen die falsche Art
   von Stille.
 
-  Der Systemstatus zeigt jetzt „Die Prüfung erfolgt über: c2patool (lokal)"
+  Der Systemstatus zeigt jetzt „Die Prüfung erfolgt über: c2patool (lokal)“
   bzw. den Namen des Dienstes samt Hinweis, dass Dateien den Server
   verlassen. Implementierungen ohne diese Schnittstelle verhalten sich
   unverändert.
@@ -161,8 +161,8 @@ als stabil.
   System, Erzeugungsdatum, Prüfvermerk sowie Felder für erkannte
   Herkunftsdaten (C2PA, IPTC `DigitalSourceType`).
 - **Stichtagslogik** zum 2. August 2026. Ein nicht gesetztes Erzeugungsdatum
-  gilt ausdrücklich nicht als „vor Stichtag".
-- **Backend-Reiter „KI-Transparenz"** in den Datei-Metadaten mit fünf
+  gilt ausdrücklich nicht als „vor Stichtag“.
+- **Backend-Reiter „KI-Transparenz“** in den Datei-Metadaten mit fünf
   Paletten. Felder werden nur eingeblendet, wenn sie zur Sache gehören.
 - **Regelwerk** (`DisclosureRuleService`), das entscheidet, ob und wie
   gekennzeichnet wird. Ein unbestätigter Vorschlag aus der automatischen
@@ -211,7 +211,7 @@ als stabil.
   ohne Namen hebt die Pflicht nicht auf. Ausgabe über `nt:textNotice` als Satz
   statt als Symbol.
 
-- **Backend-Modul „KI-Transparenz"**: Übersicht je Speicher (geprüft, offen,
+- **Backend-Modul „KI-Transparenz“**: Übersicht je Speicher (geprüft, offen,
   gebrochene Signaturen), filterbare Arbeitsliste mit Direktsprung in die
   Metadatenbearbeitung, Massenbearbeitung mit einem Protokolleintrag je Datei,
   Systemstatus und der Hinweis, dass das Modul keine Rechtsberatung ersetzt.
@@ -287,14 +287,14 @@ als stabil.
   setzen und dem hellen wie dem dunklen Backend folgen (gemessen 5,5:1 bis
   9,4:1 statt darunter). Die Kartenueberschriften sind echte Ueberschriften
   mit `card-title` statt Fließtext.
-- **Speicher heissen jetzt nach ihrem Inhalt.** „Storage 0" ist der Ort, an
+- **Speicher heissen jetzt nach ihrem Inhalt.** „Storage 0“ ist der Ort, an
   dem TYPO3 alles ablegt, was ausserhalb einer eingerichteten Dateiablage
   liegt — der Name sagte niemandem etwas, der die Zeile abarbeiten soll. Er
-  heisst jetzt „Dateien ausserhalb der Dateiablagen"; unbenannte Ablagen
-  heissen „Dateiablage <uid>".
+  heisst jetzt „Dateien ausserhalb der Dateiablagen“; unbenannte Ablagen
+  heissen „Dateiablage <uid>“.
 - **Die Plakette bestand zur Hälfte aus Leerraum.** Die offiziellen Dateien
   setzen die Zeichnung mit breitem Rand auf eine größere Leinwand: Bei
-  „AI GENERATED" belegt sie 1384 × 266 von 1790 × 567 Einheiten, also 47 % der
+  „AI GENERATED“ belegt sie 1384 × 266 von 1790 × 567 Einheiten, also 47 % der
   Höhe. Unverändert eingebettet wirkte das Zeichen kleiner, als es ist. Der
   sichtbare Ausschnitt wird jetzt auf die Zeichnung verengt — vermessen mit
   `getBBox()` über die ausgelieferten Dateien, nicht geschätzt. Die Grafik
@@ -323,6 +323,6 @@ als stabil.
   umgebenden Container setzen; automatisch findet die Extension solche Bilder
   nicht.
 - Unterhalb von rund 180 px Bildbreite passt die Begleitbeschriftung nicht mehr
-  neben das Symbol. Für Vorschaubilder `showTextLabel="false"` am Aufruf setzen.
+  neben das Symbol. Für Vorschaubilder `showTextLabel=“false“` am Aufruf setzen.
 
 <!-- --8<-- [end:eintraege] -->
