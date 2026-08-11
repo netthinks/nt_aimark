@@ -1,0 +1,101 @@
+name: TER-Abgleich
+
+# Prüft, ob der neueste Tag tatsächlich im TER angekommen ist.
+#
+# Der Anlass war ein abgelaufenes Access-Token bei einer Schwesterextension.
+# Naheliegend wäre, die Gültigkeit des Tokens zu überwachen — nur scheitert
+# eine Veröffentlichung aus mehr Gründen als diesem einen: ein fehlgeschlagener
+# Workflow, ein vergessener Tag, eine abgelehnte Version, ein Ausfall beim TER.
+#
+# Deshalb wird hier nicht die Voraussetzung geprüft, sondern das Ergebnis. Das
+# deckt alle Ursachen auf einmal ab und braucht kein Geheimnis: Die Abfrage
+# läuft über die öffentliche Schnittstelle.
+
+on:
+  schedule:
+    # Montags früh. Ein Wochenrhythmus genügt — es geht um einen Zustand, der
+    # sich nur bei einem Release ändert.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  abgleich:
+    name: Neuester Tag gegen TER
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Vergleichen
+        id: vergleich
+        run: |
+          TAG=$(git tag --sort=-v:refname | head -1 | sed 's/^v//')
+          if [ -z "$TAG" ]; then
+            echo "Noch kein Tag vorhanden — nichts zu vergleichen."
+            echo "abweichung=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ANTWORT=$(curl -sf --retry 3 --retry-delay 5 \
+            "https://extensions.typo3.org/api/v1/extension/nt_aimark" || echo '[]')
+          TER=$(echo "$ANTWORT" | jq -r '.[0].current_version.number // ""')
+
+          echo "Neuester Tag: ${TAG}"
+          echo "Im TER:       ${TER:-nichts}"
+
+          if [ "$TAG" = "$TER" ]; then
+            echo "abweichung=" >> "$GITHUB_OUTPUT"
+          else
+            echo "abweichung=Tag ${TAG}, im TER ${TER:-nichts}" >> "$GITHUB_OUTPUT"
+            echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+            echo "ter=${TER:-nichts}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Ein Issue statt einer Mail: Es ist auffindbar, lässt sich schließen,
+      # und ein zweiter Lauf erzeugt kein Duplikat.
+      - name: Hinweis anlegen
+        if: steps.vergleich.outputs.abweichung != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const titel = 'TER-Abgleich: veröffentlichte Fassung weicht ab';
+            const offen = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'ter-abgleich',
+            });
+
+            if (offen.data.length > 0) {
+              core.info('Es gibt bereits einen offenen Hinweis.');
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: titel,
+              labels: ['ter-abgleich'],
+              body: [
+                'Der neueste Tag ist **${{ steps.vergleich.outputs.tag }}**,',
+                'im TER liegt **${{ steps.vergleich.outputs.ter }}**.',
+                '',
+                'Mögliche Ursachen, in der Reihenfolge ihrer Häufigkeit:',
+                '',
+                '1. Das Secret `TYPO3_API_TOKEN` ist abgelaufen. Access Tokens auf',
+                '   typo3.org brauchen ein Ablaufdatum; ein neues erzeugen und das',
+                '   Secret ersetzen.',
+                '2. Der Workflow *Publish to TER* ist fehlgeschlagen — unter',
+                '   *Actions* nachsehen.',
+                '3. Der Tag wurde gesetzt, ohne dass der Workflow lief.',
+                '',
+                'Nach dem Beheben lässt sich die Veröffentlichung ohne neuen Tag',
+                'wiederholen: *Actions → Publish to TER → Run workflow* mit der',
+                'Versionsnummer.',
+              ].join('\n'),
+            });
