@@ -1,6 +1,13 @@
 site_name: nt-aimark
 site_description: AI transparency for TYPO3 — record, label and document AI-generated content under Art. 50 of the EU AI Act
 site_url: https://docs.netthinks.com/nt-aimark/
+
+# Verweis im Seitenkopf, auf jeder Seite. Ohne ihn steht der Weg zurueck zum
+# Projekt nur auf der Startseite — wer ueber eine Suchmaschine mitten in der
+# Doku landet, findet weder Repository noch Anbieter.
+repo_url: https://github.com/netthinks/nt_aimark
+repo_name: netthinks/nt_aimark
+edit_uri: edit/main/docs/
 docs_dir: docs
 site_dir: site
 copyright: Copyright &copy; 2026 NET.THINKS
@@ -24,6 +31,7 @@ theme:
     text: Roboto
     code: Roboto Mono
   features:
+    - content.action.edit
     - navigation.tabs
     - navigation.sections
     - navigation.top
@@ -109,3 +117,15 @@ plugins:
             Integration: Integration
             Developer Guide: Entwicklerhandbuch
             Changelog: Changelog
+
+extra:
+  social:
+    - icon: fontawesome/solid/globe
+      link: https://www.netthinks.com/leistungen/websites/ki-kennzeichnung-typo3/
+      name: NET.THINKS — KI-Kennzeichnung für TYPO3
+    - icon: fontawesome/brands/github
+      link: https://github.com/netthinks/nt_aimark
+      name: Quelltext und Fehlerberichte
+    - icon: fontawesome/solid/box
+      link: https://extensions.typo3.org/extension/nt_aimark
+      name: Im TYPO3 Extension Repository
