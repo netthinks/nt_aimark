@@ -73,7 +73,6 @@ final class ExifSignatureServiceTest extends UnitTestCase
         ob_start();
         imagejpeg($image);
         $jpeg = (string) ob_get_clean();
-        imagedestroy($image);
 
         $path = $this->directory . 'image-' . uniqid('', true) . '.jpg';
         // SOI, then our segment, then the rest of the encoder's output.
@@ -144,7 +143,6 @@ final class ExifSignatureServiceTest extends UnitTestCase
         $image = imagecreatetruecolor(8, 8);
         self::assertNotFalse($image);
         imagejpeg($image, $path);
-        imagedestroy($image);
 
         self::assertFalse((new ExifSignatureService())->read($path)->hasFinding());
     }

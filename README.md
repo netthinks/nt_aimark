@@ -63,7 +63,7 @@ Alternatively the bundled FileRenderer labels images without any template change
 | | |
 |---|---|
 | TYPO3 | 13.4 LTS, 14 LTS |
-| PHP | 8.2 – 8.4 |
+| PHP | 8.2 – 8.5 |
 | Optional | `c2patool` for reading Content Credentials |
 
 Without `c2patool`, labelling works in full; only one of three detection sources drops out and the signature state stays "not verifiable". [What to do if it cannot be installed](https://docs.netthinks.com/nt-aimark/installation/).
@@ -163,7 +163,7 @@ Alternativ übernimmt der mitgelieferte FileRenderer die Kennzeichnung, ohne das
 | | |
 |---|---|
 | TYPO3 | 13.4 LTS, 14 LTS |
-| PHP | 8.2 – 8.4 |
+| PHP | 8.2 – 8.5 |
 | Optional | `c2patool` für die Auswertung von Content Credentials |
 
 Ohne `c2patool` funktioniert die Kennzeichnung vollständig; es entfällt eine von drei Erkennungsquellen, und der Signaturzustand bleibt „nicht prüfbar". [Was tun, wenn es sich nicht installieren lässt](https://docs.netthinks.com/nt-aimark/de/installation/).

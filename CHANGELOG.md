@@ -6,6 +6,22 @@ die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
 <!-- --8<-- [start:eintraege] -->
 
+## [0.9.9] – 2026-10-01
+
+### Fixed
+
+- **PHP 8.5: contrast measurement for the AI badge.** `BadgeContrastService`
+  called `imagedestroy()` after sampling the image. The function has had no
+  effect since PHP 8.0 and is deprecated in 8.5; where the error handler turns
+  deprecations into exceptions, the measurement would have failed for every
+  labelled image. The call is removed, as are the same calls in the test
+  fixtures, which kept the suite from running clean on 8.5.
+
+### Changed
+
+- CI runs the unit suite on PHP 8.5; requirements in the documentation list
+  PHP 8.2 – 8.5.
+
 ## [0.9.8] – 2026-08-11
 
 ### Sicherheit

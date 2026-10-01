@@ -67,11 +67,11 @@ final readonly class BadgeContrastService
             return BadgeContrast::guaranteed();
         }
 
-        try {
-            $samples = $this->sampleBadgeArea($image, $position);
-        } finally {
-            imagedestroy($image);
-        }
+        // No imagedestroy(): GD images are objects since PHP 8.0 and are freed
+        // when they go out of scope. The call has had no effect since then and is
+        // deprecated in 8.5; where deprecations become exceptions it would have
+        // failed the contrast measurement for every labelled image.
+        $samples = $this->sampleBadgeArea($image, $position);
 
         if ($samples === []) {
             return BadgeContrast::guaranteed();

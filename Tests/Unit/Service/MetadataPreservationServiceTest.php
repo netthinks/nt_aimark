@@ -56,7 +56,6 @@ final class MetadataPreservationServiceTest extends UnitTestCase
         ob_start();
         imagejpeg($image, null, 90);
         $jpeg = (string) ob_get_clean();
-        imagedestroy($image);
 
         if ($withXmp) {
             $xmp = '<x:xmpmeta xmlns:x="adobe:ns:meta/">'
@@ -81,7 +80,6 @@ final class MetadataPreservationServiceTest extends UnitTestCase
         self::assertNotFalse($image);
         $path = $this->directory . $name . '.png';
         imagepng($image, $path);
-        imagedestroy($image);
 
         return $path;
     }

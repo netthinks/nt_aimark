@@ -41,7 +41,6 @@ function jpegWithXmp(string $path): void
     ob_start();
     imagejpeg($image, null, 90);
     $jpeg = (string)ob_get_clean();
-    imagedestroy($image);
 
     file_put_contents($path, "\xFF\xD8" . $app1 . substr($jpeg, 2));
 }

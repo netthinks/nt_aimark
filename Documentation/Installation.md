@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | TYPO3 | 13.4 LTS oder 14 LTS |
-| PHP | 8.2 – 8.4 |
+| PHP | 8.2 – 8.5 |
 | Optional | `c2patool` zum Auswerten von Content Credentials |
 
 ## Extension installieren

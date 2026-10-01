@@ -64,7 +64,6 @@ final class BadgeContrastServiceTest extends UnitTestCase
 
         $path = $this->directory . $name . '.png';
         imagepng($image, $path);
-        imagedestroy($image);
 
         return $path;
     }
@@ -81,7 +80,6 @@ final class BadgeContrastServiceTest extends UnitTestCase
 
         $path = $this->directory . $name . '.png';
         imagepng($image, $path);
-        imagedestroy($image);
 
         return $path;
     }
@@ -201,7 +199,6 @@ final class BadgeContrastServiceTest extends UnitTestCase
 
         $path = $this->directory . 'pattern.png';
         imagepng($image, $path);
-        imagedestroy($image);
 
         self::assertTrue($this->subject()->resolve($this->fileFor($path), 'bottom-right')->needsPlate);
     }

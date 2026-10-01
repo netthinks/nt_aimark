@@ -63,7 +63,6 @@ final class C2paServiceIntegrationTest extends FunctionalTestCase
         $image = imagecreatetruecolor(16, 16);
         self::assertNotFalse($image);
         imagejpeg($image, $path);
-        imagedestroy($image);
 
         $result = (new C2paService())->inspect($path);
 
@@ -89,7 +88,6 @@ final class C2paServiceIntegrationTest extends FunctionalTestCase
         $image = imagecreatetruecolor(16, 16);
         self::assertNotFalse($image);
         imagejpeg($image, $path);
-        imagedestroy($image);
 
         $result = (new C2paService('/definitely/not/a/binary'))->inspect($path);
 
