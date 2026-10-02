@@ -6,7 +6,7 @@ die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
 <!-- --8<-- [start:eintraege] -->
 
-## [0.9.9] – 2026-10-01
+## [0.9.9] – 2026-10-02
 
 ### Fixed
 
@@ -21,6 +21,8 @@ die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
 - CI runs the unit suite on PHP 8.5; requirements in the documentation list
   PHP 8.2 – 8.5.
+- `ext_emconf.php` now allows PHP 8.5 (`8.2.0-8.5.99`). Before, the TER
+  listing excluded PHP 8.5 although composer.json already accepted it.
 
 ## [0.9.8] – 2026-08-11
 
